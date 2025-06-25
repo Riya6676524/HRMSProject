@@ -1,0 +1,19 @@
+﻿@model FirstProject1.Models.User
+    <h2>Login</h2>
+@using (Html.BeginForm())
+            {
+                <div>
+                    <label>UserName:</label>
+                    @Html.TextBoxFor(m => m.username)
+                </div>
+                <div>
+                    <label>Password:</label>
+                    @Html.TextBoxFor(m=>m.password)
+                </div>
+                <div>
+                    <button type="submit" >Login</button>
+                </div>
+            }
+@if(ViewBag.Message !=null){
+    <p style="color:red">@ViewBag.Message</p>
+}

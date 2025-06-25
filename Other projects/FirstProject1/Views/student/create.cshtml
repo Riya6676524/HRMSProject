@@ -1,0 +1,35 @@
+﻿@model FirstProject1.Models.student
+
+@{
+    ViewBag.Title = "Create Student";
+}
+
+<h2>Create Student</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.LabelFor(m => m.name)
+        @Html.TextBoxFor(m => m.name)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.email)
+        @Html.TextBoxFor(m => m.email)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.phone)
+        @Html.TextBoxFor(m => m.phone)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.address)
+        @Html.TextBoxFor(m => m.address)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.uerid)
+        @Html.TextBoxFor(m => m.uerid)
+    </div>
+
+    <button type="submit">Save</button>
+}
+
+

@@ -1,0 +1,123 @@
+﻿/* Full-page background */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url('../Content/Uploads/login background.png') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 5vw;
+}
+
+.login-box h2 {
+    color: #0a2240;
+}
+
+/* Login box */
+.login-box {
+    background: white;
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px 30px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    
+}
+/* Top icon circle */
+.login-box .top-icon {
+        width: 80px;
+        height: 80px;
+        background-color: #0a2240;
+        border-radius: 50%;
+        margin: 0 auto 20px auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+/* Input icon  textbox */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
+}
+    .input-group i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #0a2240;
+        opacity: 0.8;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 10px 10px 10px 40px;
+        border: none;
+        border-radius: 8px;
+        background: #2c4570;
+        color: white;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+
+.input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+.warning {
+    text-align: left;
+    color: red;
+}
+
+/* Remember  Forgot */
+.options {
+    display: flex;
+    justify-content: space-evenly;
+    font-size: 13px;
+    color: #233f74;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+.options label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+/* Login button */
+.btn-login {
+    width: 100%;
+    padding: 10px;
+    background: #233f74;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+}
+.btn-login:hover {
+        background: #1a3159;
+    }
+/*Logo image*/
+.login-logo {
+    width: 200px;
+    margin-bottom: 15px;
+}
+
+.custom-link {
+    color: #233f74;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+    .custom-link:hover {
+        color: #1a3159;
+        text-decoration: underline;
+    }

@@ -1,0 +1,136 @@
+﻿@model HRMSModels.NavbarModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard - HRMS</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="~/Content/Dashboard.css" rel="stylesheet" />
+
+</head>
+<body>
+
+
+    <div class="header">
+        <div class="left-logo">
+            <img src="~/Content/Uploads/logo-removebg-preview.png" alt="Optimum Info" />
+        </div>
+        <div class="right-actions">
+       
+
+            <div class="attendance-dropdown" onclick="toggleAttendanceMenu(event)">
+                <button id="attendanceButton">
+                    Mark Attendance
+                </button>
+                <div class="attendance-options" id="attendanceOptions">
+                    <div onclick="selectAttendance('WFH')">WFH</div>
+                    <div onclick="selectAttendance('WFO')">WFO</div>
+                </div>
+            </div>
+
+
+            <i class="fas fa-bell notification"></i>
+
+ 
+            <img src="@Model.ProfileImagePath" alt="Profile" class="profile-img-header" />
+        </div>
+    </div>
+
+
+    <div class="sidebar">
+        <div class="profile-section">
+            <br />
+            <img src="@Model.ProfileImagePath" alt="Profile" class="profile-img" />
+            <div>
+                <strong>@Model.FirstName @Model.MiddleName @Model.LastName</strong><br />
+                <span>ID: @Model.EmployeeID</span><br />
+                <span>Dept: @Model.DepartmentName</span>
+            </div>
+        </div>
+
+        <ul class="menu-list">
+            @foreach (var menu in Model.MenuList)
+            {
+                var hasSub = menu.SubMenus != null && menu.SubMenus.Any();
+                <li class="@(hasSub ? "has-dropdown" : "")">
+                    <a href="@(hasSub ? "javascript:void(0)" : Url.Action(menu.ActionName, menu.ControllerName))"
+                       onclick="@(hasSub ? "toggleDropdown(this)" : "")">
+                        <i class="@menu.IconeClass"></i> @menu.MenuName
+                    </a>
+                    @if (hasSub)
+                    {
+                        <ul class="submenu">
+                            @foreach (var sub in menu.SubMenus)
+                            {
+                                <li>
+                                    <a href="@Url.Action(sub.ActionName, sub.ControllerName)">
+                                        <i class="@sub.IconeClass"></i> @sub.MenuName
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+
+
+    <div class="content">
+        <h2>Welcome, @Model.FirstName </h2>
+
+        <div class="dashboard-cards">
+            <div class="card">
+                <h3>Leave</h3>
+            
+            </div>
+            <div class="card">
+                <h3>Attendance</h3>
+            
+            </div>
+            <div class="card">
+                <h3>HR Policies</h3>
+          
+            </div>
+            <div class="card">
+                <h3>Documents</h3>
+                
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <script>
+        function toggleDropdown(element) {
+            const parent = element.closest('li');
+            const submenu = parent.querySelector('.submenu');
+            if (submenu) {
+                submenu.classList.toggle('show');
+            }
+        }
+
+        function toggleAttendanceMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('attendanceOptions');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function selectAttendance(type) {
+            document.getElementById('attendanceButton').textContent = type ;
+            document.getElementById('attendanceOptions').style.display = 'none';
+            console.log("Attendance marked:", type);
+        }
+
+        window.addEventListener('click', function () {
+            document.getElementById('attendanceOptions').style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>

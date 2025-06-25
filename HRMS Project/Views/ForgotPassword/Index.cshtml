@@ -1,0 +1,54 @@
+﻿@model HRMSModels.ForgotPasswordModel
+@{
+    ViewBag.Title = "Forgot Password";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Forgot Password</title>
+    <link href="~/Content/Login.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+</head>
+<body>
+    <div class="login-box">
+        <h2>Forgot Password</h2>
+
+        @if (TempData["Message"] != null)
+        {
+            <div style="color: green; padding: 10px; font-weight: bold; margin-bottom: 10px;">
+                @TempData["Message"]
+            </div>
+        }
+      
+
+        @using (Html.BeginForm())
+        {
+            <div class="input-group">
+                <i class="fa fa-envelope"></i>
+                @Html.TextBoxFor(m => m.Email, new { @placeholder = "Enter your registered email" })
+
+            </div>
+
+            <div class="warning">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+
+            </div>
+            <br />
+
+            <input type="submit" value="Send Reset Link" class="btn-login" />
+
+
+            <div class="back-link">
+
+                @Html.ActionLink("Back to Login", "Index", "Login")
+            </div>
+        }
+    </div>
+</body>
+</html>

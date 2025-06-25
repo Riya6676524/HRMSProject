@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+
+
+
+@model HRMSModels.NavbarModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard - HRMS</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="~/Content/sidebar.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="profile-section">
+            <img src="@Model.ProfileImagePath" alt="Profile" class="profile-img" />
+            <div>
+                <strong>@Model.FirstName @Model.MiddleName @Model.LastName</strong><br />
+                <span>ID: @Model.EmployeeID</span><br />
+                <span>Dept: @Model.DepartmentName</span>
+            </div>
+        </div>
+
+        <ul class="menu-list">
+            @foreach (var menu in Model.MenuList)
+            {
+                <li>
+                    <a href="@Url.Action(menu.ActionName, menu.ControllerName)">
+                        <i class="@menu.IconeClass"></i> @menu.MenuName
+                    </a>
+                    @if (menu.SubMenus != null && menu.SubMenus.Any())
+                    {
+                        <ul class="submenu">
+                            @foreach (var sub in menu.SubMenus)
+                            {
+                                <li>
+                                    <a href="@Url.Action(sub.ActionName, sub.ControllerName)">
+                                        <i class="@sub.IconeClass"></i> @sub.MenuName
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+
+</body>
+</html>
+
