@@ -1,5 +1,4 @@
-﻿@model HRMSModels.NavbarModel
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -10,16 +9,14 @@
 </head>
 <body>
 
-
+    <!-- Header -->
     <div class="header">
         <div class="left-logo">
             <img src="~/Content/Uploads/logo-removebg-preview.png" alt="Optimum Info" />
         </div>
         <div class="right-actions">
             <div class="attendance-dropdown" onclick="toggleAttendanceMenu(event)">
-                <button id="attendanceButton">
-                    Mark Attendance
-                </button>
+                <button id="attendanceButton">Mark Attendance</button>
                 <div class="attendance-options" id="attendanceOptions">
                     <div onclick="selectAttendance('WFH')">WFH</div>
                     <div onclick="selectAttendance('WFO')">WFO</div>
@@ -27,60 +24,87 @@
             </div>
 
             <i class="fas fa-bell notification"></i>
-            <img src="@Model.ProfileImagePath" alt="Profile" class="profile-img-header" />
+            <img src="" alt="Profile" class="profile-img-header" id="profileImgHeader" />
         </div>
     </div>
 
- 
+    <!-- Sidebar -->
     <div class="sidebar">
         <div class="profile-section">
             <br />
-            <img src="@Model.ProfileImagePath" alt="Profile" class="profile-img" />
+            <img src="" alt="Profile" class="profile-img" id="profileImg" />
             <div>
-                <strong>@Model.FirstName @Model.MiddleName @Model.LastName</strong><br />
-                <span>ID: @Model.EmployeeID</span><br />
-                <span>Dept: @Model.DepartmentName</span>
+                <strong id="profileName"></strong><br />
+                <span id="profileEmpId"></span><br />
+                <span id="profileRol"></span>
             </div>
         </div>
 
-        <ul class="menu-list">
-            @foreach (var menu in Model.MenuList)
-            {
-                var hasSub = menu.SubMenus != null && menu.SubMenus.Any();
-                <li class="@(hasSub ? "has-dropdown" : "")">
-                    <a href="@(hasSub ? "javascript:void(0)" : Url.Action(menu.ActionName, menu.ControllerName))"
-                       onclick="@(hasSub ? "toggleDropdown(this)" : "")">
-                        <i class="@menu.IconeClass"></i> @menu.MenuName
-                    </a>
-                    @if (hasSub)
-                    {
-                        <ul class="submenu">
-                            @foreach (var sub in menu.SubMenus)
-                            {
-                                <li>
-                                    <a href="@Url.Action(sub.ActionName, sub.ControllerName)">
-                                        <i class="@sub.IconeClass"></i> @sub.MenuName
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    }
-                </li>
-            }
+        <ul class="menu-list" id="menuList">
+            
         </ul>
     </div>
 
-    
+
+    <!-- Main Content -->
     <div class="content">
         @RenderBody()
+
+        <footer class="text-center mt-4">
+            <hr />
+            <p>&copy; @DateTime.Now.Year - HRMS Application</p>
+        </footer>
     </div>
 
-    <footer class="text-center mt-4">
-        <hr />
-        <p>&copy; @DateTime.Now.Year - HRMS Application</p>
-    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        $(document).ready(function () {
+            loadNavbarData();
+            loadSidebarMenus();
+        });
+
+        function loadNavbarData() {
+            $.getJSON('/Dashboard/GetNavbarData', function (data) {
+                $('#profileImg').attr('src', data.ProfileImagePath);
+                $('#profileImgHeader').attr('src', data.ProfileImagePath);
+                $('#profileName').text(`${data.FirstName} ${data.MiddleName} ${data.LastName}`);
+                $('#profileEmpId').text(`ID: ${data.EmployeeID}`);
+                $('#profileRol').text(`Role: ${data.RoleName}`);
+            });
+        }
+
+        function loadSidebarMenus() {
+            $.getJSON('/Dashboard/GetMenus', function (menus) {
+                let html = '';
+                const parentMenus = menus.filter(m => m.ParentMenuID === null);
+
+                parentMenus.forEach(menu => {
+                    const subMenus = menus.filter(m => m.ParentMenuID === menu.MenuID);
+
+                    if (subMenus.length > 0) {
+                        html += `<li class="has-dropdown">
+                                        <a href="javascript:void(0)" onclick="toggleDropdown(this)">
+                                            <i class="${menu.IconeClass}"></i> ${menu.MenuName}
+                                        </a>
+                                        <ul class="submenu">`;
+
+                        subMenus.forEach(sub => {
+                            html += `<li><a href="/${sub.ControllerName}/${sub.ActionName}"><i class="${sub.IconeClass}"></i> ${sub.MenuName}</a></li>`;
+                        });
+
+                        html += `</ul></li>`;
+                    } else {
+                        html += `<li><a href="/${menu.ControllerName}/${menu.ActionName}"><i class="${menu.IconeClass}"></i> ${menu.MenuName}</a></li>`;
+                    }
+                });
+
+                $('#menuList').html(html);
+            });
+        }
+
         function toggleDropdown(element) {
             const parent = element.closest('li');
             const submenu = parent.querySelector('.submenu');
@@ -106,8 +130,5 @@
         });
     </script>
 
-
 </body>
 </html>
-
-
