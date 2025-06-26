@@ -1,6 +1,5 @@
 using HRMSDAL.Service;
 using HRMSDAL.Service_Implementation;
-using HRMSDAL.ServiceImplementation;
 using System;
 using System.Web.Mvc;
 using Unity;
@@ -25,16 +24,19 @@ namespace HRMS_Project
 
         public static void RegisterComponents()
         {
-            // Use the same container (don't create a new one)
+
             DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
         }
 
         public static void RegisterTypes(IUnityContainer container)
         {
-            // Register your services
+
             container.RegisterType<ILoginService, LoginService>();
             container.RegisterType<IForgotPasswordService, ForgotPasswordService>();
             container.RegisterType<IDashboardService, DashboardService>();
+            container.RegisterType<IMenuService, MenuService>();
+            container.RegisterType<IRoleMenuService, RoleMenuService>();
+
 
 
 

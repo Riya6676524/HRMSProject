@@ -18,8 +18,7 @@ namespace HRMSModels
 
         public int? ParentMenuID { get; set; }
 
-        [Browsable(false)]
-        public List<MenuModel> SubMenus { get; set; } = new List<MenuModel>();
+       
     }
         
 }

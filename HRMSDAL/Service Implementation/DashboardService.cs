@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace HRMSDAL.Service_Implementation
 {
@@ -13,10 +12,7 @@ namespace HRMSDAL.Service_Implementation
     {
         public NavbarModel GetNavbarData(int empId, int roleId)
         {
-            NavbarModel model = new NavbarModel
-            {
-                MenuList = new List<MenuModel>()
-            };
+            NavbarModel model = new NavbarModel();
 
             var employeeData = DBHelper.ExecuteReader(
                 "usp_GetNavbarInfoByEmpID",
@@ -35,37 +31,43 @@ namespace HRMSDAL.Service_Implementation
                 model.ProfileImagePath = string.IsNullOrEmpty(row["ProfileImagePath"]?.ToString())
                     ? "/Content/Images/default.png"
                     : row["ProfileImagePath"]?.ToString();
-                model.DepartmentName = row["DepartmentName"]?.ToString();
+                model.RoleName = row["RoleName"]?.ToString();
             }
-
-            // Fetch menus via GenericService
-            var menuService = new MenuService();
-            var roleMenuService = new RoleMenuService();
-
-            var allMenus = menuService.GetAll().OrderBy(m => m.DisplayOrder).ToList();
-            var roleMenus = roleMenuService.GetAll().Where(rm => rm.RoleID == roleId).ToList();
-
-            var filteredMenus = allMenus
-                .Where(m => roleMenus.Any(rm => rm.MenuID == m.MenuID))
-                .ToList();
-
-            var parentMenus = filteredMenus
-                .Where(m => m.ParentMenuID == null)
-                .ToList();
-
-            foreach (var parent in parentMenus)
-            {
-                parent.SubMenus = filteredMenus
-                    .Where(m => m.ParentMenuID == parent.MenuID)
-                    .ToList();
-
-                model.MenuList.Add(parent);
-            }
-
             return model;
         }
+    
+            public LeaveSummaryModel GetLeaveSummary(int empId)
+            {
+               
+                int currentMonth = DateTime.Now.Month;
+                int totalEntitled = currentMonth * 2;
+                double leaveTaken = 1;
+                double carryForward = 2; //ye databse se aayega as its yearly carryForward leave 
+                                         // we need cary forward leave table which contain the availableleave of previous year 
+
+
+
+            var result = DBHelper.ExecuteScalar(
+             "GetApprovedLeaveTaken",
+             CommandType.StoredProcedure,
+             new SqlParameter[] { new SqlParameter("@Emp_ID", empId) }
+         );
+
+                if (result != null && result != DBNull.Value)
+                {
+                    leaveTaken = Convert.ToDouble(result);
+                }
+              
+                double totalAvailable = Convert.ToDouble(totalEntitled-leaveTaken+carryForward);
+                
+                return new LeaveSummaryModel
+                {
+                    TotalAvailable = totalAvailable,
+                    LeaveTaken = Convert.ToInt32(leaveTaken)
+                };
+            }
+        }
     }
-}
 
 
 

@@ -17,30 +17,24 @@
     <div class="login-box">
         <h2>Forgot Password</h2>
 
-        @if (TempData["Message"] != null)
-        {
-            <div style="color: green; padding: 10px; font-weight: bold; margin-bottom: 10px;">
-                @TempData["Message"]
-            </div>
-        }
-      
-
         @using (Html.BeginForm())
         {
             <div class="input-group">
                 <i class="fa fa-envelope"></i>
-                @Html.TextBoxFor(m => m.Email, new { @placeholder = "Enter your registered email" })
+                @Html.TextBoxFor(m => m.Email, new { @placeholder = "Email ID" })
 
             </div>
 
             <div class="warning">
-
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-
+                @if (TempData["Message"] != null)
+                {
+                    <span style="color: green; padding: 10px; font-weight: bold; margin-bottom: 10px;">@TempData["Message"]</span>
+                }
             </div>
-            <br />
 
+
+            <br />
             <input type="submit" value="Send Reset Link" class="btn-login" />
 
 

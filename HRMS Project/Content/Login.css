@@ -1,4 +1,4 @@
-﻿/* Full-page background */
+﻿
 body {
     margin: 0;
     padding: 0;
@@ -16,7 +16,7 @@ body {
     color: #0a2240;
 }
 
-/* Login box */
+
 .login-box {
     background: white;
     backdrop-filter: blur(20px);
@@ -27,7 +27,7 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
     
 }
-/* Top icon circle */
+
 .login-box .top-icon {
         width: 80px;
         height: 80px;
@@ -39,7 +39,6 @@ body {
         align-items: center;
     }
 
-/* Input icon  textbox */
 .input-group {
     position: relative;
     margin-bottom: 20px;
@@ -75,7 +74,7 @@ body {
     color: red;
 }
 
-/* Remember  Forgot */
+
 .options {
     display: flex;
     justify-content: space-evenly;
@@ -90,7 +89,8 @@ body {
         gap: 5px;
     }
 
-/* Login button */
+
+
 .btn-login {
     width: 100%;
     padding: 10px;
@@ -105,7 +105,8 @@ body {
 .btn-login:hover {
         background: #1a3159;
     }
-/*Logo image*/
+
+
 .login-logo {
     width: 200px;
     margin-bottom: 15px;

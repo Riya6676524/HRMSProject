@@ -1,216 +1,31 @@
-﻿body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f8f9fa;
-    overflow-x: hidden;
+﻿/*<-- main content ka -->*/
+#welcomeText {
+    padding: 5px 10px 5px 10px; 
+    margin-bottom: 5px;
 }
-
-.header {
-    width: 100%;
-    height: 81px;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    font-size: 20px;
-    color: #0a2240;
-    font-weight: 600;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-    .header .left-logo img {
-        height: 30px;
-    }
-
-    .header .right-actions {
-        display: flex;
-        align-items: center;
-        gap: 30px;
-    }
-
-    .header .notification {
-        font-size: 20px;
-        cursor: pointer;
-        color: #0a2240;
-    }
-
-.attendance-dropdown {
-    position: relative;
-    font-size: 16px;
-}
-
-    .attendance-dropdown button {
-        padding: 11px 15px;
-        border: 1px solid #0a2240;
-        background-color: #233f74;
-        color: #f0f0f0;
-        border-radius: 10px;
-        cursor: pointer;
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 16px;
-    }
-
-.attendance-options {
-    display: none;
-    position: absolute;
-    top: 40px;
-    left: 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    min-width: 100px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
-    z-index: 999;
-}
-
-    .attendance-options div {
-        padding: 8px 12px;
-        cursor: pointer;
-        color: #0a2240;
-    }
-
-        .attendance-options div:hover {
-            background-color: #007bff;
-            color: white;
-        }
-
-.header .profile-img-header {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #233f74;
-    margin-right: 50px;
-}
-
-.sidebar {
-    position: fixed;
-    top: 81px;
-    bottom: 0;
-    left: 0;
-    width: 280px;
-    background: linear-gradient(to bottom, #0a2240, #1c3b5a, #3a5c7c);
-    padding-top: 10px;
-    overflow-y: auto;
-}
-
-.content {
-    margin-left: 280px;
-    margin-top: 81px;
-    padding: 20px;
-}
-
-.profile-img {
-    display: block;
-    margin: 0 auto 10px;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #ffffff;
-}
-
-.profile-section {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #f0f0f0;
-}
-
-.menu-list,
-.submenu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-    .menu-list > li {
-        position: relative;
-    }
-
-    .menu-list a,
-    .submenu a {
-        color: #f0f0f0 !important;
-        text-decoration: none;
-        display: block;
-        padding: 10px 20px;
-        border-radius: 0;
-        transition: background-color 0.3s;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-        .menu-list a:hover,
-        .submenu a:hover {
-            background-color: #007bff;
-            color: #fff !important;
-        }
-
-.submenu {
-    background-color: #102e50;
-    display: none;
-}
-
-    .submenu a {
-        padding-left: 30px;
-        font-size: 0.95em;
-    }
-
-.fa {
-    margin-right: 8px;
-}
-
-.has-dropdown > a {
-    cursor: pointer;
-    position: relative;
-}
-
-    .has-dropdown > a::after {
-        content: "\f078";
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        position: absolute;
-        right: 20px;
-        font-size: 0.8em;
-    }
-
-.submenu.show {
-    display: block;
-}
-
-.sidebar::-webkit-scrollbar {
-    width: 6px;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-}
-
-/*<-- main content ka -->*/
 
 .dashboard-cards {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 80px;
-    padding: 20px;
+    grid-template-columns: repeat(2,1fr);
+    gap: 11px;
+    box-sizing: border-box;
+    margin-top: 0px;
+    padding-top: 0px;
+    margin-left:5px;
 }
 
 .card {
-    background: linear-gradient(to right, #0a2240, #007bff);
-    color: #f0f0f0;
+    background-color: #f0f0f0;
+    color: black;
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
-    padding: 50px 25px;
-    min-height: 220px;
+    min-width: 251px;
+    min-height: 150px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    border: 0.8px solid lightgray;
 }
 
     .card:hover {
@@ -218,7 +33,7 @@
     }
 
     .card h3 {
-        margin-bottom: 10px;
+        margin: 0px;
         font-size: 20px;
     }
 
@@ -226,4 +41,8 @@
         font-size: 28px;
         font-weight: bold;
     }
-
+#leaveChart {
+    min-height: 150px;
+    margin: 10px auto 0 auto;
+    display: block;
+}

@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using HRMSDAL.Service;
 using HRMSDAL.Helper;
 
-namespace HRMSDAL.ServiceImplementation
+namespace HRMSDAL.Service_Implementation
 {
     public class LoginService : ILoginService
     {

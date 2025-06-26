@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper\DBHelper.cs" />
+    <Compile Include="Service Implementation\AttendanceService.cs" />
     <Compile Include="Service Implementation\DashboardService.cs" />
     <Compile Include="Service Implementation\ForgotPasswordService.cs" />
     <Compile Include="Service Implementation\GenericService.cs" />
@@ -55,6 +56,8 @@
     <Compile Include="Service\IForgotPasswordService.cs" />
     <Compile Include="Service\IGenericService.cs" />
     <Compile Include="Service\ILoginService.cs" />
+    <Compile Include="Service\IMenuService.cs" />
+    <Compile Include="Service\IRoleMenuService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HRMSModels\HRMSModels.csproj">
