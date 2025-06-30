@@ -36,7 +36,18 @@ namespace HRMS_Project
             container.RegisterType<IDashboardService, DashboardService>();
             container.RegisterType<IMenuService, MenuService>();
             container.RegisterType<IRoleMenuService, RoleMenuService>();
-
+            container.RegisterType<IEmployeeService, EmployeeService>();
+            container.RegisterType<ILeaveRequestService, LeaveRequestService>();
+            container.RegisterType<IGenderService, GenderService>();
+            container.RegisterType<ICountryService, CountryService>();
+            container.RegisterType<IStateService, StateService>();
+            container.RegisterType<ICityService, CityService>();
+            container.RegisterType<IDepartmentService, DepartmentService>();
+            container.RegisterType<IRoleService, RoleService>();
+            container.RegisterType<IMenuService, MenuService>();
+            container.RegisterType<IRoleMenuService, RoleMenuService>();
+            container.RegisterType<ILeaveTypeService, LeaveTypeService>();
+            container.RegisterType<ILeaveStatusService, LeaveStatusService>();
 
 
 

@@ -43,20 +43,44 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper\DBHelper.cs" />
+    <Compile Include="Service Implementation\CityService.cs" />
+    <Compile Include="Service Implementation\CountryService.cs" />
     <Compile Include="Service Implementation\DashboardService.cs" />
+    <Compile Include="Service Implementation\DepartmentService.cs" />
+    <Compile Include="Service Implementation\EmployeeService.cs" />
     <Compile Include="Service Implementation\ForgotPasswordService.cs" />
+    <Compile Include="Service Implementation\GenderService.cs" />
     <Compile Include="Service Implementation\GenericService.cs" />
+    <Compile Include="Service Implementation\HolidayService.cs" />
+    <Compile Include="Service Implementation\LeaveRequestService.cs" />
+    <Compile Include="Service Implementation\LeaveStatusService.cs" />
+    <Compile Include="Service Implementation\LeaveTypeService.cs" />
+    <Compile Include="Service Implementation\LocationService.cs" />
     <Compile Include="Service Implementation\LogerrorService.cs" />
     <Compile Include="Service Implementation\LoginService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service Implementation\MenuService.cs" />
     <Compile Include="Service Implementation\RoleMenuService.cs" />
+    <Compile Include="Service Implementation\RoleService.cs" />
+    <Compile Include="Service Implementation\StateService.cs" />
+    <Compile Include="Service\ICityService.cs" />
+    <Compile Include="Service\ICountryService.cs" />
     <Compile Include="Service\IDashboardService.cs" />
+    <Compile Include="Service\IDepartmentService.cs" />
+    <Compile Include="Service\IEmployeeService.cs" />
     <Compile Include="Service\IForgotPasswordService.cs" />
+    <Compile Include="Service\IGenderService.cs" />
     <Compile Include="Service\IGenericService.cs" />
+    <Compile Include="Service\IHolidayService.cs" />
+    <Compile Include="Service\ILeaveRequestService.cs" />
+    <Compile Include="Service\ILeaveStatusService.cs" />
+    <Compile Include="Service\ILeaveTypeService.cs" />
+    <Compile Include="Service\ILocationService.cs" />
     <Compile Include="Service\ILoginService.cs" />
     <Compile Include="Service\IMenuService.cs" />
     <Compile Include="Service\IRoleMenuService.cs" />
+    <Compile Include="Service\IRoleService.cs" />
+    <Compile Include="Service\IStateService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HRMSModels\HRMSModels.csproj">

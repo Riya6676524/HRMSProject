@@ -1,0 +1,215 @@
+﻿@model HRMSProject.Models.EmployeeRegModel
+
+@{
+    ViewBag.Title = "Register";
+}
+
+
+@using (Html.BeginForm("Add", "Employee", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="card col-md-8 m-auto">
+        <div class="card-header text-white bg-primary text-center">
+            <h4>Add Employee</h4>
+        </div>
+        <div class="card-body p-4">
+
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.EmployeeID)
+                    @Html.EditorFor(m => m.EmployeeID, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.FirstName)
+                    @Html.EditorFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.Middlename)
+                    @Html.EditorFor(m => m.Middlename, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Middlename, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.LastName)
+                    @Html.EditorFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.GenderID)
+                    @Html.DropDownListFor(m => m.GenderID, ViewBag.Genders as SelectList, "Select", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.GenderID, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.DOB)
+                    @Html.EditorFor(m => m.DOB, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.DOB, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.Email)
+                    @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.ContactNumber)
+                    @Html.EditorFor(m => m.ContactNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.ContactNumber, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.ProfilePostedFile)
+                    @Html.TextBoxFor(m => m.ProfilePostedFile, new { @type = "file", @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ProfilePostedFile)
+                </div>
+                @*<img id="profilePreview" src="#" alt="Profile Preview" class="img-thumbnail mt-2" style="display:none; max-width: 100%; max-height: auto;" />*@
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    @Html.LabelFor(m => m.Address)
+                    @Html.TextAreaFor(m => m.Address, new { @class = "form-control input-lg", rows = 2, @style = "resize: none;" })
+                    @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    @Html.LabelFor(model => model.CountryID, htmlAttributes: new { @class = "form-label" })
+                    @Html.DropDownListFor(model => model.CountryID, ViewBag.Countries as SelectList, "Select Country", new { @class = "form-control", @id = "CountryID" })
+                    @Html.ValidationMessageFor(model => model.CountryID, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    @Html.LabelFor(model => model.StateID, htmlAttributes: new { @class = "form-label" })
+                    @Html.DropDownListFor(mode => Model.StateID, new SelectList(Enumerable.Empty<SelectListItem>()), "Select State", new { @class = "form-control", @id = "StateID" })
+                    @Html.ValidationMessageFor(model => model.StateID, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    @Html.LabelFor(model => model.CityID, htmlAttributes: new { @class = "form-label" })
+                    @Html.DropDownListFor(model => model.CityID, new SelectList(Enumerable.Empty<SelectListItem>()), "Select City", new { @class = "form-control", @id = "CityID" })
+                    @Html.ValidationMessageFor(model => model.CityID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.ZipCode)
+                    @Html.EditorFor(m => m.ZipCode, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.ZipCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.RoleID)
+                    @Html.DropDownListFor(m => m.RoleID, ViewBag.Roles as SelectList, "Select", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.RoleID, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.DepartmentID)
+                    @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Departments as SelectList, "Select", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.DepartmentID, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.ReportingManagerID)
+                    @Html.DropDownListFor(m => m.ReportingManagerID, ViewBag.ReportingManagers as SelectList, "Select", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ReportingManagerID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.EditorFor(m => m.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.ConfirmPassword)
+                    @Html.EditorFor(m => m.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Save" class="btn btn-success" />
+            @Html.ActionLink("Cancel", "Employees", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+}
+<script>
+    $('#ProfilePostedFile').change(function (event) {
+        var input = event.target;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#profilePreview')
+                    .attr('src', e.target.result)
+                    .show();
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            $('#profilePreview').hide();
+        }
+    });
+
+    $('#CountryID').change(function () {
+        var countryId = $(this).val();
+        $('#StateID').empty().append('<option>Select State</option>');
+        $('#CityID').empty().append('<option>Select City</option>');
+
+        if (countryId) {
+            $.get('/Employee/GetStates', { countryID: countryId }, function (data) {
+                $.each(data, function (index, item) {
+                    $('#StateID').append($('<option>', {
+                        value: item.StateID,
+                        text: item.StateName
+                    }));
+                });
+            });
+        }
+    });
+
+    $('#StateID').change(function () {
+        var stateId = $(this).val();
+        $('#CityID').empty().append('<option>Select City</option>');
+
+        if (stateId) {
+            $.get('/Employee/GetCities', { stateID: stateId }, function (data) {
+                $.each(data, function (index, item) {
+                    $('#CityID').append($('<option>', {
+                        value: item.CityID,
+                        text: item.CityName
+                    }));
+                });
+            });
+        }
+    });
+
+    function getLatestEmployeeId() {
+        $.ajax({
+            url: '/Employee/GetLatestEmployeeId',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#EmployeeID').val(data.latestId);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching Employee ID:', error);
+            }
+        });
+    }
+    $(document).ready(function () {
+        getLatestEmployeeId();
+    });
+</script>

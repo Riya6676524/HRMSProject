@@ -42,13 +42,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CityModel.cs" />
+    <Compile Include="CountryModel.cs" />
+    <Compile Include="DepartmentModel.cs" />
+    <Compile Include="EmployeeModel.cs" />
     <Compile Include="ExceptionLogModel.cs" />
     <Compile Include="ForgotPasswordModel.cs" />
+    <Compile Include="GenderModel.cs" />
+    <Compile Include="HolidayModel.cs" />
+    <Compile Include="LeaveRequestModel.cs" />
+    <Compile Include="LeaveStatusModel.cs" />
+    <Compile Include="LeaveTypeModel.cs" />
+    <Compile Include="LocationModel.cs" />
     <Compile Include="LoginModel.cs" />
     <Compile Include="MenuModel.cs" />
     <Compile Include="NavbarModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoleMenuModel.cs" />
+    <Compile Include="RoleModel.cs" />
+    <Compile Include="StateModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

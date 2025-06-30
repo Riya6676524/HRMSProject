@@ -27,8 +27,8 @@ namespace HRMSProject.Controllers
         [HttpGet]
         public JsonResult GetNavbarData()
         {
-            int empId = (int)Session["Emp_ID"];
-            int roleId = (int)Session["RoleID"];
+            int empId = 1;
+            int roleId = 1;
             var result = _dashboardService.GetNavbarData(empId, roleId);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -36,7 +36,7 @@ namespace HRMSProject.Controllers
         [HttpGet]
         public JsonResult GetMenus()
         {
-            int roleId = (int)Session["RoleID"];
+            int roleId = 1;
 
             var roleMenus = _roleMenuService.GetAll()
                               .Where(rm => rm.RoleID == roleId)

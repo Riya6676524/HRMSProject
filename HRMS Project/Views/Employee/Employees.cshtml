@@ -1,0 +1,110 @@
+﻿@model IEnumerable<HRMSProject.Models.EmployeeListModel>
+@using HRMSProject.Models;
+@{
+    ViewBag.Title = "Employees";
+}
+
+@{
+    Pager pager = ViewBag.pager;
+}
+
+<div class="row d-flex justify-content-between mb-4">
+    <div class="col-md-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search..." />
+    </div>
+    <div class="col-md-4 d-flex justify-content-end">
+        @Html.ActionLink("Add", "Add", null, htmlAttributes: new { @class = "btn btn-primary" })
+    </div>
+</div>
+
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedON)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedON)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.EmployeeID)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.CreatedON)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.UpdatedON)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-success" })
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-danger" })
+            </td>
+        </tr>
+    }
+    <tfoot>
+        <tr>
+            <td colspan="100%">
+                @if (pager != null)
+                {
+                    int startPage = (pager.CurrentPage > 3) ? pager.CurrentPage - 3 : 1;
+                    int EndPage = ((pager.PageCount - pager.CurrentPage) > 3) ? pager.CurrentPage + 3 : pager.PageCount;
+                    <ul class="pagination d-flex justify-content-center">
+
+                        <li class="page-item @(pager.CurrentPage == 1 ? "disabled" : "")">
+                            @Html.ActionLink("Previous", "Employee", new { pg = pager.CurrentPage - 1 }, new { @class = "page-link" })
+                        </li>
+
+                        @for (int i = startPage; i <= EndPage; i++)
+                        {
+                            if (i == pager.CurrentPage)
+                            {
+                                <li class="page-item active">
+                                    @Html.ActionLink($"{i}", "Employee", new { pg = i }, new { @class = "page-link" })
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    @Html.ActionLink($"{i}", "Employee", new { pg = i }, new { @class = "page-link" })
+                                </li>
+                            }
+                        }
+
+                        <li class="page-item @(pager.CurrentPage == pager.PageCount ? "disabled" : "")">
+                            @Html.ActionLink("Next", "Employee", new { pg = pager.CurrentPage + 1 }, new { @class = "page-link" })
+                        </li>
+
+                    </ul>
+                }
+            </td>
+        </tr>
+    </tfoot>
+
+</table>
