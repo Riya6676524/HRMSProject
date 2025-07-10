@@ -8,7 +8,7 @@
     <link href="~/Content/Layout.css" rel="stylesheet" />
 
 
- 
+
 </head>
 <body>
 
@@ -33,11 +33,7 @@
             </div>
 
             <i class="fas fa-bell notification"></i>
-<<<<<<< HEAD
 
-=======
-            <img src="" alt="Profile" class="profile-img-header" id="profileImgHeader" />
->>>>>>> c905f3f3de17fc9d98420655942a625019de01ba
         </div>
     </div>
 
@@ -54,15 +50,11 @@
         </div>
 
         <ul class="menu-list" id="menuList">
-<<<<<<< HEAD
-=======
-            
->>>>>>> c905f3f3de17fc9d98420655942a625019de01ba
         </ul>
 
         <br />
         <!-- Logout Button -->
-        <form action="/Login/Logout" method="get" style="display: inline"; onsubmit="localStorage.removeItem('openMenuIds')">
+        <form action="/Login/Logout" method="get" style="display: inline;">
             <button type="submit" class="logout-btn">
                 Logout <i class="fas fa-sign-out-alt"></i>
             </button>
@@ -72,20 +64,10 @@
 
 
     <!-- Main Content -->
-<<<<<<< HEAD
     <div class="content" id="mainContent">
-=======
-    <div class="content">
->>>>>>> c905f3f3de17fc9d98420655942a625019de01ba
         @RenderBody()
-
-        <footer class="text-center mt-4">
-            <hr />
-            <p>&copy; @DateTime.Now.Year - HRMS Application</p>
-        </footer>
     </div>
 
-<<<<<<< HEAD
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -93,82 +75,4 @@
     <script src="~/Scripts/Dashbboard.js"></script>
 
 </body>
-</html> 
-=======
-    
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            loadNavbarData();
-            loadSidebarMenus();
-        });
-
-        function loadNavbarData() {
-            $.getJSON('/Dashboard/GetNavbarData', function (data) {
-                $('#profileImg').attr('src', data.ProfileImagePath);
-                $('#profileImgHeader').attr('src', data.ProfileImagePath);
-                $('#profileName').text(`${data.FirstName} ${data.MiddleName} ${data.LastName}`);
-                $('#profileEmpId').text(`ID: ${data.EmployeeID}`);
-                $('#profileRol').text(`Role: ${data.RoleName}`);
-            });
-        }
-
-        function loadSidebarMenus() {
-            $.getJSON('/Dashboard/GetMenus', function (menus) {
-                let html = '';
-                const parentMenus = menus.filter(m => m.ParentMenuID === null);
-
-                parentMenus.forEach(menu => {
-                    const subMenus = menus.filter(m => m.ParentMenuID === menu.MenuID);
-
-                    if (subMenus.length > 0) {
-                        html += `<li class="has-dropdown">
-                                        <a href="javascript:void(0)" onclick="toggleDropdown(this)">
-                                            <i class="${menu.IconeClass}"></i> ${menu.MenuName}
-                                        </a>
-                                        <ul class="submenu">`;
-
-                        subMenus.forEach(sub => {
-                            html += `<li><a href="/${sub.ControllerName}/${sub.ActionName}"><i class="${sub.IconeClass}"></i> ${sub.MenuName}</a></li>`;
-                        });
-
-                        html += `</ul></li>`;
-                    } else {
-                        html += `<li><a href="/${menu.ControllerName}/${menu.ActionName}"><i class="${menu.IconeClass}"></i> ${menu.MenuName}</a></li>`;
-                    }
-                });
-
-                $('#menuList').html(html);
-            });
-        }
-
-        function toggleDropdown(element) {
-            const parent = element.closest('li');
-            const submenu = parent.querySelector('.submenu');
-            if (submenu) {
-                submenu.classList.toggle('show');
-            }
-        }
-
-        function toggleAttendanceMenu(event) {
-            event.stopPropagation();
-            const menu = document.getElementById('attendanceOptions');
-            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function selectAttendance(type) {
-            document.getElementById('attendanceButton').textContent = type;
-            document.getElementById('attendanceOptions').style.display = 'none';
-            console.log("Attendance marked:", type);
-        }
-
-        window.addEventListener('click', function () {
-            document.getElementById('attendanceOptions').style.display = 'none';
-        });
-    </script>
-
-</body>
 </html>
->>>>>>> c905f3f3de17fc9d98420655942a625019de01ba
