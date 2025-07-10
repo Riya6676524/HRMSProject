@@ -1,10 +1,7 @@
 ﻿using HRMSDAL.Service;
 using HRMSDAL.Service_Implementation;
 using HRMSModels;
-<<<<<<< HEAD
 using System;
-=======
->>>>>>> c905f3f3de17fc9d98420655942a625019de01ba
 using System.Linq;
 using System.Web.Mvc;
 
@@ -25,10 +22,9 @@ namespace HRMSProject.Controllers
 
         public ActionResult Index()
         {
-            return View(); 
+            return View();
         }
 
-<<<<<<< HEAD
 
         public JsonResult GetLeaveChartData()
         {
@@ -82,47 +78,19 @@ namespace HRMSProject.Controllers
                 return Json(new { success = false, message = "Session expired" }, JsonRequestBehavior.AllowGet);
             }
 
-=======
-        [HttpGet]
-        public JsonResult GetNavbarData()
-        {
->>>>>>> c905f3f3de17fc9d98420655942a625019de01ba
             int empId = (int)Session["Emp_ID"];
             int roleId = (int)Session["RoleID"];
-            var result = _dashboardService.GetNavbarData(empId, roleId);
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
 
-<<<<<<< HEAD
             var empData = _dashboardService.GetNavbarData(empId, roleId);
 
             var dashboardData = new
             {
                 FirstName = empData.FirstName
-               
+
             };
 
             return Json(dashboardData, JsonRequestBehavior.AllowGet);
-=======
-        [HttpGet]
-        public JsonResult GetMenus()
-        {
-            int roleId = (int)Session["RoleID"];
-
-            var roleMenus = _roleMenuService.GetAll()
-                              .Where(rm => rm.RoleID == roleId)
-                              .ToList();
-
-            var allMenus = _menuService.GetAll();
-
-            var finalMenus = allMenus
-                .Where(m => roleMenus.Any(rm => rm.MenuID == m.MenuID))
-                .OrderBy(m => m.ParentMenuID)
-                .ThenBy(m => m.DisplayOrder)
-                .ToList();
-
-            return Json(finalMenus, JsonRequestBehavior.AllowGet);
->>>>>>> c905f3f3de17fc9d98420655942a625019de01ba
         }
     }
 }
+

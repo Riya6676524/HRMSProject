@@ -18,12 +18,6 @@ namespace HRMSModels
 
         public int? ParentMenuID { get; set; }
 
-<<<<<<< HEAD
-       
-=======
-       // [Browsable(false)]
-       // public List<MenuModel> SubMenus { get; set; } = new List<MenuModel>();
->>>>>>> c905f3f3de17fc9d98420655942a625019de01ba
     }
         
 }
