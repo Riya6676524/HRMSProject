@@ -221,6 +221,9 @@
     <Content Include="Views\Employee\Employees.cshtml" />
     <Content Include="Views\Leave\Add.cshtml" />
     <Content Include="Views\Leave\Leaves.cshtml" />
+    <Content Include="Views\Leave\Approve.cshtml" />
+    <Content Include="Views\Leave\_LeaveFormPartial.cshtml" />
+    <Content Include="Views\Leave\LeaveRequests.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using HRMSDAL.Service;
+using HRMSDAL.Service_Implementation;
 using HRMSModels;
 using HRMSUtility;
 
@@ -9,29 +11,32 @@ namespace HRMS.Controllers
 {
     public class LeaveController : Controller
     {
-        private readonly ILeaveRequestService _leaveService;
+        private readonly ILeaveRequestService _leaveRequestService;
         private readonly ILeaveTypeService _leaveTypeService;
         private readonly ILeaveStatusService _leaveStatusService;
+        private readonly IEmployeeService _employeeService;
 
-        public LeaveController(ILeaveRequestService leaveService, ILeaveTypeService leaveTypeService, ILeaveStatusService leaveStatusService)
+        public LeaveController(IEmployeeService employeeService, ILeaveRequestService leaveService, ILeaveTypeService leaveTypeService, ILeaveStatusService leaveStatusService)
         {
-            _leaveService = leaveService;
+            _leaveRequestService = leaveService;
             _leaveTypeService = leaveTypeService;
             _leaveStatusService = leaveStatusService;
+            _employeeService = employeeService;
         }
 
-        public ActionResult TestView()
+        [HttpGet]
+        public JsonResult CalculateLeaveDays(DateTime fromDate  , DateTime toDate , bool fromSecondHalf =false, bool uptoFirstHalf = false)
         {
-            return View();
+
+            DateUtility dateUtility = new DateUtility();
+            double result = dateUtility
+                .setFrom(fromDate)
+                .setTo(toDate)
+                .setFromSecondHalf(fromSecondHalf) 
+                .setUptoFirstHalf(uptoFirstHalf) 
+                .CalculateTotalLeaveDays();
+            return Json(new { leaveDays = result }, JsonRequestBehavior.AllowGet);
         }
-
-        //[HttpPost]
-        //public JsonResult CalculateLeaveDays(DateTime fromDate, DateTime toDate)
-        //{
-
-        //    int result = DateUtility.CalculateLeaveDays(fromDate, toDate);
-        //    return Json(new { leaveDays = result });
-        //}
 
         public ActionResult Add()
         {
@@ -41,26 +46,58 @@ namespace HRMS.Controllers
         }
 
         [HttpPost]
-        public JsonResult LeaveRequest(LeaveRequestModel obj)
+        public ActionResult Add(LeaveRequestModel obj)
         {
-            _leaveService.Insert(obj);
-            return Json(new { success = true });
+            if (!ModelState.IsValid)
+            {
+                var LeaveTypes = _leaveTypeService.GetAll();
+                ViewBag.LeaveTypes = new SelectList(LeaveTypes, "LeaveTypeID", "LeaveName");
+                return View(obj);
+            }
+
+            obj.EMP_ID = 1;
+            obj.RequestDate = DateTime.Now;
+
+            //This Might Return 0 in case there are no corresponding record with "pending"
+            obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName == "Pending").Select(x => x.LeaveStatusID).FirstOrDefault();
+            _leaveRequestService.Insert(obj);
+            return RedirectToAction("Leaves", "Leave");
         }
 
         [HttpPost]
-        public JsonResult LeaveApprove(string id)
+        public JsonResult LeaveRequest(LeaveRequestModel obj)
         {
-            int requestId = int.Parse(id);
-            var leaveRequest = _leaveService.GetById(requestId);
-
-            int approverId = Convert.ToInt32(Session["UserID"]);
-            leaveRequest.LeaveStatusID = 1;
-            leaveRequest.ApproverID = approverId;
-            leaveRequest.ApproverDate = DateTime.Now;
-
-            _leaveService.Update(leaveRequest);
-
+            _leaveRequestService.Insert(obj);
             return Json(new { success = true });
+        }
+
+        public ActionResult Approve(int id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Approve(int id, string Action)
+        {
+            LeaveRequestModel toBeApprovedModel = _leaveRequestService.GetById(id);
+            LeaveStatusModel curStatus = _leaveStatusService.GetById(toBeApprovedModel.LeaveStatusID);
+            List<LeaveStatusModel> allStatuses = _leaveStatusService.GetAll().ToList();
+            if (curStatus.StatusName == "PENDING")
+            {
+                if (Action == "Approve")
+                {
+                    LeaveStatusModel approveStatus = allStatuses.FirstOrDefault(x => x.StatusName == "Approved");
+                    toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
+                    _leaveRequestService.Update(toBeApprovedModel);
+                }
+                else if (Action == "DENY")
+                {
+                    LeaveStatusModel approveStatus = allStatuses.FirstOrDefault(x => x.StatusName == "CANCELLED");
+                    toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
+                    _leaveRequestService.Update(toBeApprovedModel);
+                }
+            }
+            return View();
         }
     }
 }

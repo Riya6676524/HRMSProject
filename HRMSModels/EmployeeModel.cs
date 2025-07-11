@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using HRMS_Project.Models;
 
 namespace HRMSModels
 {
@@ -60,6 +61,7 @@ namespace HRMSModels
 
         [Required]
         [DataType(DataType.Date)]
+        [MinimumAge(18, ErrorMessage = "You must be at least 18 years old to register.")]
         [DisplayName("Date Of Birth")]
         public DateTime DOB { get; set; }
 

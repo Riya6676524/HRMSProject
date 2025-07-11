@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base64Helper.cs" />
+    <Compile Include="DateUtility.cs" />
     <Compile Include="EmailHelper.cs" />
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="ExceptionLogger.cs" />
