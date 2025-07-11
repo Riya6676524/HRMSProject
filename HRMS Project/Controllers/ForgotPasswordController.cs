@@ -40,7 +40,7 @@ namespace HRMSProject.Controllers
                 var user = _forgotpasswordservice.GetUserByEmail(model.Email);
                 if (CommonHelper.AreEqual(user, null))
                 {
-                    ModelState.AddModelError("", "Invalid email");
+                    ModelState.AddModelError("Email", "Invalid Credential");
                     return View(model);
                 }
                 else if (user != null)
@@ -64,7 +64,7 @@ namespace HRMSProject.Controllers
 
                     if (mailSent)
                     {
-                        TempData["Message"] = "Reset password link sent to your email.";
+                        TempData["Message"] = "Link Send Sucessfully";
 
                     }
                     else

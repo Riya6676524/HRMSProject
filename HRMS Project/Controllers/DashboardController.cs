@@ -1,6 +1,7 @@
 ﻿using HRMSDAL.Service;
 using HRMSDAL.Service_Implementation;
 using HRMSModels;
+using System;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -21,19 +22,34 @@ namespace HRMSProject.Controllers
 
         public ActionResult Index()
         {
-            return View(); 
+            return View();
+        }
+
+
+        public JsonResult GetLeaveChartData()
+        {
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
+            var summary = _dashboardService.GetLeaveSummary(empId);
+            return Json(summary, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
+        //[OutputCache(Duration = 69)]
+
         public JsonResult GetNavbarData()
         {
-            int empId = 1;
-            int roleId = 1;
+            if (Session["Emp_ID"] == null || Session["RoleID"] == null)
+            {
+                return Json(new { success = false, message = "Session expired" }, JsonRequestBehavior.AllowGet);
+            }
+            int empId = (int)Session["Emp_ID"];
+            int roleId = (int)Session["RoleID"];
             var result = _dashboardService.GetNavbarData(empId, roleId);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
+        //[OutputCache(Duration =69)]
         public JsonResult GetMenus()
         {
             int roleId = 1;
@@ -52,5 +68,29 @@ namespace HRMSProject.Controllers
 
             return Json(finalMenus, JsonRequestBehavior.AllowGet);
         }
+
+
+        [HttpGet]
+        public JsonResult GetDashboardData()
+        {
+            if (Session["Emp_ID"] == null || Session["RoleID"] == null)
+            {
+                return Json(new { success = false, message = "Session expired" }, JsonRequestBehavior.AllowGet);
+            }
+
+            int empId = (int)Session["Emp_ID"];
+            int roleId = (int)Session["RoleID"];
+
+            var empData = _dashboardService.GetNavbarData(empId, roleId);
+
+            var dashboardData = new
+            {
+                FirstName = empData.FirstName
+
+            };
+
+            return Json(dashboardData, JsonRequestBehavior.AllowGet);
+        }
     }
 }
+

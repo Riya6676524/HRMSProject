@@ -1,0 +1,50 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/Attendance.css" rel="stylesheet" />
+
+    <div class="container mt-4">
+        <h2 class="mb-4">Mark Today's Attendance</h2>
+
+
+        @using (Html.BeginForm("Index", "Attendance", FormMethod.Post, new { id = "attendanceForm" }))
+        {
+            <input type="hidden" id="empIdHidden" name="Emp_ID" value="@Session["Emp_ID"]" />
+
+            <div class="form-row">
+                <div class="col-md-4">
+                    <label for="AttendanceDate">Date</label>
+                    <input type="date" id="AttendanceDate" name="AttendanceDate"
+                           class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
+                </div>
+
+                <div class="col-md-4">
+                    <label for="SelectedHalf">Attendance Type</label>
+                    <select id="SelectedHalf" name="SelectedHalf" class="form-control">
+                        <option value="">Select Type</option>
+                        <option value="Full Day">Full Day</option>
+                        <option value="First Half">First Half</option>
+                        <option value="Second Half">Second Half</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="ModeID">Mode</label>
+                    @Html.DropDownList("ModeID", (IEnumerable<SelectListItem>)ViewBag.ModeList, "Select Mode", new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-success">Submit Attendance</button>
+            </div>
+        }
+
+        <div id="successMessage" class="alert alert-success mt-3" style="display:none;"></div>
+
+        <hr />
+
+        <h4>Attendance Calendar (Current Month)</h4>
+        <div id="attendanceCalendar" class="calendar mt-3"></div>
+    </div>
+

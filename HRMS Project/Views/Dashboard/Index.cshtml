@@ -2,20 +2,36 @@
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link href="~/Content/Dashboard.css" rel="stylesheet" />
 
+
+<h2 id="welcomeText">Welcome</h2>
 
 
 <div class="dashboard-cards">
-    <div class="card">
-        <h3>Leave</h3>
+    <div class="card" onclick="location.href='/Leave/Apply'">
+        <div style="text-align: center; width: 100%;">
+            <h3>Leave</h3>
+            <canvas id="leaveChart"></canvas>
+        </div>
     </div>
-    <div class="card">
-        <h3>Attendance</h3>
+
+    <div class="card" onclick="location.href='/Attendance/Index'">
+        <div style="text-align: center; width: 100%;">
+            <h3>Attendance</h3>
+            <div id="attendanceCalendar" class="calendar mt-3"></div>
+        </div>
     </div>
-    <div class="card">
-        <h3>HR Policies</h3>
+
+    <div class="card" onclick="location.href='/Documents/HRPolicies'">
+        <div style="text-align: center; width: 100%;">
+            <h3>HR Policies</h3>
+        </div>
     </div>
-    <div class="card">
-        <h3>Documents</h3>
+
+    <div class="card" onclick="location.href='/Documents/Index'">
+        <div style="text-align: center; width: 100%;">
+            <h3>Documents</h3>
+        </div>
     </div>
 </div>

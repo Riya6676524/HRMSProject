@@ -48,7 +48,7 @@ namespace HRMSProject.Controllers
 
                 if (CommonHelper.AreEqual(user, null))
                 {
-                    ModelState.AddModelError("", "Invalid email");
+                    ModelState.AddModelError("Email", "Invalid Credential");
                     return View(model);
                 }
 
@@ -61,7 +61,7 @@ namespace HRMSProject.Controllers
                 string decodedPassword = Base64Helper.Decode(user.Password);
                 if (decodedPassword != model.Password)
                 {
-                    ModelState.AddModelError("", "Invalid password");
+                    ModelState.AddModelError("Password", "Invalid password");
                     return View(model);
                 }
 
@@ -81,6 +81,15 @@ namespace HRMSProject.Controllers
 
             }, defaultValue: View(model));
         }
+
+        public ActionResult Logout()
+        {
+            Session.Clear();        
+            Session.Abandon();   
+
+            return RedirectToAction("Index", "Login"); 
+        }
+
 
     }
 }

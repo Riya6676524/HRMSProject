@@ -45,6 +45,7 @@
     <Compile Include="Helper\DBHelper.cs" />
     <Compile Include="Service Implementation\CityService.cs" />
     <Compile Include="Service Implementation\CountryService.cs" />
+    <Compile Include="Service Implementation\AttendanceService.cs" />
     <Compile Include="Service Implementation\DashboardService.cs" />
     <Compile Include="Service Implementation\DepartmentService.cs" />
     <Compile Include="Service Implementation\EmployeeService.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using HRMSDAL.Service;
 using HRMSDAL.Service_Implementation;
@@ -91,7 +92,7 @@ namespace HRMS.Controllers
                     _leaveRequestService.Update(toBeApprovedModel);
                 }
                 else if (Action == "DENY")
-                {
+        {
                     LeaveStatusModel approveStatus = allStatuses.FirstOrDefault(x => x.StatusName == "CANCELLED");
                     toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
                     _leaveRequestService.Update(toBeApprovedModel);
