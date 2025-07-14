@@ -52,6 +52,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service Implementation\MenuService.cs" />
     <Compile Include="Service Implementation\RoleMenuService.cs" />
+    <Compile Include="Service\IAttendanceService.cs" />
     <Compile Include="Service\IDashboardService.cs" />
     <Compile Include="Service\IForgotPasswordService.cs" />
     <Compile Include="Service\IGenericService.cs" />

@@ -34,7 +34,7 @@ namespace HRMSProject.Controllers
         }
 
         [HttpGet]
-        //[OutputCache(Duration = 69)]
+        [OutputCache(Duration = 69)]
 
         public JsonResult GetNavbarData()
         {
@@ -49,7 +49,7 @@ namespace HRMSProject.Controllers
         }
 
         [HttpGet]
-        //[OutputCache(Duration =69)]
+        [OutputCache(Duration =69)]
         public JsonResult GetMenus()
         {
             int roleId = (int)Session["RoleID"];

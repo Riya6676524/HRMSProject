@@ -1,58 +1,70 @@
-﻿using HRMSModels;
-using HRMSDAL.Helper;
+﻿using HRMSDAL.Helper;
+using HRMSDAL.Service;
+using HRMSModels;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
-public class AttendanceService
+public class AttendanceService : IAttendanceService
 {
-    public bool MarkAttendance(AttendanceModel model)
+    public void MarkLoginTime(int empId)
     {
-        try
+        var parameters = new SqlParameter[]
         {
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@Emp_ID", model.Emp_ID),
-                new SqlParameter("@AttendanceDate", model.AttendanceDate),
-                new SqlParameter("@FirstHalfStatus", model.FirstHalfStatus),
-                new SqlParameter("@SecondHalfStatus", model.SecondHalfStatus),
-                new SqlParameter("@ModeID", model.ModeID)
-            };
-
-            int result = DBHelper.ExecuteNonQuery("sp_MarkAttendance", CommandType.StoredProcedure, parameters);
-            return result > 0;
-        }
-        catch (Exception)
-        {
-            // log exception
-            return false;
-        }
-    }
-
-    public List<AttendanceModel> GetAttendanceHistory(int empId, int month, int year)
-    {
-        List<AttendanceModel> attendanceList = new List<AttendanceModel>();
-
-        SqlParameter[] parameters = new SqlParameter[]
-        {
-            new SqlParameter("@Emp_ID", empId),
-            new SqlParameter("@Month", month),
-            new SqlParameter("@Year", year)
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@Today", DateTime.Today),
+        new SqlParameter("@LoginTime", DateTime.Now),
+        new SqlParameter("@ModeID", 1) 
         };
 
-        var result = DBHelper.ExecuteReader("sp_GetAttendanceHistory", CommandType.StoredProcedure, parameters);
+        DBHelper.ExecuteNonQuery("sp_MarkLoginTime", CommandType.StoredProcedure, parameters);
+    }
 
-        foreach (var row in result)
+
+    public void MarkLogoutTime(int empId)
+    {
+        var parameters = new SqlParameter[]
         {
-            attendanceList.Add(new AttendanceModel
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@Today", DateTime.Today),
+        new SqlParameter("@LogoutTime", DateTime.Now)
+        };
+
+        DBHelper.ExecuteNonQuery("sp_MarkLogoutTime", CommandType.StoredProcedure, parameters);
+    }
+
+
+    public List<AttendanceModel> GetAttendanceCalendar(int empId, int year, int month)
+    {
+        var parameters = new SqlParameter[]
+        {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@Month", month),
+        new SqlParameter("@Year", year)
+        };
+
+        var rows = DBHelper.ExecuteReader("sp_GetAttendanceCalendar", CommandType.StoredProcedure, parameters);
+
+        List<AttendanceModel> list = new List<AttendanceModel>();
+
+        foreach (var row in rows)
+        {
+            var date = Convert.ToDateTime(row["AttendanceDate"]);
+            var first = row["FirstHalfStatus"]?.ToString();
+            var second = row["SecondHalfStatus"]?.ToString();
+            var status = (first == "Present" || second == "Present") ? "Present" : "Absent";
+
+            list.Add(new AttendanceModel
             {
-                AttendanceDate = Convert.ToDateTime(row["AttendanceDate"]),
-                FirstHalfStatus = row["FirstHalfStatus"]?.ToString(),
-                SecondHalfStatus = row["SecondHalfStatus"]?.ToString()
+                Date = date,
+                Status = status
             });
         }
 
-        return attendanceList;
+        return list;
     }
+
 }
+

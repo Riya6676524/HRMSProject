@@ -36,6 +36,7 @@ namespace HRMS_Project
             container.RegisterType<IDashboardService, DashboardService>();
             container.RegisterType<IMenuService, MenuService>();
             container.RegisterType<IRoleMenuService, RoleMenuService>();
+            container.RegisterType<IAttendanceService, AttendanceService>();
 
 
 

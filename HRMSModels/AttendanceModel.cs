@@ -6,14 +6,17 @@ public class AttendanceModel
     public int Emp_ID { get; set; }
     public DateTime AttendanceDate { get; set; }
 
-    public string FirstHalfStatus { get; set; } // "Present" / "Absent"
-    public string SecondHalfStatus { get; set; } // "Present" / "Absent"
+    public string FirstHalfStatus { get; set; } 
+    public string SecondHalfStatus { get; set; } 
 
-    public int ModeID { get; set; } // WFO/WFH
+    public DateTime LoginTime { get; set; }
+    public DateTime LogoutTime { get; set; }
+
+    public int ModeID { get; set; } 
     public DateTime CreatedOn { get; set; }
-
-    // Extra fields for dropdown display
-    public string AttendanceMode { get; set; } // Mode table se aayega
-    public string SelectedHalf { get; set; } // For binding from form: "First Half", etc.
+    public DateTime Date { get; set; } 
+    public string Status { get; set; }
+    public string AttendanceMode { get; set; } 
+    public string SelectedHalf { get; set; } 
 }
 

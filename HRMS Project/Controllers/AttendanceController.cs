@@ -1,76 +1,67 @@
-﻿using HRMSModels;
-using HRMSDAL;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
+using HRMSDAL.Service;
 
-public class AttendanceController : Controller
+
+namespace HRMSProject.Controllers
 {
-    private AttendanceService attendanceService = new AttendanceService();
-
-    [HttpGet]
-    public ActionResult Index()
+    public class AttendanceController : Controller
     {
-        AttendanceModel model = new AttendanceModel
+        private readonly IAttendanceService _attendanceService;
+
+        public AttendanceController(IAttendanceService attendanceService)
         {
-            AttendanceDate = DateTime.Today
-        };
-        ViewBag.ModeList = GetModeList();
-        return View(model);
-    }
-
-    [HttpPost]
-    public ActionResult Index(AttendanceModel model)
-    {
-        if (ModelState.IsValid)
+            _attendanceService = attendanceService;
+        }
+        [HttpGet]
+        public ActionResult Index()
         {
-           
-            if (model.SelectedHalf == "Full Day")
-            {
-                model.FirstHalfStatus = "Present";
-                model.SecondHalfStatus = "Present";
-            }
-            else if (model.SelectedHalf == "First Half")
-            {
-                model.FirstHalfStatus = "Present";
-                model.SecondHalfStatus = "Absent";
-            }
-            else if (model.SelectedHalf == "Second Half")
-            {
-                model.FirstHalfStatus = "Absent";
-                model.SecondHalfStatus = "Present";
-            }
-
-            bool result = attendanceService.MarkAttendance(model);
-
-            if (result)
-            {
-                TempData["Success"] = "Attendance marked successfully.";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                ModelState.AddModelError("", "Failed to mark attendance.");
-            }
+            return View();
         }
 
-        ViewBag.ModeList = GetModeList();
-        return View(model);
-    }
+        [HttpPost]
+        public ActionResult SetMode(string modeName)
+        {   
+                int empId = Convert.ToInt32(Session["Emp_ID"]);
 
-    [HttpGet]
-    public JsonResult GetAttendanceHistory(int empId, int month, int year)
-    {
-        var data = attendanceService.GetAttendanceHistory(empId, month, year);
-        return Json(data, JsonRequestBehavior.AllowGet);
-    }
+                if (string.IsNullOrWhiteSpace(modeName))
+                {
+                    TempData["Error"] = "Invalid mode selection.";
+                    return RedirectToAction("Index", "Dashboard");
+                }
 
-    private List<SelectListItem> GetModeList()
-    {
-        return new List<SelectListItem>
+
+           
+                Session["SelectedMode"] = modeName;
+
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+        [HttpGet]
+        public JsonResult GetSelectedMode()
         {
-            new SelectListItem { Text = "WFO", Value = "2" },
-            new SelectListItem { Text = "WFH", Value = "1" }
-        };
+            var mode = Session["SelectedMode"]?.ToString();
+            return Json(new { modeName = mode }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetAttendanceEvents()
+        {
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
+            var data = _attendanceService.GetAttendanceCalendar(empId, DateTime.Now.Year, DateTime.Now.Month);
+
+            var json = data.Select(x => new
+            {
+                title = x.Status,
+                start = x.Date.ToString("yyyy-MM-dd"),
+                color = x.Status == "Present" ? "#28a745" :
+                        x.Status == "Absent" ? "#dc3545" :
+                        "#6c757d" 
+            });
+
+            return Json(json, JsonRequestBehavior.AllowGet);
+        }
     }
+
 }

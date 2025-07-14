@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>@ViewBag.Title - HRMS</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <link href="~/Content/Layout.css" rel="stylesheet" />
 
@@ -24,55 +25,74 @@
 
 
         <div class="right-actions">
-            <div class="attendance-dropdown" onclick="toggleAttendanceMenu(event)">
-                <button id="attendanceButton">Mark Attendance</button>
-                <div class="attendance-options" id="attendanceOptions">
-                    <div onclick="selectAttendance('WFH')">WFH</div>
-                    <div onclick="selectAttendance('WFO')">WFO</div>
+
+            <form id="modeForm" action="/Attendance/SetMode" method="post">
+                <input type="hidden" name="modeName" id="modeName" />
+
+                <div class="attendance-dropdown" onclick="toggleAttendanceMenu(event)">
+                    <button type="button" id="attendanceButton">Mark Attendance</button>
+                    <div class="attendance-options" id="attendanceOptions">
+                        <div onclick="selectAttendance('WFH')">WFH</div>
+                        <div onclick="selectAttendance('WFO')">WFO</div>
+                    </div>
                 </div>
-            </div>
+            </form>
+
 
             <i class="fas fa-bell notification"></i>
 
         </div>
     </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="profile-section">
-            <br />
-            <img src="" alt="Profile" class="profile-img" id="profileImg" />
-            <div>
-                <strong id="profileName"></strong><br />
-                <span id="profileEmpId"></span><br />
-                <span id="profileRol"></span>
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-section">
+                <br />
+                <img src="" alt="Profile" class="profile-img" id="profileImg" />
+                <div>
+                    <strong id="profileName"></strong><br />
+                    <span id="profileEmpId"></span><br />
+                    <span id="profileRol"></span>
+                </div>
             </div>
+
+            <ul class="menu-list" id="menuList">
+            </ul>
+
+            <br />
+            <!-- Logout Button -->
+            <form action="/Login/Logout" method="get" style="display: inline;">
+                <button type="submit" class="logout-btn">
+                    Logout <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </form>
+
         </div>
 
-        <ul class="menu-list" id="menuList">
-        </ul>
 
-        <br />
-        <!-- Logout Button -->
-        <form action="/Login/Logout" method="get" style="display: inline;">
-            <button type="submit" class="logout-btn">
-                Logout <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </form>
-
+        <!-- Main Content -->
+        <div class="content" id="mainContent">
+            @RenderBody()
+        </div>
     </div>
-
-
-    <!-- Main Content -->
-    <div class="content" id="mainContent">
-        @RenderBody()
-    </div>
-
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/Scripts/Dashbboard.js"></script>
+
+    <script>
+    window.onload = function () {
+    var selected = '@Session["SelectedMode"]';
+    if (selected) {
+    document.getElementById('attendanceButton').innerText = selected;
+    }
+    };
+    </script>
+
 
 </body>
 </html>
