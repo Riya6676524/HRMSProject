@@ -14,7 +14,7 @@ namespace HRMSModels
     {
         public int EMP_ID { get; set; }
 
-        public string ProfilePath { get; set; }
+        public byte[] ProfilePath { get; set; }
 
         [Required]
         public string EmployeeID { get; set; }

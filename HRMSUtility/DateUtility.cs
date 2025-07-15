@@ -54,6 +54,8 @@ namespace HRMSUtility
                 if (!(holidays is null) && holidays.Contains(date.Date))
                     continue;
 
+                if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday) continue;
+
                 if (date == from)
                 {
                     if (fromSecondHalf)

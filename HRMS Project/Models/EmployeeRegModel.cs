@@ -26,6 +26,12 @@ namespace HRMSProject.Models
             set
             {
                 profilePostedFile = value;
+                if (value != null && value.ContentLength > 0)
+                {
+                    byte[] imageData = new byte[value.ContentLength];
+                    value.InputStream.Read(imageData, 0, value.ContentLength);
+                    this.ProfilePath = imageData;
+                }
             }
         }
     }

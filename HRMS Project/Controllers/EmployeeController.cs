@@ -13,6 +13,7 @@ using HRMSProject.Models;
 namespace HRMS.Controllers
 {
     //[MenuFilter]
+    [DummyDataFilter]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
@@ -75,7 +76,7 @@ namespace HRMS.Controllers
             {
                 EmployeeViewList.Add(new EmployeeListModel(item));
             }
-            ViewBag.pager = new Pager() { PageCount=1, PageSize=10, CurrentPage=1 };
+            ViewBag.pager = new Pager() { PageCount= EmployeeViewList.Count/10, PageSize=10,CurrentPage=pg };
             EmployeeViewList = EmployeeViewList.Skip((pg-1)*10).Take(10).ToList();
             return View(EmployeeViewList);
         }
@@ -95,22 +96,6 @@ namespace HRMS.Controllers
             {
                 PopulateDropdowns();
                 return View("Add", regModel);
-            }
-
-            if (!(regModel.ProfilePostedFile is null) && regModel.ProfilePostedFile.ContentLength > 0)
-            {
-                string uploadsDir = Server.MapPath("~/Content/Uploads/Profile Image/");
-                if (!Directory.Exists(uploadsDir))
-                {
-                    Directory.CreateDirectory(uploadsDir);
-                }
-
-                string extension = Path.GetExtension(regModel.ProfilePostedFile.FileName);
-                string fileName = $"{regModel.EmployeeID}_ProfilePhoto{extension}";
-                string fullPath = Path.Combine(uploadsDir, fileName);
-                regModel.ProfilePostedFile.SaveAs(fullPath);
-
-                regModel.ProfilePath = $"/Content/Uploads/Profile Image/{fileName}";
             }
 
             regModel.ModifiedOn = DateTime.Now;

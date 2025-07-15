@@ -16,16 +16,22 @@ namespace HRMSModels
         public bool FromSecondHalf { get; set; }
 
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
 
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
-        public int TotalDays { get; set; }
+        public float TotalDays { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime RequestDate { get; set; }
         public string Reason { get; set; }
         public int LeaveStatusID {  get; set; }
-        public int ApproverID { get; set; }
-        public DateTime ApproverDate { get; set; }
+        public int? ApproverID { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime? ApproverDate { get; set; }
         public string Comment { get; set; }
     }
 }

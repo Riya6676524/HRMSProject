@@ -42,8 +42,10 @@ namespace HRMSProject.Controllers
             {
                 return Json(new { success = false, message = "Session expired" }, JsonRequestBehavior.AllowGet);
             }
+
             int empId = (int)Session["Emp_ID"];
             int roleId = (int)Session["RoleID"];
+
             var result = _dashboardService.GetNavbarData(empId, roleId);
             return Json(result, JsonRequestBehavior.AllowGet);
         }

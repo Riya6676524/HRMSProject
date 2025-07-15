@@ -1,13 +1,13 @@
 ﻿@model HRMSModels.LeaveRequestModel
 
 
-@*<div class="form-group">
+<div class="form-group">
     @Html.LabelFor(model => model.LeaveTypeID, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
         @Html.DropDownListFor(model => model.LeaveTypeID, ViewBag.LeaveTypes as SelectList, null, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.LeaveTypeID, "", new { @class = "text-danger" })
     </div>
-</div>*@
+</div>
 
 <div class="form-group">
     @Html.LabelFor(model => model.UptoFirstHalf, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -46,7 +46,7 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.TotalDays, htmlAttributes: new { @class = "control-label col-md-2" })
+    @Html.LabelFor(model => model.TotalDays, htmlAttributes: new { @class = "control-label col-md-2", @readonly = "readonly" })
     <div class="col-md-10">
         @Html.EditorFor(model => model.TotalDays, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
         @Html.ValidationMessageFor(model => model.TotalDays, "", new { @class = "text-danger" })

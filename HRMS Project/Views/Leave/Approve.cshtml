@@ -34,5 +34,10 @@
     </div>
 }
 
-<div>
-</div>
+<script>
+    $('input').not('[name="@Html.DisplayNameFor(model => model.Comment)"]').prop('readonly', true);
+    $('input[type="checkbox"]').on('click', function (e) {
+        e.preventDefault();
+    });
+    $('select').prop('disabled',true);
+</script>

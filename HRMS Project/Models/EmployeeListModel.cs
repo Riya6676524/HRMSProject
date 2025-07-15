@@ -10,19 +10,19 @@ namespace HRMSProject.Models
 {
     public class EmployeeListModel
     {
-        public string EmployeeID { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
+        public string EmployeeID { get; }
+        public string Name { get; }
+        public string Email { get;  }
+        public string Phone { get; }
 
 
         [DataType(DataType.Date)]
-        [DisplayName("Created On")]
-        public DateTime CreatedON { get; set; }
+        [DisplayName("Joined On")]
+        public DateTime CreatedON { get; }
 
         [DataType(DataType.Date)]
         [DisplayName("Modified On")]
-        public DateTime UpdatedON { get; set; }
+        public DateTime UpdatedON { get; }
 
         public EmployeeListModel(EmployeeModel obj)
         {

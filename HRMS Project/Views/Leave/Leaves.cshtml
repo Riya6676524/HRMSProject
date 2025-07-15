@@ -1,26 +1,34 @@
 ﻿@model IEnumerable<HRMSModels.LeaveRequestModel>
-
+@using HRMSProject.Models;
+@using HRMS_Project.Models;
 @{
     ViewBag.Title = "Leaves";
 }
 
-<h2>Leaves</h2>
+@{
+    Pager pager = ViewBag.pager;
+    LeaveListViewData leaveListViewData = ViewBag.LeaveListData;
+}
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+<div class="row d-flex justify-content-between mb-4">
+    <div class="col-md-4 d-flex justify-content-end">
+        @Html.ActionLink("Add", "Add", null, htmlAttributes: new { @class = "btn btn-primary" })
+    </div>
+</div>
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.EMP_ID)
+            Employee ID
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LeaveTypeID)
+            Employee Name
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StartDate)
+            Leave Type
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.StartDate) and
             @Html.DisplayNameFor(model => model.EndDate)
         </th>
         <th>
@@ -30,67 +38,106 @@
             @Html.DisplayNameFor(model => model.RequestDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Reason)
+            Leave Status
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LeaveStatusID)
+            Action
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ApproverID)
+            Approver
         </th>
         <th>
             @Html.DisplayNameFor(model => model.ApproverDate)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Comment)
-        </th>
-        <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.RequestID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EMP_ID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LeaveTypeID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StartDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EndDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalDays)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RequestDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Reason)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LeaveStatusID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ApproverID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ApproverDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Comment)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @leaveListViewData.EmployeeID[item.EMP_ID]
+            </td>
+            <td>
+                @leaveListViewData.EmployeeNames[item.EMP_ID]
+            </td>
+            <td>
+                @leaveListViewData.LeaveTypes[item.LeaveTypeID]
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
 
+                to
+
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalDays)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RequestDate)
+            </td>
+            <td>
+                @leaveListViewData.LeaveStatuses[item.LeaveStatusID]
+            </td>
+            @if (leaveListViewData.LeaveStatuses[item.LeaveStatusID].ToUpper() == "PENDING")
+            {
+                <td>
+                    @Html.ActionLink("Cancel", "Delete", new { id = item.EMP_ID })
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+            }
+            else
+            {
+                <td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApproverID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApproverDate)
+                </td>
+            }
+        </tr>
+    }
+    <tfoot>
+        <tr>
+            <td colspan="100%">
+                @if (pager != null)
+                {
+                    int startPage = (pager.CurrentPage > 3) ? pager.CurrentPage - 3 : 1;
+                    int EndPage = ((pager.PageCount - pager.CurrentPage) > 3) ? pager.CurrentPage + 3 : pager.PageCount;
+                    <ul class="pagination d-flex justify-content-center">
+
+                        <li class="page-item @(pager.CurrentPage == 1 ? "disabled" : "")">
+                            @Html.ActionLink("Previous", "Leaves", new { pg = pager.CurrentPage - 1 }, new { @class = "page-link" })
+                        </li>
+
+                        @for (int i = startPage; i <= EndPage; i++)
+                        {
+                            if (i == pager.CurrentPage)
+                            {
+                                <li class="page-item active">
+                                    @Html.ActionLink($"{i}", "Leaves", new { pg = i }, new { @class = "page-link" })
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    @Html.ActionLink($"{i}", "Leaves", new { pg = i }, new { @class = "page-link" })
+                                </li>
+                            }
+                        }
+
+                        <li class="page-item @(pager.CurrentPage == pager.PageCount ? "disabled" : "")">
+                            @Html.ActionLink("Next", "Leaves", new { pg = pager.CurrentPage + 1 }, new { @class = "page-link" })
+                        </li>
+
+                    </ul>
+                }
+            </td>
+        </tr>
+    </tfoot>
 </table>
