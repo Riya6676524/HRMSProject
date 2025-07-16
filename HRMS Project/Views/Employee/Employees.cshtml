@@ -78,7 +78,7 @@
                     <ul class="pagination d-flex justify-content-center">
 
                         <li class="page-item @(pager.CurrentPage == 1 ? "disabled" : "")">
-                            @Html.ActionLink("Previous", "Employee", new { pg = pager.CurrentPage - 1 }, new { @class = "page-link" })
+                            @Html.ActionLink("Previous", "Employees", new { pg = pager.CurrentPage - 1 }, new { @class = "page-link" })
                         </li>
 
                         @for (int i = startPage; i <= EndPage; i++)
@@ -86,19 +86,19 @@
                             if (i == pager.CurrentPage)
                             {
                                 <li class="page-item active">
-                                    @Html.ActionLink($"{i}", "Employee", new { pg = i }, new { @class = "page-link" })
+                                    @Html.ActionLink($"{i}", "Employees", new { pg = i }, new { @class = "page-link" })
                                 </li>
                             }
                             else
                             {
                                 <li class="page-item">
-                                    @Html.ActionLink($"{i}", "Employee", new { pg = i }, new { @class = "page-link" })
+                                    @Html.ActionLink($"{i}", "Employees", new { pg = i }, new { @class = "page-link" })
                                 </li>
                             }
                         }
 
                         <li class="page-item @(pager.CurrentPage == pager.PageCount ? "disabled" : "")">
-                            @Html.ActionLink("Next", "Employee", new { pg = pager.CurrentPage + 1 }, new { @class = "page-link" })
+                            @Html.ActionLink("Next", "Employees", new { pg = pager.CurrentPage + 1 }, new { @class = "page-link" })
                         </li>
 
                     </ul>

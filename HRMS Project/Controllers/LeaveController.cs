@@ -90,7 +90,13 @@ namespace HRMS.Controllers
             obj.RequestDate = DateTime.Now;
 
             //This Might Return 0 in case there are no corresponding record with "pending"
-            obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName == "Pending").Select(x => x.LeaveStatusID).FirstOrDefault();
+            if(_employeeService.GetById(obj.EMP_ID).ReportingManagerID == null)
+            {
+                obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName.ToUpper() == "APPROVED").Select(x => x.LeaveStatusID).FirstOrDefault();
+            }
+            else {
+                obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName.ToUpper() == "PENDING").Select(x => x.LeaveStatusID).FirstOrDefault();
+            }
             _leaveRequestService.Insert(obj);
             return RedirectToAction("Leaves", "Leave");
         }

@@ -158,6 +158,7 @@
     <Compile Include="Models\EmployeeListModel.cs" />
     <Compile Include="Models\EmployeeRegModel.cs" />
     <Compile Include="Models\LeaveListViewData.cs" />
+    <Compile Include="Models\LeaveReqMoWithReqCom.cs" />
     <Compile Include="Models\MessageBoxViewModel.cs" />
     <Compile Include="Models\Pager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

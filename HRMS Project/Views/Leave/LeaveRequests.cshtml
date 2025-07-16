@@ -77,7 +77,7 @@
             @if (leaveListViewData.LeaveStatuses[item.LeaveStatusID].ToUpper() == "PENDING")
             {
                 <td>
-                    @Html.ActionLink("Approve/Reject", "Approve", new { id = item.EMP_ID })
+                    @Html.ActionLink("Approve/Reject", "Approve", new { id = item.RequestID })
                 </td>
                 <td>
                 </td>

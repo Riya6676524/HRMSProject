@@ -9,6 +9,7 @@ using System.Web.UI;
 using HRMSDAL.Service;
 using HRMSModels;
 using HRMSProject.Models;
+using HRMSUtility;
 
 namespace HRMS.Controllers
 {
@@ -60,7 +61,7 @@ namespace HRMS.Controllers
             ViewBag.ReportingManagers = new SelectList(managers, "EMP_ID", "FirstName");
         }
 
-        public ActionResult Employees(int pg=1)
+        public ActionResult Employees(int pg=1,int pagesize = 2)
         {
             var regModel = _employeeService.GetById(1);
             ViewBag.message = new MesssageBoxViewModel()
@@ -76,8 +77,8 @@ namespace HRMS.Controllers
             {
                 EmployeeViewList.Add(new EmployeeListModel(item));
             }
-            ViewBag.pager = new Pager() { PageCount= EmployeeViewList.Count/10, PageSize=10,CurrentPage=pg };
-            EmployeeViewList = EmployeeViewList.Skip((pg-1)*10).Take(10).ToList();
+            ViewBag.pager = new Pager() { PageCount= EmployeeViewList.Count/pagesize, PageSize=pagesize,CurrentPage=pg };
+            EmployeeViewList = EmployeeViewList.Skip((pg-1)*pagesize).Take(pagesize).ToList();
             return View(EmployeeViewList);
         }
 
@@ -100,6 +101,7 @@ namespace HRMS.Controllers
 
             regModel.ModifiedOn = DateTime.Now;
             regModel.CreatedOn = DateTime.Now;
+            regModel.Password = Base64Helper.Encode(regModel.Password);
             _employeeService.Insert(regModel);
 
             ViewBag.message = new MesssageBoxViewModel()

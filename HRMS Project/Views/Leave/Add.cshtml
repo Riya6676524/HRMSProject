@@ -31,8 +31,8 @@
         $.get('/Leave/CalculateLeaveDays', {
             fromDate: $("#StartDate").val(),
             toDate: $("#EndDate").val(),
-            fromSecondHalf: $("#FromSecondHalf").val(),
-            uptoFirstHalf: $("#UptoFirstHalf").val()
+            fromSecondHalf: $("#FromSecondHalf").is(":checked"),
+            uptoFirstHalf: $("#UptoFirstHalf").is(":checked")
         }, function (data) {
             $("#TotalDays").val(data.leaveDays);
         });
