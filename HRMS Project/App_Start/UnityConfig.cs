@@ -48,6 +48,8 @@ namespace HRMS_Project
             container.RegisterType<IRoleMenuService, RoleMenuService>();
             container.RegisterType<ILeaveTypeService, LeaveTypeService>();
             container.RegisterType<ILeaveStatusService, LeaveStatusService>();
+            container.RegisterType<IAttendanceService, AttendanceService>();
+
 
 
 

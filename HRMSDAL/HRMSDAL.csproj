@@ -66,6 +66,7 @@
     <Compile Include="Service Implementation\StateService.cs" />
     <Compile Include="Service\ICityService.cs" />
     <Compile Include="Service\ICountryService.cs" />
+    <Compile Include="Service\IAttendanceService.cs" />
     <Compile Include="Service\IDashboardService.cs" />
     <Compile Include="Service\IDepartmentService.cs" />
     <Compile Include="Service\IEmployeeService.cs" />

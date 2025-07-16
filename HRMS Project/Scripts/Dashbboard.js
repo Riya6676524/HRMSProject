@@ -3,6 +3,7 @@
     loadSidebarMenus();
     loadDashboadData();
     leavepiechart();
+    loadAttendanceCalendar();
 });
 
 $(document).on('click', '.menu-list a', function () {
@@ -109,14 +110,17 @@ function toggleAttendanceMenu(event) {
     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
 }
 
-function selectAttendance(type) {
-    document.getElementById('attendanceButton').textContent = type;
-    document.getElementById('attendanceOptions').style.display = 'none';
+function selectAttendance(modeName) {
+    document.getElementById("modeName").value = modeName;
+    document.getElementById("modeForm").submit();
 }
+
+
 
 window.addEventListener('click', function () {
     document.getElementById('attendanceOptions').style.display = 'none';
 });
+
 
 function loadDashboadData() {
     $.getJSON('/Dashboard/GetDashboardData', function (data) {
@@ -158,5 +162,30 @@ function leavepiechart() {
             });
         }
     });
+}
+
+
+function loadAttendanceCalendar() {
+    const calendarEl = document.getElementById('fullcalendar');
+    if (!calendarEl) return;
+
+    const path = window.location.pathname.toLowerCase();
+
+    const isDashboard = path === '/dashboard' || path === '/dashboard/index';
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: isDashboard
+            ? { left: '', center: 'title', right: '' } 
+            : { left: 'prev,next today', center: 'title', right: '' },
+
+        events: '/Attendance/GetAttendanceEvents',
+
+        eventClick: function (info) {
+            alert(`Attendance on ${info.event.startStr}: ${info.event.title}`);
+        }
+    });
+
+    calendar.render();
 }
 
