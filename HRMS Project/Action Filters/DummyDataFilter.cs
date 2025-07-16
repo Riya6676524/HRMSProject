@@ -10,7 +10,7 @@ public class DummyDataFilter : ActionFilterAttribute
 
         if (session["Emp_ID"] == null)
         {
-            session["Emp_ID"] = 7;
+            session["Emp_ID"] = 9;
         }
 
         if (session["RoleID"] == null)

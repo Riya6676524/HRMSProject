@@ -49,22 +49,22 @@ namespace HRMS.Controllers
             };
         }
 
-        public ActionResult LeaveRequests(int pg = 1)
+        public ActionResult LeaveRequests(int pg = 1,int pageSize=5)
         {
             int empId = Convert.ToInt32(Session["Emp_ID"]);
             var allLeaveRequests = _leaveRequestService.GetLeavesByManager(empId);
-            var leaveRequests = allLeaveRequests.Skip((pg - 1) * 10).Take(10).ToList();
-            ViewBag.pager = new Pager() { PageCount = allLeaveRequests.Count / 10, PageSize = 10, CurrentPage = pg };
+            var leaveRequests = allLeaveRequests.Skip((pg - 1) * pageSize).Take(pageSize).ToList();
+            ViewBag.pager = new Pager() { PageCount = (allLeaveRequests.Count / pageSize)+1, PageSize = pageSize, CurrentPage = pg };
             initLeaveListViewBag(leaveRequests);
             return View(leaveRequests);
         }
 
-        public ActionResult Leaves(int pg = 1)
+        public ActionResult Leaves(int pg = 1,int pageSize=5)
         {
             int empId = Convert.ToInt32(Session["Emp_ID"]);
             var allLeaves = _leaveRequestService.GetLeavesByEmp_ID(empId);
-            var leaves = allLeaves.Skip((pg - 1) * 10).Take(10).ToList();
-            ViewBag.pager = new Pager() { PageCount = allLeaves.Count / 10, PageSize = 10, CurrentPage = pg };
+            var leaves = allLeaves.Skip((pg - 1) * pageSize).Take(pageSize).ToList();
+            ViewBag.pager = new Pager() { PageCount = allLeaves.Count / pageSize, PageSize = pageSize, CurrentPage = pg };
             initLeaveListViewBag(leaves);
             return View(leaves);
         }
@@ -85,7 +85,10 @@ namespace HRMS.Controllers
                 ViewBag.LeaveTypes = new SelectList(LeaveTypes, "LeaveTypeID", "LeaveName");
                 return View(obj);
             }
-
+            else if (obj.StartDate > obj.EndDate)
+            {
+                ModelState.AddModelError("StartDate", "Start Date must be before End Date.");
+            }
             obj.EMP_ID = Convert.ToInt32(Session["Emp_ID"]);
             obj.RequestDate = DateTime.Now;
 
@@ -126,6 +129,21 @@ namespace HRMS.Controllers
                     toBeApprovedModel.ApproverDate = DateTime.Now;
                     _leaveRequestService.Update(toBeApprovedModel);
                 }
+            }
+            return RedirectToAction("LeaveRequests", "Leave");
+        }
+
+
+        public ActionResult Delete(int id)
+        {
+            LeaveRequestModel toBeApprovedModel = _leaveRequestService.GetById(id);
+            LeaveStatusModel curStatus = _leaveStatusService.GetById(toBeApprovedModel.LeaveStatusID);
+            List<LeaveStatusModel> allStatuses = _leaveStatusService.GetAll().ToList();
+            if (curStatus.StatusName.ToUpper() == "PENDING")
+            {
+                LeaveStatusModel approveStatus = allStatuses.FirstOrDefault(x => x.StatusName.ToUpper() == "CANCELLED");
+                    toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
+                    _leaveRequestService.Update(toBeApprovedModel);
             }
             return RedirectToAction("LeaveRequests", "Leave");
         }

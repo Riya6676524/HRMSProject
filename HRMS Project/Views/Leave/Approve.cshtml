@@ -3,15 +3,15 @@
 @{
     ViewBag.Title = "LeaveForm";
 }
-
-<h4>Leave Request</h4>
-
+</style>
+<div class="text-center bg-primary">
+    <h4>Leave Request</h4>
+</div>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         @Html.Partial("_LeaveFormPartial", Model)

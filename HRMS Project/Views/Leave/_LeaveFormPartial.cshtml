@@ -4,7 +4,7 @@
 <div class="form-group">
     @Html.LabelFor(model => model.LeaveTypeID, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
-        @Html.DropDownListFor(model => model.LeaveTypeID, ViewBag.LeaveTypes as SelectList, null, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.DropDownListFor(model => model.LeaveTypeID, ViewBag.LeaveTypes as SelectList, null, new { @class = "form-control" } )
         @Html.ValidationMessageFor(model => model.LeaveTypeID, "", new { @class = "text-danger" })
     </div>
 </div>
@@ -60,6 +60,4 @@
         @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
     </div>
 </div>
-
-
 

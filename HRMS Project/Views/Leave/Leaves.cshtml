@@ -10,13 +10,11 @@
     LeaveListViewData leaveListViewData = ViewBag.LeaveListData;
 }
 
-<div class="row d-flex justify-content-between mb-4">
-    <div class="col-md-4 d-flex justify-content-end">
-        @Html.ActionLink("Add", "Add", null, htmlAttributes: new { @class = "btn btn-primary" })
-    </div>
+<div class="top-right">
+    @Html.ActionLink("Add", "Add", null, htmlAttributes: new { @class = "btn btn-primary" })
 </div>
 
-<table class="table">
+<table class="table table-striped">
     <tr>
         <th>
             Employee ID
@@ -47,7 +45,7 @@
             Approver
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ApproverDate)
+            Date Approved
         </th>
     </tr>
 
@@ -82,7 +80,7 @@
             @if (leaveListViewData.LeaveStatuses[item.LeaveStatusID].ToUpper() == "PENDING")
             {
                 <td>
-                    @Html.ActionLink("Cancel", "Delete", new { id = item.EMP_ID })
+                    @Html.ActionLink("Cancel", "Delete", new { id = item.RequestID })
                 </td>
                 <td>
                 </td>

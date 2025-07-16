@@ -61,7 +61,7 @@ namespace HRMS.Controllers
             ViewBag.ReportingManagers = new SelectList(managers, "EMP_ID", "FirstName");
         }
 
-        public ActionResult Employees(int pg=1,int pagesize = 2)
+        public ActionResult Employees(int pg=1,int pageSize = 2)
         {
             var regModel = _employeeService.GetById(1);
             ViewBag.message = new MesssageBoxViewModel()
@@ -77,8 +77,8 @@ namespace HRMS.Controllers
             {
                 EmployeeViewList.Add(new EmployeeListModel(item));
             }
-            ViewBag.pager = new Pager() { PageCount= EmployeeViewList.Count/pagesize, PageSize=pagesize,CurrentPage=pg };
-            EmployeeViewList = EmployeeViewList.Skip((pg-1)*pagesize).Take(pagesize).ToList();
+            ViewBag.pager = new Pager() { PageCount= (EmployeeViewList.Count % pageSize ==0) ? (EmployeeViewList.Count / pageSize) : (EmployeeViewList.Count / pageSize) + 1, PageSize=pageSize,CurrentPage=pg };
+            EmployeeViewList = EmployeeViewList.Skip((pg-1)*pageSize).Take(pageSize).ToList();
             return View(EmployeeViewList);
         }
 
