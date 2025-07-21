@@ -18,5 +18,9 @@ public class AttendanceModel
     public string Status { get; set; }
     public string AttendanceMode { get; set; } 
     public string SelectedHalf { get; set; } 
+
+    public string HolidayName { get; set; }
+    public DateTime HolidayDate { get; set; }
+
 }
 

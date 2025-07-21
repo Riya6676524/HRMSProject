@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Web.Mvc;
 using HRMSDAL.Service;
@@ -22,46 +24,88 @@ namespace HRMSProject.Controllers
 
         [HttpPost]
         public ActionResult SetMode(string modeName)
-        {   
-                int empId = Convert.ToInt32(Session["Emp_ID"]);
+        {
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
 
-                if (string.IsNullOrWhiteSpace(modeName))
-                {
-                    TempData["Error"] = "Invalid mode selection.";
-                    return RedirectToAction("Index", "Dashboard");
-                }
-
-
-           
-                Session["SelectedMode"] = modeName;
-
+            if (string.IsNullOrWhiteSpace(modeName))
+            {
                 return RedirectToAction("Index", "Dashboard");
             }
+
+       
+            Session["SelectedMode"] = modeName;
+            Session["ModeSetDate"] = DateTime.Today;
+
+       
+            int modeId = _attendanceService.GetModeIdByName(modeName);
+
+     
+            _attendanceService.MarkLoginTime(empId, modeId);
+
+            return RedirectToAction("Index", "Dashboard");
+        }
 
         [HttpGet]
         public JsonResult GetSelectedMode()
         {
-            var mode = Session["SelectedMode"]?.ToString();
+            string mode = null;
+            if (Session["ModeSetDate"] != null && (DateTime)Session["ModeSetDate"] == DateTime.Today)
+            {
+                mode = Session["SelectedMode"]?.ToString();
+            }
             return Json(new { modeName = mode }, JsonRequestBehavior.AllowGet);
         }
 
+
+        [HttpPost]
+        public ActionResult MarkLogout()
+        {
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
+            _attendanceService.MarkLogoutTime(empId);
+            return RedirectToAction("Index", "Dashboard");
+        }
+
+
         [HttpGet]
+      
         public JsonResult GetAttendanceEvents()
         {
             int empId = Convert.ToInt32(Session["Emp_ID"]);
-            var data = _attendanceService.GetAttendanceCalendar(empId, DateTime.Now.Year, DateTime.Now.Month);
+            int month = DateTime.Now.Month;
+            int year = DateTime.Now.Year;
 
-            var json = data.Select(x => new
+            var attendanceList = _attendanceService.GetAttendanceCalendar(empId, year, month);
+            var holidayList = _attendanceService.GetLocationHoliday(empId, month, year);
+
+            var events = new List<object>();
+
+       
+            foreach (var att in attendanceList)
             {
-                title = x.Status,
-                start = x.Date.ToString("yyyy-MM-dd"),
-                color = x.Status == "Present" ? "#28a745" :
-                        x.Status == "Absent" ? "#dc3545" :
-                        "#6c757d" 
-            });
+                events.Add(new
+                {
+                    title = att.Status,
+                    start = att.Date.ToString("yyyy-MM-dd"),
+                    color = att.Status == "Present" ? "#28a745" :
+                            att.Status == "Absent" ? "#dc3545" :
+                            "#ffc107" 
+                });
+            }
 
-            return Json(json, JsonRequestBehavior.AllowGet);
+    
+            foreach (var holiday in holidayList)
+            {
+                events.Add(new
+                {
+                    title = holiday.HolidayName,
+                    start = holiday.HolidayDate.ToString("yyyy-MM-dd"),
+                    display = "background",
+                    backgroundColor = "#6c757d"
+                });
+            }
+
+            return Json(events, JsonRequestBehavior.AllowGet);
         }
     }
 
-}
+    }

@@ -17,6 +17,8 @@ namespace HRMSModels
         public int RoleID { get; set; }
 
         public bool RememberMe { get; set; }
+        public string ModeName { get; set; }
+
 
     }
 

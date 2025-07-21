@@ -45,6 +45,7 @@
     <Compile Include="Helper\DBHelper.cs" />
     <Compile Include="Service Implementation\AttendanceService.cs" />
     <Compile Include="Service Implementation\DashboardService.cs" />
+    <Compile Include="Service Implementation\EmployeeService.cs" />
     <Compile Include="Service Implementation\ForgotPasswordService.cs" />
     <Compile Include="Service Implementation\GenericService.cs" />
     <Compile Include="Service Implementation\LogerrorService.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Service Implementation\RoleMenuService.cs" />
     <Compile Include="Service\IAttendanceService.cs" />
     <Compile Include="Service\IDashboardService.cs" />
+    <Compile Include="Service\IEmployeeService.cs" />
     <Compile Include="Service\IForgotPasswordService.cs" />
     <Compile Include="Service\IGenericService.cs" />
     <Compile Include="Service\ILoginService.cs" />

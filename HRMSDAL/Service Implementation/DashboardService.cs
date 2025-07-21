@@ -43,7 +43,7 @@ namespace HRMSDAL.Service_Implementation
                 int totalEntitled = currentMonth * 2;
                 double leaveTaken = 1;
                 double carryForward = 2; //ye databse se aayega as its yearly carryForward leave 
-                                         // we need cary forward leave table which contain the availableleave of previous year 
+                                         // we need cary forward leave table which contain the availableleave of previousyear 
 
 
 

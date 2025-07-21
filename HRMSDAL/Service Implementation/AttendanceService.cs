@@ -9,14 +9,14 @@ using System.Data.SqlClient;
 
 public class AttendanceService : IAttendanceService
 {
-    public void MarkLoginTime(int empId)
+    public void MarkLoginTime(int empId, int modeId)
     {
         var parameters = new SqlParameter[]
         {
         new SqlParameter("@Emp_ID", empId),
         new SqlParameter("@Today", DateTime.Today),
         new SqlParameter("@LoginTime", DateTime.Now),
-        new SqlParameter("@ModeID", 1) 
+        new SqlParameter("@ModeID", modeId) 
         };
 
         DBHelper.ExecuteNonQuery("sp_MarkLoginTime", CommandType.StoredProcedure, parameters);
@@ -33,6 +33,17 @@ public class AttendanceService : IAttendanceService
         };
 
         DBHelper.ExecuteNonQuery("sp_MarkLogoutTime", CommandType.StoredProcedure, parameters);
+    }
+
+    public int GetModeIdByName(string modeName)
+    {
+        SqlParameter[] parameters = new SqlParameter[]
+        {
+        new SqlParameter("@ModeName", modeName)
+        };
+
+        object result = DBHelper.ExecuteScalar("sp_GetModeIDByName", CommandType.StoredProcedure, parameters);
+        return result != null ? Convert.ToInt32(result) : 0;
     }
 
 
@@ -65,6 +76,33 @@ public class AttendanceService : IAttendanceService
 
         return list;
     }
+
+    public List<HolidayModel> GetLocationHoliday(int empId, int month, int year)
+    {
+        List<HolidayModel> holidays = new List<HolidayModel>();
+
+        var parameters = new SqlParameter[]
+        {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@Month", month),
+        new SqlParameter("@Year", year)
+        };
+
+        var rows = DBHelper.ExecuteReader("sp_GetLocationHolidays", CommandType.StoredProcedure, parameters);
+
+        foreach (var row in rows)
+        {
+            holidays.Add(new HolidayModel
+            {
+                HolidayDate = row["HolidayDate"] != null ? Convert.ToDateTime(row["HolidayDate"]) : DateTime.MinValue,
+                HolidayName = row["HolidayName"]?.ToString()
+            });
+        }
+
+        return holidays;
+    }
+
+
 
 }
 

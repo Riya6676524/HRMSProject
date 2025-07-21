@@ -1,12 +1,55 @@
-﻿
+﻿@model HRMSModels.EmployeeModel
 @{
-    ViewBag.Title = "Profile";
+    ViewBag.Title = "My Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <h2>Profile</h2>
 
-<div>
-<span> First Name</span>
-<span>Middle Name</span> 
-<span>Last Name</span>
-</div>
+    <link href="~/Content/Profile.css" rel="stylesheet" />
+
+    <div class="container">
+        <h2 class="page-title">My Profile</h2>
+
+        <!-- Profile Section -->
+        <div class="profile-card">
+            <img src="@Model.ProfileImagePath"
+                 class="profile-image"
+                 alt="Profile Image" />
+
+            <div class="profile-details">
+                <h5>@Model.FirstName @Model.LastName</h5>
+
+                <div class="info-row">
+                    <label>Full Name:</label>
+                    <span>@($"{Model.FirstName} {Model.MiddleName} {Model.LastName}")</span>
+                </div>
+                <div class="info-row">
+                    <label>Role:</label>
+                    <span>@Model.RoleName</span>
+                </div>
+                <div class="info-row">
+                    <label>Email:</label>
+                    <span>@Model.Email</span>
+                </div>
+                <div class="info-row">
+                    <label>Contact Number:</label>
+                    <span>@Model.ContactNumber</span>
+                </div>
+                <div class="info-row">
+                    <label>Address:</label>
+                    <span>@($"{Model.Address} {Model.CityName} {Model.StateName} {Model.CountryName}")</span>
+                </div>
+            </div>
+            <div class="changpassbutton">
+
+                @Html.ActionLink("Change Password", "ChangePassword", "Employee", null, new { @class = "btn-custom" })
+                
+
+
+            </div>
+            </div>
+        </div>
+
+      
+
+
