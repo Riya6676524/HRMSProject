@@ -5,18 +5,14 @@
     leavepiechart();
     loadAttendanceCalendar();
 
-    //Mark Attendance - LocalStorage 
-    const stored = JSON.parse(localStorage.getItem("attendanceMode"));
-    const today = new Date().toISOString().split("T")[0]; 
-
-    if (stored && stored.date === today) {
-        $('#attendanceButton').text( stored.mode);
-        $('#modeName').val(stored.mode);
-    } else {
-        localStorage.removeItem("attendanceMode");
-        $('#attendanceButton').text("Mark Attendance");
-        $('#modeName').val('');
-    }
+    fetch('/Attendance/GetTodayMode')
+        .then(response => response.json())
+        .then(data => {
+            if (data.modeName) {
+                document.getElementById("modeName").value = data.modeName;
+                document.getElementById("attendanceButton").innerText = data.modeName;
+            }
+        });
 });
 
 //Menu click 
@@ -117,11 +113,7 @@ function toggleAttendanceMenu(event) {
 function selectAttendance(mode) {
     const today = new Date().toISOString().split("T")[0];
 
-    //Save to localStorage
-    localStorage.setItem("attendanceMode", JSON.stringify({
-        mode: mode,
-        date: today
-    }));
+
 
     //Update UI and submit
     document.getElementById("modeName").value = mode;
@@ -129,12 +121,12 @@ function selectAttendance(mode) {
     document.getElementById("modeForm").submit();
 }
 
-// Hide attendance dropdown on outside click
+//Hide attendance dropdown on outside click
 window.addEventListener('click', function () {
     document.getElementById('attendanceOptions').style.display = 'none';
 });
 
-// Dashboard Welcome Message
+//Dashboard Welcome Message
 function loadDashboadData() {
     $.getJSON('/Dashboard/GetDashboardData', function (data) {
         $('#welcomeText').text(`Welcome, ${data.FirstName}`);
@@ -143,16 +135,16 @@ function loadDashboadData() {
     });
 }
 
-// Navbar Data
+//Navbar Data
 function loadNavbarData() {
     $.getJSON('/Dashboard/GetNavbarData', function (data) {
-        $('#profileImg').attr('src', data.ProfileImagePath);
-        $('#profileName').text(`${data.FirstName} ${data.MiddleName} ${data.LastName}`);
+        const middle = data.MiddleName && data.MiddleName.trim() !== '' ? ` ${data.MiddleName}` : '';
+        $('#profileName').text(`${data.FirstName} ${middle} ${data.LastName}`);
         $('#profileEmpId').text(`ID: ${data.EmployeeID}`);
         $('#profileRol').text(`Role: ${data.RoleName}`);
     });
 }
-// Leave Chart
+//Leave Chart
 function leavepiechart() {
     $.getJSON('/Dashboard/GetLeaveChartData', function (data) {
         const ctx = document.getElementById('leaveChart');
@@ -186,7 +178,7 @@ function leavepiechart() {
 }
 
 
-//  Calendar
+//Calendar
 function loadAttendanceCalendar() {
     const calendarEl = document.getElementById('fullcalendar');
     if (!calendarEl) return;

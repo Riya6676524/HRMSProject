@@ -9,11 +9,14 @@ namespace HRMSDAL.Service
 {
     public interface IAttendanceService
     {
-        void MarkLoginTime(int empId,int modeId);
+        void MarkLoginTime(int empId, int? modeId);
         void MarkLogoutTime(int empId);
-        List<AttendanceModel> GetAttendanceCalendar(int empId, int year, int month);
+        List<AttendanceModel> GetAttendanceCalendar(int empId);
         int GetModeIdByName(string modeName);
-        List<HolidayModel> GetLocationHoliday(int empId, int month, int year);
+        List<HolidayModel> GetLocationHoliday(int empId);
+        void UpdateMode(int empId, int modeId);
+        string GetTodayModeName(int empId);
+        AttendanceModel GetAttendanceByDate(int empId, DateTime date);
 
     }
 }

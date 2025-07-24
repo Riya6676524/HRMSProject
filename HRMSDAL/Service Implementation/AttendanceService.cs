@@ -9,18 +9,24 @@ using System.Data.SqlClient;
 
 public class AttendanceService : IAttendanceService
 {
-    public void MarkLoginTime(int empId, int modeId)
+    public void MarkLoginTime(int empId, int? modeId)
     {
+        var today = DateTime.Today;
+
+        if (today.DayOfWeek == DayOfWeek.Saturday || today.DayOfWeek == DayOfWeek.Sunday)
+        {
+            return; 
+        }
+
         var parameters = new SqlParameter[]
         {
         new SqlParameter("@Emp_ID", empId),
-        new SqlParameter("@Today", DateTime.Today),
-        new SqlParameter("@LoginTime", DateTime.Now),
-        new SqlParameter("@ModeID", modeId) 
+        new SqlParameter("@ModeID", (object)modeId ?? DBNull.Value)
         };
 
         DBHelper.ExecuteNonQuery("sp_MarkLoginTime", CommandType.StoredProcedure, parameters);
     }
+
 
 
     public void MarkLogoutTime(int empId)
@@ -46,14 +52,64 @@ public class AttendanceService : IAttendanceService
         return result != null ? Convert.ToInt32(result) : 0;
     }
 
-
-    public List<AttendanceModel> GetAttendanceCalendar(int empId, int year, int month)
+    public void UpdateMode(int empId, int modeId)
     {
         var parameters = new SqlParameter[]
         {
         new SqlParameter("@Emp_ID", empId),
-        new SqlParameter("@Month", month),
-        new SqlParameter("@Year", year)
+        new SqlParameter("@Today", DateTime.Today),
+        new SqlParameter("@ModeID", modeId)
+        };
+
+        DBHelper.ExecuteNonQuery("sp_UpdateAttendanceMode", CommandType.StoredProcedure, parameters);
+    }
+
+    public string GetTodayModeName(int empId)
+    {
+        var parameters = new SqlParameter[]
+        {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@Today", DateTime.Today)
+        };
+
+        object result = DBHelper.ExecuteScalar("sp_GetTodayModeName", CommandType.StoredProcedure, parameters);
+        return result?.ToString();
+    }
+
+
+    public AttendanceModel GetAttendanceByDate(int empId, DateTime date)
+    {
+        var parameters = new SqlParameter[]
+        {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@Date", date.Date) 
+        };
+
+        var result = DBHelper.ExecuteReader("sp_GetAttendanceByDate", CommandType.StoredProcedure, parameters);
+        if (result.Count > 0)
+        {
+            var row = result[0];
+            return new AttendanceModel
+            {
+                Emp_ID = Convert.ToInt32(row["Emp_ID"]),
+                AttendanceDate = Convert.ToDateTime(row["AttendanceDate"]),
+                FirstHalfStatus = row["FirstHalfStatus"]?.ToString(),
+                SecondHalfStatus = row["SecondHalfStatus"]?.ToString(),
+                ModeID = row["ModeID"] != DBNull.Value ? Convert.ToInt32(row["ModeID"]) : (int?)null,
+                LoginTime = row["LoginTime"] != DBNull.Value ? Convert.ToDateTime(row["LoginTime"]) : (DateTime?)null,
+                LogoutTime = row["LogoutTime"] != DBNull.Value ? Convert.ToDateTime(row["LogoutTime"]) : (DateTime?)null
+            };
+        }
+
+        return null;
+    }
+
+
+    public List<AttendanceModel> GetAttendanceCalendar(int empId)
+    {
+        var parameters = new SqlParameter[]
+        {
+        new SqlParameter("@Emp_ID", empId)
         };
 
         var rows = DBHelper.ExecuteReader("sp_GetAttendanceCalendar", CommandType.StoredProcedure, parameters);
@@ -77,15 +133,13 @@ public class AttendanceService : IAttendanceService
         return list;
     }
 
-    public List<HolidayModel> GetLocationHoliday(int empId, int month, int year)
+    public List<HolidayModel> GetLocationHoliday(int empId)
     {
         List<HolidayModel> holidays = new List<HolidayModel>();
 
         var parameters = new SqlParameter[]
         {
-        new SqlParameter("@Emp_ID", empId),
-        new SqlParameter("@Month", month),
-        new SqlParameter("@Year", year)
+        new SqlParameter("@Emp_ID", empId)
         };
 
         var rows = DBHelper.ExecuteReader("sp_GetLocationHolidays", CommandType.StoredProcedure, parameters);

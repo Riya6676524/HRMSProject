@@ -32,27 +32,19 @@ namespace HRMSProject.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
 
-       
-            Session["SelectedMode"] = modeName;
-            Session["ModeSetDate"] = DateTime.Today;
-
-       
             int modeId = _attendanceService.GetModeIdByName(modeName);
 
-     
-            _attendanceService.MarkLoginTime(empId, modeId);
+            _attendanceService.UpdateMode(empId, modeId);
 
             return RedirectToAction("Index", "Dashboard");
         }
 
+
         [HttpGet]
-        public JsonResult GetSelectedMode()
+        public JsonResult GetTodayMode()
         {
-            string mode = null;
-            if (Session["ModeSetDate"] != null && (DateTime)Session["ModeSetDate"] == DateTime.Today)
-            {
-                mode = Session["SelectedMode"]?.ToString();
-            }
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
+            string mode = _attendanceService.GetTodayModeName(empId);
             return Json(new { modeName = mode }, JsonRequestBehavior.AllowGet);
         }
 
@@ -74,8 +66,8 @@ namespace HRMSProject.Controllers
             int month = DateTime.Now.Month;
             int year = DateTime.Now.Year;
 
-            var attendanceList = _attendanceService.GetAttendanceCalendar(empId, year, month);
-            var holidayList = _attendanceService.GetLocationHoliday(empId, month, year);
+            var attendanceList = _attendanceService.GetAttendanceCalendar(empId);
+            var holidayList = _attendanceService.GetLocationHoliday(empId);
 
             var events = new List<object>();
 
@@ -100,9 +92,10 @@ namespace HRMSProject.Controllers
                     title = holiday.HolidayName,
                     start = holiday.HolidayDate.ToString("yyyy-MM-dd"),
                     display = "background",
-                    backgroundColor = "#6c757d"
+                    backgroundColor = "#bfbfbf"
                 });
             }
+
 
             return Json(events, JsonRequestBehavior.AllowGet);
         }

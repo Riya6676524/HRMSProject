@@ -37,8 +37,7 @@ namespace HRMSProject.Controllers
         [HttpPost]
         public ActionResult Index(LoginModel model)
         {
-            return ExceptionHandler.Handle<ActionResult>(() =>
-            {
+          
                 if (string.IsNullOrWhiteSpace(model.Email))
                 {
                     ModelState.AddModelError("Email", "Please enter email");
@@ -79,17 +78,17 @@ namespace HRMSProject.Controllers
                     Response.Cookies.Add(cookie);
                 }
 
-                string modeName = "WFO";
-                int modeId = _attendanceService.GetModeIdByName(modeName);
+                int empId = user.Emp_ID;
+                DateTime today = DateTime.Today;
 
-           
-                _attendanceService.MarkLoginTime(user.Emp_ID, modeId);
+                var attendance = _attendanceService.GetAttendanceByDate(empId, today);
+                int? modeId = attendance?.ModeID;
 
-            
+                _attendanceService.MarkLoginTime(empId, modeId);
+
 
                 return RedirectToAction("Index", "Dashboard");
-            },
-            defaultValue: View(model));
+            
         }
 
         public ActionResult Logout()

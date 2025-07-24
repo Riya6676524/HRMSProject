@@ -89,18 +89,30 @@
 }
 
 
-
-    #fullcalendar::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-    }
-
     #fullcalendar .fc-scroller {
         overflow: hidden !important;
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
 
-        #fullcalendar .fc-scroller::-webkit-scrollbar {
-            display: none;
-        }
+
+.fc .fc-bg-event .fc-event-title {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: black;
+    font-style: normal;
+}
+
+.fc-day-sat,
+.fc-day-sun {
+    background-color: #f0f0f0 !important; 
+}
+
+.fc-col-header-cell.fc-day-sat,
+.fc-col-header-cell.fc-day-sun {
+    background-color: #e0e0e0 !important;
+    font-weight: bold;
+    color: #6c757d;
+}

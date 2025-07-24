@@ -12,17 +12,26 @@
 
         <!-- Profile Section -->
         <div class="profile-card">
-            <img src="@Model.ProfileImagePath"
-                 class="profile-image"
-                 alt="Profile Image" />
+            <img src="@Url.Action("GetProfileImage", "Dashboard", new { empId = Session["Emp_ID"] })" class="profile-image" alt="Profile Image" />
 
             <div class="profile-details">
                 <h5>@Model.FirstName @Model.LastName</h5>
 
                 <div class="info-row">
                     <label>Full Name:</label>
-                    <span>@($"{Model.FirstName} {Model.MiddleName} {Model.LastName}")</span>
+                    <span>
+                        @{
+                            var fullName = Model.FirstName;
+                            if (!string.IsNullOrWhiteSpace(Model.MiddleName))
+                            {
+                                fullName += " " + Model.MiddleName;
+                            }
+                            fullName += " " + Model.LastName;
+                        }
+                        @fullName
+                    </span>
                 </div>
+
                 <div class="info-row">
                     <label>Role:</label>
                     <span>@Model.RoleName</span>
@@ -43,11 +52,11 @@
             <div class="changpassbutton">
 
                 @Html.ActionLink("Change Password", "ChangePassword", "Employee", null, new { @class = "btn-custom" })
-                
+
 
 
             </div>
-            </div>
+        </div>
         </div>
 
       

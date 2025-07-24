@@ -50,7 +50,8 @@
         <div class="sidebar">
             <div class="profile-section">
                 <br />
-                <img src="" alt="Profile" class="profile-img" id="profileImg" />
+                <img src="@Url.Action("GetProfileImage", "Dashboard", new { empId = Session["Emp_ID"] })" class="profile-img" alt="Profile Image"/>
+
                 <div>
                     <strong id="profileName"></strong><br />
                     <span id="profileEmpId"></span><br />

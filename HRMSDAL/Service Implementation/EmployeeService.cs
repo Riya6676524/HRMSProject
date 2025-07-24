@@ -32,7 +32,7 @@ public class EmployeeService : IEmployeeService
             model.LastName = row["LastName"]?.ToString();
             model.Email = row["Email"]?.ToString();
             model.ContactNumber = Convert.ToInt64(row["ContactNumber"]);
-            model.ProfileImagePath = row["ProfileImagePath"]?.ToString();
+            model.ProfileImagePath = row["ProfileImagePath"] as byte[];
             model.Password = row["Password"]?.ToString();
             model.Address = row["Address"]?.ToString();
             model.StateName = row["StateName"]?.ToString();

@@ -16,7 +16,7 @@ namespace HRMSModels
 
         public string RoleName { get; set; }
 
-        public string ProfileImagePath { get; set; }
+        public byte[] ProfileImagePath { get; set; }
   
 
 

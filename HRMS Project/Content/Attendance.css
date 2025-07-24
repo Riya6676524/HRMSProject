@@ -21,31 +21,25 @@ h2, h4 {
     gap: 10px;
 }
 
-    .calendar .day {
-        border: 1px solid #ccc;
-        text-align: center;
-        height: 80px;
-        border-radius: 6px;
-        position: relative;
-        padding: 10px;
-        background-color: #f8f9fa;
-    }
-
-.dot-present, .dot-absent {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 30px;
-    z-index: 1;
+.fc .fc-bg-event .fc-event-title {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 50px;
+    color: black;
+    font-style: normal;
 }
 
-.dot-present {
-    background-color: green;
+.fc-day-sat,
+.fc-day-sun {
+    background-color: #f0f0f0 !important;
 }
 
-.dot-absent {
-    background-color: red;
+.fc-col-header-cell.fc-day-sat,
+.fc-col-header-cell.fc-day-sun {
+    background-color: #e0e0e0 !important;
+    font-weight: bold;
+    color: #6c757d;
 }
+
