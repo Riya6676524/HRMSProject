@@ -7,6 +7,7 @@ using HRMSModels;
 using HRMSDAL.Service;
 using HRMSDAL.Helper;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace HRMSDAL.Service_Implementation
 {
@@ -38,5 +39,24 @@ namespace HRMSDAL.Service_Implementation
             return "Optimum-0001";
         }
 
+        public List<int> GetSubOrdinatesByManager(int managerID)
+        {
+            var subordinates = new List<int>();
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@ManagerID", managerID)
+            };
+            var res = DBHelper.ExecuteReader("usp_getSubOrdinatesByManager", CommandType.StoredProcedure, parameters);
+
+            foreach (var row in res)
+            {
+                if (row.TryGetValue("EMP_ID", out object id) && id != null)
+                {
+                    subordinates.Add(Convert.ToInt32(id));
+                }
+            }
+            return subordinates;
+        }
     }
 }

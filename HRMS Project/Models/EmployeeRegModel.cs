@@ -30,7 +30,7 @@ namespace HRMSProject.Models
                 {
                     byte[] imageData = new byte[value.ContentLength];
                     value.InputStream.Read(imageData, 0, value.ContentLength);
-                    this.ProfilePath = imageData;
+                    this.ProfileImagePath = imageData;
                 }
             }
         }

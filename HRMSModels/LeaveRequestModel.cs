@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -10,16 +11,21 @@ namespace HRMSModels
     public class LeaveRequestModel
     {
         public int RequestID { get; set; }
+
+        [DisplayName("Employee")]
         public int EMP_ID { get; set; }
 
         [Required]
+        [DisplayName("Leave Type")]
         public int LeaveTypeID { get; set; }
 
         [Required]
-        public bool UptoFirstHalf {  get; set; }
+        [DisplayName("Upto First Half")]
+        public bool FirstHalf {  get; set; }
 
         [Required]
-        public bool FromSecondHalf { get; set; }
+        [DisplayName("From Second Half")]
+        public bool SecondHalf { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

@@ -46,6 +46,17 @@ namespace HRMS.Controllers
         }
 
 
+        public ActionResult EmployeeGridPartial()
+        {
+            var EmployeeList = _employeeService.GetAll();
+            var EmployeeViewList = new List<EmployeeListModel>();
+            foreach (EmployeeModel item in EmployeeList)
+            {
+                EmployeeViewList.Add(new EmployeeListModel(item));
+            }
+            return View(EmployeeViewList);
+        }
+
         private void PopulateDropdowns()
         {
             var countries = _countryService.GetAll() ?? new List<CountryModel>();
@@ -61,24 +72,14 @@ namespace HRMS.Controllers
             ViewBag.ReportingManagers = new SelectList(managers, "EMP_ID", "FirstName");
         }
 
-        public ActionResult Employees(int pg=1,int pageSize = 2)
+        public ActionResult Employees()
         {
-            var regModel = _employeeService.GetById(1);
-            ViewBag.message = new MesssageBoxViewModel()
-            {
-                head = "Employee Registered Successfully",
-                body = $"<p><strong>Employee ID:</strong> {regModel.EmployeeID}</p>" +
-                       $"<p><strong>Email:</strong> {regModel.Email}</p>" +
-                       $"<p><strong>Password:</strong> {regModel.Password}</p>"
-            };
             var EmployeeList = _employeeService.GetAll();
             var EmployeeViewList = new List<EmployeeListModel>();
             foreach (EmployeeModel item in EmployeeList)
             {
                 EmployeeViewList.Add(new EmployeeListModel(item));
             }
-            ViewBag.pager = new Pager() { PageCount= (EmployeeViewList.Count % pageSize ==0) ? (EmployeeViewList.Count / pageSize) : (EmployeeViewList.Count / pageSize) + 1, PageSize=pageSize,CurrentPage=pg };
-            EmployeeViewList = EmployeeViewList.Skip((pg-1)*pageSize).Take(pageSize).ToList();
             return View(EmployeeViewList);
         }
 

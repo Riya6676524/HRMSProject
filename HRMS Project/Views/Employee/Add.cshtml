@@ -4,148 +4,221 @@
     ViewBag.Title = "Register";
 }
 
-@using (Html.BeginForm("Add", "Employee", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <div class="card col-md-8 m-auto">
-        <div class="card-header text-white bg-primary text-center">
-            <h4>Add Employee</h4>
-        </div>
-        <div class="card-body p-4">
 
+
+
+<div class="form-card">
+
+    <header class="form-card-header">
+        Employee Form
+    </header>
+
+
+    @using (Html.BeginForm(Html.BeginForm("Add", "Employee", FormMethod.Post, new { enctype = "multipart/form-data" })))
+    {
+        <div class="form-card-body">
             @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.EmployeeID)
+            <div class="form-group single-column">
+                <div class="row">
+                    @Html.LabelFor(m => m.EmployeeID, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.EmployeeID, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "text-danger" })
                 </div>
             </div>
 
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.FirstName)
+            <div class="form-group triple-column">
+                <div class="row">
+                    @Html.LabelFor(m => m.FirstName, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.Middlename)
+            </div>
+
+            <div class="form-group triple-column">
+                <div class="row">
+                    @Html.LabelFor(m => m.Middlename, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.Middlename, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.Middlename, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.LastName)
+            </div>
+
+            <div class="form-group triple-column">
+                <div class="row">
+                    @Html.LabelFor(m => m.LastName, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
                 </div>
             </div>
 
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.GenderID)
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.GenderID, htmlAttributes: new { @class = "control-label " })
                     @Html.DropDownListFor(m => m.GenderID, ViewBag.Genders as SelectList, "Select", new { @class = "form-control" })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.GenderID, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.DOB)
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.DOB, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.DOB, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.DOB, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.Email)
+            </div>
+
+            <div class="form-group single-column">
+                <div class="row">
+                    @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                 </div>
             </div>
 
-
-
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.ContactNumber)
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.ContactNumber, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.ContactNumber, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.ContactNumber, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.ProfilePostedFile)
-                    @Html.TextBoxFor(m => m.ProfilePostedFile, new { @type = "file", @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.ProfilePostedFile)
-                </div>
-                @*<img id="profilePreview" src="#" alt="Profile Preview" class="img-thumbnail mt-2" style="display:none; max-width: 100%; max-height: auto;" />*@
             </div>
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    @Html.LabelFor(m => m.Address)
-                    @Html.TextAreaFor(m => m.Address, new { @class = "form-control input-lg", rows = 2, @style = "resize: none;" })
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.ProfilePostedFile, htmlAttributes: new { @class = "control-label " })
+                    @Html.TextBoxFor(m => m.ProfilePostedFile, new { @type = "file", @class = "form-control" })
+                </div>
+                <div class="row">
+                    @Html.ValidationMessageFor(m => m.ProfilePostedFile, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group single-column">
+                <div class="row">
+                    @Html.LabelFor(m => m.Address, htmlAttributes: new { @class = "control-label " })
+                    @Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = 2 })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    @Html.LabelFor(model => model.CountryID, htmlAttributes: new { @class = "form-label" })
-                    @Html.DropDownListFor(model => model.CountryID, ViewBag.Countries as SelectList, "Select Country", new { @class = "form-control", @id = "CountryID" })
-                    @Html.ValidationMessageFor(model => model.CountryID, "", new { @class = "text-danger" })
-                </div>
 
-                <div class="col-md-4 mb-3">
-                    @Html.LabelFor(model => model.StateID, htmlAttributes: new { @class = "form-label" })
-                    @Html.DropDownListFor(mode => Model.StateID, new SelectList(Enumerable.Empty<SelectListItem>()), "Select State", new { @class = "form-control", @id = "StateID" })
-                    @Html.ValidationMessageFor(model => model.StateID, "", new { @class = "text-danger" })
+            <div class="form-group triple-column">
+                <div class="row">
+                    @Html.LabelFor(m => m.CountryID, htmlAttributes: new { @class = "control-label " })
+                    @Html.DropDownListFor(m => m.CountryID, ViewBag.Countries as SelectList, "Select Country", new { @class = "form-control", @id = "CountryID" })
                 </div>
-
-                <div class="col-md-4 mb-3">
-                    @Html.LabelFor(model => model.CityID, htmlAttributes: new { @class = "form-label" })
-                    @Html.DropDownListFor(model => model.CityID, new SelectList(Enumerable.Empty<SelectListItem>()), "Select City", new { @class = "form-control", @id = "CityID" })
-                    @Html.ValidationMessageFor(model => model.CityID, "", new { @class = "text-danger" })
+                <div class="row">
+                    @Html.ValidationMessageFor(m => m.CountryID, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.ZipCode)
+
+            <div class="form-group triple-column">
+                <div class="row">
+                    @Html.LabelFor(m => m.StateID, htmlAttributes: new { @class = "control-label " })
+                    @Html.DropDownListFor(m => m.StateID, new SelectList(Enumerable.Empty<SelectListItem>()), "Select State", new { @class = "form-control", @id = "StateID" })
+                </div>
+                <div class="row">
+                    @Html.ValidationMessageFor(m => m.StateID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group triple-column">
+                <div class="row">
+                    @Html.LabelFor(m => m.CityID, htmlAttributes: new { @class = "control-label " })
+                    @Html.DropDownListFor(m => m.CityID, new SelectList(Enumerable.Empty<SelectListItem>()), "Select City", new { @class = "form-control", @id = "CityID" })
+                </div>
+                <div class="row">
+                    @Html.ValidationMessageFor(m => m.CityID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.ZipCode, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.ZipCode, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.ZipCode, "", new { @class = "text-danger" })
                 </div>
             </div>
 
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.RoleID)
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.RoleID, htmlAttributes: new { @class = "control-label " })
                     @Html.DropDownListFor(m => m.RoleID, ViewBag.Roles as SelectList, "Select", new { @class = "form-control" })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.RoleID, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.DepartmentID)
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.DepartmentID, htmlAttributes: new { @class = "control-label " })
                     @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Departments as SelectList, "Select", new { @class = "form-control" })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.DepartmentID, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.ReportingManagerID)
-                    @Html.DropDownListFor(m => m.ReportingManagerID, ViewBag.ReportingManagers as SelectList, "Select", new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.ReportingManagerID, htmlAttributes: new { @class = "control-label " })
+                    @Html.DropDownListFor(m => m.ReportingManagerID, ViewBag.ReportingManagers as SelectList, "None", new { @class = "form-control" })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.ReportingManagerID, "", new { @class = "text-danger" })
                 </div>
             </div>
 
-            <div class="row mb-4">
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.Password)
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.Password, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.Password, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-4">
-                    @Html.LabelFor(m => m.ConfirmPassword)
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    @Html.LabelFor(m => m.ConfirmPassword, htmlAttributes: new { @class = "control-label " })
                     @Html.EditorFor(m => m.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="row">
                     @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
                 </div>
             </div>
+
         </div>
-        <div class="card-footer">
-            <input type="submit" value="Save" class="btn btn-success" />
-            @Html.ActionLink("Cancel", "Employees", null, new { @class = "btn btn-secondary" })
+        <div class="form-card-footer">
+            <input type="SUBMIT" value="Create" class="btn btn-success" />
+            @Html.ActionLink("Cancel", "Employees", null, new { @class = "btn btn-danger" })
         </div>
-    </div>
-}
+    }
+</div>
+
+
 <script>
     $('#ProfilePostedFile').change(function (event) {
         var input = event.target;

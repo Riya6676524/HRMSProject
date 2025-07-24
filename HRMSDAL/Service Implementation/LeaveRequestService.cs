@@ -16,6 +16,7 @@ namespace HRMSDAL.Service_Implementation
         protected override string TableName => "LeaveRequest";
         protected override string PrimaryKeyColumn => "RequestID";
 
+
         public List<LeaveRequestModel> GetLeavesByEmp_ID(int empId)
         {
             List<LeaveRequestModel> all = GetAll();

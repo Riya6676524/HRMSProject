@@ -49,7 +49,7 @@ namespace HRMS_Project
             container.RegisterType<ILeaveTypeService, LeaveTypeService>();
             container.RegisterType<ILeaveStatusService, LeaveStatusService>();
             container.RegisterType<IAttendanceService, AttendanceService>();
-
+            container.RegisterType<IHolidayService, HolidayService>();
 
 
 

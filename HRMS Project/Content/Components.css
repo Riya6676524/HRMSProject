@@ -1,0 +1,180 @@
+﻿
+/*writing css for buttons*/
+:root {
+    --primary: darkblue;
+    --warning: yellow;
+    --danger: #dc3545;
+    --success: green;
+    --primary-hover: midnightblue;
+    --warning-hover: gold;
+    --danger-hover: #c82333;
+    --success-hover: darkgreen;
+}
+
+.btn {
+    font-family: inherit;
+    display: inline-block;
+    background-color: black;
+    text-decoration: none;
+    color: #fff;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 0.95em;
+    margin: 0;
+}
+
+.btn.btn-primary {
+    background-color: var(--primary);
+}
+
+.btn.btn-danger {
+    background-color: var(--danger);
+}
+
+.btn.btn-warning {
+    background-color: var(--warning);
+}
+
+.btn.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn.btn-danger:hover {
+    background-color: var(--danger-hover);
+}
+
+.btn.btn-warning:hover {
+    background-color: var(--warning-hover);
+}
+.btn.btn-success {
+    background-color: var(--success);
+}
+
+.btn.btn-success:hover {
+    background-color: var(--success-hover);
+}
+
+
+/*writing css for form-card*/
+
+.form-card {
+    background: white;
+    margin: 10px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+
+.form-card-body {
+    background:#f5f5f5;
+    display: flow-root;
+    padding: 10px 28px;
+}
+
+
+.form-card-header {
+    background: darkblue;
+    padding: 6px 12px;
+    color: white;
+}
+
+.form-card-footer{
+    padding: 12px 28px;
+}
+
+/*writing css for form controls*/
+.check-box {
+    margin: 0;
+    display: block;
+}
+.form-group {
+    float: left;
+    width: 50%;
+    margin-bottom:10px;
+}
+
+
+
+.form-group.single-column{
+    width: 100%;
+}
+
+.form-group.triple-column{
+    width: 33.3333%;
+}
+
+
+label.control-label {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    border: 2px solid gray;
+    width: -webkit-fill-available;
+    font-family: inherit;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+.text-danger {
+    color: darkred;
+}
+
+.field-validation-error {
+    font-size: 13px;
+}
+
+textarea.form-control{
+    resize: vertical;
+}
+
+/*Css for the GRID*/
+
+button.mvc-grid-filter{
+    color:white;
+}
+
+.mvc-grid-headers > th {
+    background-color: darkblue;
+    color: white;
+}
+
+.Grid-Actions{
+    display:flex;
+    justify-content: end;
+    padding:5px 0px;
+}
+
+
+.action-icon {
+    display: inline-block;
+    color: grey;
+    text-decoration: none;
+}
+
+.icon-warning:hover{
+    color: var(--warning-hover);
+}
+
+.icon-danger:hover{
+    color: var(--danger-hover);
+}
+
+
+/*CSS form shapes*/
+.shape {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    margin: 2px;
+}
+
+    .shape.circle {
+        border-radius: 50%;
+    }
+
+.bg-light-green {
+    background-color: lightgreen;
+}

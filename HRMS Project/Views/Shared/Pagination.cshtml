@@ -1,0 +1,29 @@
+﻿@model HRMSProject.Models.Pager
+
+<ul class="pagination d-flex justify-content-center">
+
+    <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+        <a class="page-link" href="?pg=@Model.CurrentPage-1"><i class="fa-solid fa-angles-left"></i></a>
+    </li>
+
+    @for (int i = Model.StartPage; i <= Model.EndPage; i++)
+    {
+        if (i == Model.CurrentPage)
+        {
+            <li class="page-item active">
+                <a class="page-link" href="?pg=@i">@i</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item">
+                <a class="page-link" href="?pg=@i">@i</a>
+            </li>
+        }
+    }
+
+    <li class="page-item @(Model.CurrentPage == Model.EndPage ? "disabled" : "")">
+        <a class="page-link" href="?pg=@Model.CurrentPage+1"><i class="fa-solid fa-angles-left"></i></a>
+    </li>
+
+</ul>

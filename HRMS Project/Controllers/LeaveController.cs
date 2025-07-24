@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -19,13 +20,32 @@ namespace HRMS.Controllers
         private readonly ILeaveTypeService _leaveTypeService;
         private readonly ILeaveStatusService _leaveStatusService;
         private readonly IEmployeeService _employeeService;
+        private readonly IHolidayService _holidayService;
 
-        public LeaveController(IEmployeeService employeeService, ILeaveRequestService leaveService, ILeaveTypeService leaveTypeService, ILeaveStatusService leaveStatusService)
+        public LeaveController(IHolidayService holidayService,IEmployeeService employeeService, ILeaveRequestService leaveService, ILeaveTypeService leaveTypeService, ILeaveStatusService leaveStatusService)
         {
             _leaveRequestService = leaveService;
             _leaveTypeService = leaveTypeService;
             _leaveStatusService = leaveStatusService;
             _employeeService = employeeService;
+            _holidayService = holidayService;
+        }
+
+        public void initFormViewBag()
+        {
+            int empID = Convert.ToInt32(Session["Emp_ID"]);
+            var LeaveTypes = _leaveTypeService.GetAll();
+            var empIDs = _employeeService.GetSubOrdinatesByManager(empID);
+            var empSelectList = new List<SelectListItem>();
+            var empIter = _employeeService.GetById(empID);
+            empSelectList.Add(new SelectListItem() { Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}", Value = empIter.EMP_ID.ToString(), Selected = true });
+            foreach (int id in empIDs)
+            {
+                empIter = _employeeService.GetById(id);
+                empSelectList.Add(new SelectListItem() { Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}", Value = empIter.EMP_ID.ToString() });
+            }
+            ViewBag.IDs = empSelectList;
+            ViewBag.LeaveTypes = new SelectList(LeaveTypes, "LeaveTypeID", "LeaveName");
         }
 
         public void initLeaveListViewBag(List<LeaveRequestModel> leaveRequests)
@@ -49,30 +69,35 @@ namespace HRMS.Controllers
             };
         }
 
-        public ActionResult LeaveRequests(int pg = 1,int pageSize=5)
+        [HttpGet]
+        public ActionResult UpcomingHolidays(int count = 1)
         {
-            int empId = Convert.ToInt32(Session["Emp_ID"]);
-            var allLeaveRequests = _leaveRequestService.GetLeavesByManager(empId);
-            var leaveRequests = allLeaveRequests.Skip((pg - 1) * pageSize).Take(pageSize).ToList();
-            ViewBag.pager = new Pager() { PageCount = (allLeaveRequests.Count / pageSize)+1, PageSize = pageSize, CurrentPage = pg };
-            initLeaveListViewBag(leaveRequests);
-            return View(leaveRequests);
+            var holidays = _holidayService.GetAll();
+            var upcomingHolidays = holidays.Where(h => h.HolidayDate >= DateTime.Now)
+                .OrderBy(h => h.HolidayDate)
+                .Take(count)
+                .ToList();
+            return PartialView("UpcomingHolidayPartial", upcomingHolidays);
         }
 
-        public ActionResult Leaves(int pg = 1,int pageSize=5)
+        public ActionResult Leaves()
         {
             int empId = Convert.ToInt32(Session["Emp_ID"]);
-            var allLeaves = _leaveRequestService.GetLeavesByEmp_ID(empId);
-            var leaves = allLeaves.Skip((pg - 1) * pageSize).Take(pageSize).ToList();
-            ViewBag.pager = new Pager() { PageCount = allLeaves.Count / pageSize, PageSize = pageSize, CurrentPage = pg };
-            initLeaveListViewBag(leaves);
-            return View(leaves);
+            List<int> allIDS = _employeeService.GetSubOrdinatesByManager(empId);
+            var personLeaves = _leaveRequestService.GetLeavesByEmp_ID(empId);
+            var allLeaves = new List<LeaveRequestModel>();
+            foreach (int id in allIDS)
+            {
+                allLeaves.AddRange(_leaveRequestService.GetLeavesByEmp_ID(id));
+            }
+            initLeaveListViewBag(allLeaves);
+            return View(allLeaves);
         }
 
         public ActionResult Add()
         {
-            var LeaveTypes = _leaveTypeService.GetAll();
-            ViewBag.LeaveTypes = new SelectList(LeaveTypes, "LeaveTypeID", "LeaveName");
+
+            initFormViewBag();
             return View();
         }
 
@@ -81,8 +106,7 @@ namespace HRMS.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var LeaveTypes = _leaveTypeService.GetAll();
-                ViewBag.LeaveTypes = new SelectList(LeaveTypes, "LeaveTypeID", "LeaveName");
+                initFormViewBag();
                 return View(obj);
             }
             else if (obj.StartDate > obj.EndDate)
@@ -106,8 +130,7 @@ namespace HRMS.Controllers
 
         public ActionResult Approve(int id)
         {
-            var LeaveTypes = _leaveTypeService.GetAll();
-            ViewBag.LeaveTypes = new SelectList(LeaveTypes, "LeaveTypeID", "LeaveName");
+            initFormViewBag();
             LeaveRequestModel toBeApprovedModel = _leaveRequestService.GetById(id);
             return View(toBeApprovedModel);
         }
@@ -133,6 +156,19 @@ namespace HRMS.Controllers
             return RedirectToAction("LeaveRequests", "Leave");
         }
 
+        public ActionResult LeaveGridPartial()
+        {
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
+            List<int> allIDS = _employeeService.GetSubOrdinatesByManager(empId);
+            var personLeaves = _leaveRequestService.GetLeavesByEmp_ID(empId);
+            var allLeaves = new List<LeaveRequestModel>();
+            foreach (int id in allIDS)
+            {
+                allLeaves.AddRange(_leaveRequestService.GetLeavesByEmp_ID(id));
+            }
+            initLeaveListViewBag(allLeaves);
+            return View("LeaveGridPartial", allLeaves);
+        }
 
         public ActionResult Delete(int id)
         {

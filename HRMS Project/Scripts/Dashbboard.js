@@ -133,7 +133,8 @@ function loadDashboadData() {
 function loadNavbarData() {
     $.getJSON('/Dashboard/GetNavbarData', function (data) {
         $('#profileImg').attr('src', data.ProfileImagePath);
-        $('#profileName').text(`${data.FirstName} ${data.MiddleName} ${data.LastName}`);
+        const middle = data.MiddleName && data.MiddleName.trim() !== '' ? `${data.MiddleName} ` : '';
+        $('#profileName').text(`${data.FirstName} ${middle} ${data.LastName}`);
         $('#profileEmpId').text(`ID: ${data.EmployeeID}`);
         $('#profileRol').text(`Role: ${data.RoleName}`);
     });

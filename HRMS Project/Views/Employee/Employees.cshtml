@@ -8,16 +8,16 @@
     Pager pager = ViewBag.pager;
 }
 
-<div class="row d-flex justify-content-between mb-4">
-    <div class="col-md-4">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search..." />
-    </div>
-    <div class="col-md-4 d-flex justify-content-end">
-        @Html.ActionLink("Add", "Add", null, htmlAttributes: new { @class = "btn btn-primary" })
-    </div>
+<div class="Grid-Actions">
+    @Html.ActionLink("+Add New", "Add", null, htmlAttributes: new { @class = "btn btn-success" })
+
 </div>
 
-<table class="table">
+<div class="main-grid-body">
+    @Html.Partial("EmployeeGridPartial", Model);
+</div>
+
+@*<table class="table">
     <thead class="table-dark">
         <tr>
             <th>
@@ -73,38 +73,10 @@
             <td colspan="100%">
                 @if (pager != null)
                 {
-                    int startPage = (pager.CurrentPage > 3) ? pager.CurrentPage - 3 : 1;
-                    int EndPage = ((pager.PageCount - pager.CurrentPage) > 3) ? pager.CurrentPage + 3 : pager.PageCount;
-                    <ul class="pagination d-flex justify-content-center">
-
-                        <li class="page-item @(pager.CurrentPage == 1 ? "disabled" : "")">
-                            @Html.ActionLink("Previous", "Employees", new { pg = pager.CurrentPage - 1 }, new { @class = "page-link" })
-                        </li>
-
-                        @for (int i = startPage; i <= EndPage; i++)
-                        {
-                            if (i == pager.CurrentPage)
-                            {
-                                <li class="page-item active">
-                                    @Html.ActionLink($"{i}", "Employees", new { pg = i }, new { @class = "page-link" })
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="page-item">
-                                    @Html.ActionLink($"{i}", "Employees", new { pg = i }, new { @class = "page-link" })
-                                </li>
-                            }
-                        }
-
-                        <li class="page-item @(pager.CurrentPage == pager.PageCount ? "disabled" : "")">
-                            @Html.ActionLink("Next", "Employees", new { pg = pager.CurrentPage + 1 }, new { @class = "page-link" })
-                        </li>
-
-                    </ul>
+                   @Html.Partial("Pagination",pager)
                 }
             </td>
         </tr>
     </tfoot>
 
-</table>
+</table>*@

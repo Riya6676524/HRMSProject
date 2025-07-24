@@ -10,5 +10,6 @@ namespace HRMSDAL.Service
     public interface IEmployeeService : IGenericService<EmployeeModel>
     {
         string GetNextAvailableEmployeeId();
+        List<int> GetSubOrdinatesByManager(int empId);
     }
 }
