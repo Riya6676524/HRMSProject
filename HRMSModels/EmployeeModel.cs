@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -90,5 +91,16 @@ namespace HRMSModels
         [DataType(DataType.Password)]
         [Required]
         public string Password { get; set; }
+      
+      [Required(ErrorMessage = "Current password is required")]
+        public string currpassword { get; set; }
+
+        [Required(ErrorMessage = "New password is required")]
+        public string newpassword { get; set; }
+        public string RoleName { get; set; }
+        public string StateName { get; set; }
+        public string CityName { get;set;}
+        public string CountryName { get; set; }  
     }
+
 }

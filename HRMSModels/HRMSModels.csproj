@@ -55,8 +55,10 @@
     <Compile Include="LeaveTypeModel.cs" />
     <Compile Include="LocationModel.cs" />
     <Compile Include="AttendanceModel.cs" />
+    <Compile Include="EmployeeModel.cs" />
     <Compile Include="ExceptionLogModel.cs" />
     <Compile Include="ForgotPasswordModel.cs" />
+    <Compile Include="HolidayModel.cs" />
     <Compile Include="LeaveSummaryModel.cs" />
     <Compile Include="LoginModel.cs" />
     <Compile Include="MenuModel.cs" />

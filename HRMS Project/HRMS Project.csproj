@@ -185,10 +185,13 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\Components.css" />
+    <Content Include="Content\ChangePassword.css" />
     <Content Include="Content\Dashboard.css" />
+    <Content Include="Content\HRPolicies.css" />
     <Content Include="Content\Layout.css" />
     <Content Include="Content\Login.css" />
     <Content Include="Content\MvcGrid\mvc-grid.css" />
+    <Content Include="Content\Profile.css" />
     <Content Include="Content\Uploads\HeaderCompanyLogo.png" />
     <Content Include="Content\Uploads\login background.png" />
     <Content Include="Content\Uploads\logo-removebg-preview.png" />
@@ -252,6 +255,7 @@
     <Content Include="Views\Employee\EmployeeGridPartial.cshtml" />
     <Content Include="Views\Leave\LeaveGridPartial.cshtml" />
     <Content Include="Views\Leave\UpcomingHolidayPartial.cshtml" />
+    <Content Include="Views\Employee\ChangePassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

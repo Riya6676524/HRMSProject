@@ -10,7 +10,7 @@ namespace HRMSDAL.Service_Implementation
 {
     public class DashboardService : IDashboardService
     {
-        public NavbarModel GetNavbarData(int empId, int roleId)
+        public NavbarModel GetNavbarData(int empId)
         {
             NavbarModel model = new NavbarModel();
 
@@ -28,9 +28,7 @@ namespace HRMSDAL.Service_Implementation
                 model.FirstName = row["FirstName"]?.ToString();
                 model.MiddleName = row["MiddleName"]?.ToString();
                 model.LastName = row["LastName"]?.ToString();
-                model.ProfileImagePath = string.IsNullOrEmpty(row["ProfileImagePath"]?.ToString())
-                    ? "/Content/Images/default.png"
-                    : row["ProfileImagePath"]?.ToString();
+                model.ProfileImagePath = row["ProfileImagePath"] as byte[];
                 model.RoleName = row["RoleName"]?.ToString();
             }
             return model;
@@ -43,7 +41,7 @@ namespace HRMSDAL.Service_Implementation
                 int totalEntitled = currentMonth * 2;
                 double leaveTaken = 1;
                 double carryForward = 2; //ye databse se aayega as its yearly carryForward leave 
-                                         // we need cary forward leave table which contain the availableleave of previous year 
+                                         // we need cary forward leave table which contain the availableleave of previousyear 
 
 
 

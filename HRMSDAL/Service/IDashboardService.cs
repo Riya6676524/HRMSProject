@@ -9,7 +9,7 @@ namespace HRMSDAL.Service
 {
     public interface IDashboardService
     {
-        NavbarModel GetNavbarData(int empId, int roleId);
+        NavbarModel GetNavbarData(int empId);
         LeaveSummaryModel GetLeaveSummary(int empId);
     }
 }

@@ -13,6 +13,5 @@ namespace HRMSModels
         public DateTime HolidayDate { get; set; }
         public int LocationID { get; set; }
         public bool Repeat { get; set; }
-
     }
 }

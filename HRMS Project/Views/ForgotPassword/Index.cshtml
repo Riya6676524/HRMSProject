@@ -29,12 +29,13 @@
                 @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                 @if (TempData["Message"] != null)
                 {
-                    <span style="color: green; padding: 10px; font-weight: bold; margin-bottom: 10px;">@TempData["Message"]</span>
+                    <span style="color: green; display: block;">
+                        @TempData["Message"]
+                    </span>
+
                 }
             </div>
 
-
-            <br />
             <input type="submit" value="Send Reset Link" class="btn-login" />
 
 

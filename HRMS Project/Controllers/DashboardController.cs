@@ -4,6 +4,7 @@ using HRMSModels;
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace HRMSProject.Controllers
 {
@@ -13,12 +14,15 @@ namespace HRMSProject.Controllers
         private readonly IMenuService _menuService;
         private readonly IRoleMenuService _roleMenuService;
 
+      
         public DashboardController(IDashboardService dashboardService, IMenuService menuService, IRoleMenuService roleMenuService)
         {
             _dashboardService = dashboardService;
             _menuService = menuService;
             _roleMenuService = roleMenuService;
         }
+
+        
 
         public ActionResult Index()
         {
@@ -44,11 +48,23 @@ namespace HRMSProject.Controllers
             }
 
             int empId = (int)Session["Emp_ID"];
-            int roleId = (int)Session["RoleID"];
+            var result = _dashboardService.GetNavbarData(empId);
 
-            var result = _dashboardService.GetNavbarData(empId, roleId);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+
+        public FileResult GetProfileImage(int empId)
+        {
+            empId = (int)Session["Emp_ID"];
+            var result = _dashboardService.GetNavbarData(empId);
+
+            return File(result.ProfileImagePath, "image/png"); 
+           
+        }
+
+
+
 
         [HttpGet]
         [OutputCache(Duration =69)]
@@ -83,7 +99,7 @@ namespace HRMSProject.Controllers
             int empId = (int)Session["Emp_ID"];
             int roleId = (int)Session["RoleID"];
 
-            var empData = _dashboardService.GetNavbarData(empId, roleId);
+            var empData = _dashboardService.GetNavbarData(empId);
 
             var dashboardData = new
             {

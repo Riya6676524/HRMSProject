@@ -1,4 +1,7 @@
-﻿using System;
+﻿using HRMSDAL.Service;
+using HRMSDAL.Service_Implementation;
+using HRMSModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,8 +16,6 @@ using HRMSUtility;
 
 namespace HRMS.Controllers
 {
-    //[MenuFilter]
-    [DummyDataFilter]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
@@ -83,14 +84,57 @@ namespace HRMS.Controllers
             return View(EmployeeViewList);
         }
 
-        [HttpGet]
-        public ActionResult Add()
+
+        public ActionResult Index()
+        {
+             return View();
+                    }
+
+[HttpGet]
+public ActionResult Profile()
+{
+    int empId = Convert.ToInt32(Session["Emp_ID"]);
+    var model = _employeeService.GetProfile(empId);
+    return View(model);
+}
+
+[HttpGet]
+public ActionResult ChangePassword()
+{
+
+    return View();
+}
+
+[HttpPost]
+public ActionResult ChangePassword(EmployeeModel model)
+{
+ 
+
+    if (!ModelState.IsValid)
+        return View(model);
+
+    int empId = Convert.ToInt32(Session["Emp_ID"]);
+
+    bool result = _employeeService.ChangePassword(empId, model.currpassword, model.newpassword);
+
+    if (result)
+    {
+        TempData["Message"] = "Password updated successfully!";
+        ModelState.Clear();
+        return RedirectToAction("ChangePassword");
+    }
+    else
+    {
+        ModelState.AddModelError("currpassword", "Invalid current password");
+        return View(model);
+    }
+}
+
+ public ActionResult Add()
         {
             PopulateDropdowns();
             return View();
         }
-
-        [HttpPost]
         public ActionResult Add(EmployeeRegModel regModel)
         {
 
@@ -169,6 +213,13 @@ namespace HRMS.Controllers
         {
             _employeeService.Delete(empId);
             return Json(new { success = true });
+
         }
     }
+
 }
+
+
+
+
+
