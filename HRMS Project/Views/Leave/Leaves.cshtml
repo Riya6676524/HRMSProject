@@ -1,0 +1,21 @@
+﻿@model IEnumerable<HRMSModels.LeaveRequestModel>
+@using HRMSProject.Models;
+@using HRMS_Project.Models;
+@{
+    ViewBag.Title = "Leaves";
+}
+
+@{
+    Pager pager = ViewBag.pager;
+    LeaveListViewData leaveListViewData = ViewBag.LeaveListData;
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="Grid-Actions">
+    @Html.ActionLink("+Add New", "Add", null, htmlAttributes: new { @class = "btn btn-success" })
+</div>
+
+@Html.Partial("LeaveGridPartial", Model)
+
+
+

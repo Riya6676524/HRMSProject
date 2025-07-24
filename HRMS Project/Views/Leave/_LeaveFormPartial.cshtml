@@ -1,0 +1,95 @@
+﻿@model HRMSModels.LeaveRequestModel
+
+
+<div class="form-group">
+    <div class="row">
+        @Html.LabelFor(model => model.EMP_ID, htmlAttributes: new { @class = "control-label " })
+
+        @Html.DropDownListFor(model => model.EMP_ID, ViewBag.IDs as List<SelectListItem>, null, new { @class = "form-control" })
+    </div>
+    <div class="row">
+        @Html.ValidationMessageFor(model => model.EMP_ID, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="row">
+        @Html.LabelFor(model => model.LeaveTypeID, htmlAttributes: new { @class = "control-label " })
+
+        @Html.DropDownListFor(model => model.LeaveTypeID, ViewBag.LeaveTypes as SelectList, null, new { @class = "form-control" })
+    </div>
+    <div class="row">
+        @Html.ValidationMessageFor(model => model.LeaveTypeID, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="row">
+        @Html.LabelFor(model => model.FirstHalf, htmlAttributes: new { @class = "control-label " })
+
+        @Html.EditorFor(model => model.FirstHalf)
+    </div>
+
+    <div class="row">
+        @Html.ValidationMessageFor(model => model.FirstHalf, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="row">
+        @Html.LabelFor(model => model.SecondHalf, htmlAttributes: new { @class = "control-label " })
+
+        @Html.EditorFor(model => model.SecondHalf)
+    </div>
+
+    <div class="row">
+        @Html.ValidationMessageFor(model => model.SecondHalf, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="row">
+        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label " })
+
+        @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+
+    <div class="row">
+        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="row">
+        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label " })
+
+        @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+
+    <div class="row">
+        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group single-column">
+    <div class="row">
+        @Html.LabelFor(model => model.TotalDays, htmlAttributes: new { @class = "control-label ", @readonly = "readonly" })
+
+        @Html.EditorFor(model => model.TotalDays, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+    </div>
+    <div class="row">
+        @Html.ValidationMessageFor(model => model.TotalDays, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group single-column">
+    <div class="row">
+        @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label " })
+
+        @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", rows = "4" })
+    </div>
+    <div class="row">
+        @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+    </div>
+</div>
+

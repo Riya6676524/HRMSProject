@@ -1,0 +1,82 @@
+﻿@model IEnumerable<HRMSProject.Models.EmployeeListModel>
+@using HRMSProject.Models;
+@{
+    ViewBag.Title = "Employees";
+}
+
+@{
+    Pager pager = ViewBag.pager;
+}
+
+<div class="Grid-Actions">
+    @Html.ActionLink("+Add New", "Add", null, htmlAttributes: new { @class = "btn btn-success" })
+
+</div>
+
+<div class="main-grid-body">
+    @Html.Partial("EmployeeGridPartial", Model);
+</div>
+
+@*<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedON)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedON)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.EmployeeID)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.CreatedON)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.UpdatedON)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-success" })
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-danger" })
+            </td>
+        </tr>
+    }
+    <tfoot>
+        <tr>
+            <td colspan="100%">
+                @if (pager != null)
+                {
+                   @Html.Partial("Pagination",pager)
+                }
+            </td>
+        </tr>
+    </tfoot>
+
+</table>*@

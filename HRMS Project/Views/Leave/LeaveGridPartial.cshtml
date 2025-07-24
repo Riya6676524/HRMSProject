@@ -1,0 +1,50 @@
+﻿@model IEnumerable<HRMSModels.LeaveRequestModel>
+@using HRMS_Project.Models;
+
+@{LeaveListViewData leaveListViewData = ViewBag.LeaveListData; }
+
+
+@(Html
+    .Grid(Model)
+    .Build(columns =>
+    {
+        columns.Add(model => leaveListViewData.EmployeeNames[model.EMP_ID]).Titled("Name").Filterable(true);
+        columns.Add(model => @leaveListViewData.LeaveTypes[model.LeaveTypeID]).Titled("LeaveType");
+        columns.Add(model => $"{model.StartDate:d} to {model.EndDate.Date:d}").Titled("From and Till");
+        columns.Add(model => model.TotalDays).Titled("Leave Days");
+        columns.Add(model => model.RequestDate.ToShortDateString()).Titled("Requested On");
+        columns.Add(model => leaveListViewData.LeaveStatuses[model.LeaveStatusID]).Titled("Leave Status");
+        columns.Add(model => model)
+                .Titled("Action")
+                .Encoded(false)
+                .RenderedAs(model =>
+                {
+                    if (leaveListViewData.LeaveStatuses[model.LeaveStatusID].ToUpper() == "PENDING")
+                    {
+                        if (model.EMP_ID == Convert.ToInt32(Session["EMP_ID"]))
+                        {
+                            return @Html.ActionLink("Cancel", "Delete", new { id = model.RequestID });
+                        }
+                        else
+                        {
+                            return @Html.ActionLink("Approve/Reject", "Approve", new { id = model.RequestID });
+                        }
+                    }
+                    else
+                    {
+                        return $"{model.ApproverID} {model.ApproverDate:dd/MM/yyyy}";
+                    }
+                });
+    }
+    )
+    .Sortable()
+    .Filterable()
+    .Pageable(pager => {
+        pager.PageSizes = new Dictionary<int, string>() { { 5, "5" }, { 10, "10" }, { 20, "20" }, { 0, "ALL" } };
+        pager.ShowPageSizes = true;
+        pager.PagesToDisplay = 3;
+        pager.CurrentPage = 2;
+    }
+    )
+    .UsingFilterMode(GridFilterMode.Row)
+)

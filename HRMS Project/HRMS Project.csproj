@@ -49,6 +49,9 @@
       <HintPath>packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Mvc.Grid.Core, Version=7.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\NonFactors.Grid.Core.Mvc5.7.1.3\lib\net45\Mvc.Grid.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -138,6 +141,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action Filters\DummyDataFilter.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -154,6 +158,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\EmployeeListModel.cs" />
+    <Compile Include="Models\EmployeeRegModel.cs" />
+    <Compile Include="Models\LeaveListViewData.cs" />
+    <Compile Include="Models\LeaveReqMoWithReqCom.cs" />
+    <Compile Include="Models\MessageBoxViewModel.cs" />
+    <Compile Include="Models\Pager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -174,11 +184,13 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\Components.css" />
     <Content Include="Content\ChangePassword.css" />
     <Content Include="Content\Dashboard.css" />
     <Content Include="Content\HRPolicies.css" />
     <Content Include="Content\Layout.css" />
     <Content Include="Content\Login.css" />
+    <Content Include="Content\MvcGrid\mvc-grid.css" />
     <Content Include="Content\Profile.css" />
     <Content Include="Content\Uploads\HeaderCompanyLogo.png" />
     <Content Include="Content\Uploads\login background.png" />
@@ -194,6 +206,7 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\MvcGrid\Fonts\GridGlyphs.woff" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\Dashbboard.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
@@ -206,6 +219,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\MvcGrid\mvc-grid.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -223,13 +237,24 @@
     <Content Include="Views\Dashboard\Index.cshtml" />
     <Content Include="Views\Logerror\Index.cshtml" />
     <Content Include="Views\Shared\LoginLayout.cshtml" />
+    <Content Include="Views\Employee\Add.cshtml" />
+    <Content Include="Views\Employee\Employees.cshtml" />
+    <Content Include="Views\Leave\Add.cshtml" />
+    <Content Include="Views\Leave\Leaves.cshtml" />
+    <Content Include="Views\Leave\Approve.cshtml" />
+    <Content Include="Views\Leave\_LeaveFormPartial.cshtml" />
     <Content Include="Views\Attendance\Index.cshtml" />
     <Content Include="Views\Documents\HRPolicies.cshtml" />
     <Content Include="Views\Documents\Index.cshtml" />
     <Content Include="Views\Employee\Profile.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
-    <Content Include="Views\Leave\Apply.cshtml" />
     <Content Include="Views\Leave\Manage.cshtml" />
+    <Content Include="Views\Shared\Pagination.cshtml" />
+    <Content Include="Views\Shared\MvcGrid\_Pager.cshtml" />
+    <Content Include="Views\Shared\MvcGrid\_Grid.cshtml" />
+    <Content Include="Views\Employee\EmployeeGridPartial.cshtml" />
+    <Content Include="Views\Leave\LeaveGridPartial.cshtml" />
+    <Content Include="Views\Leave\UpcomingHolidayPartial.cshtml" />
     <Content Include="Views\Employee\ChangePassword.cshtml" />
   </ItemGroup>
   <ItemGroup>

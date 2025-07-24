@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -13,13 +13,8 @@ namespace HRMSModels
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
-
         public string RoleName { get; set; }
-
         public byte[] ProfileImagePath { get; set; }
-  
-
-
     }
 
 

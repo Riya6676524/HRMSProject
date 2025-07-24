@@ -8,7 +8,10 @@ namespace HRMSModels
 {
     public class HolidayModel
     {
-        public DateTime HolidayDate { get; set; }
+        public int HolidayID { get; set; }
         public string HolidayName { get; set; }
+        public DateTime HolidayDate { get; set; }
+        public int LocationID { get; set; }
+        public bool Repeat { get; set; }
     }
 }

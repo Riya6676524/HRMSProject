@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using HRMSDAL.Helper;
 using HRMSDAL.Service;
 
-namespace HRMSDAL
+namespace HRMSDAL.Service_Implementation
 {
     public abstract class GenericService<T> : IGenericService<T> where T : class, new()
     {
@@ -87,17 +87,21 @@ namespace HRMSDAL
         protected virtual T MapDictionaryToEntity(Dictionary<string, object> dict)
         {
             T obj = new T();
-
             foreach (var prop in GetProperties(true))
             {
-                if (dict.ContainsKey(prop.Name) && dict[prop.Name] != null)
+                object rawValue = dict[prop.Name];
+                if (rawValue == null)
+                {
+                    prop.SetValue(obj, null);
+                }
+                else
                 {
                     Type targetType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                    object value = Convert.ChangeType(dict[prop.Name], targetType);
+                    object value = Convert.ChangeType(rawValue, targetType);
                     prop.SetValue(obj, value);
                 }
-            }
 
+            }
             return obj;
         }
 
@@ -115,10 +119,7 @@ namespace HRMSDAL
         {
             return TypeDescriptor.GetProperties(typeof(T))
                 .Cast<PropertyDescriptor>()
-                .Where(p =>
-                    (includePrimaryKey || p.Name != PrimaryKeyColumn) &&
-                    p.IsBrowsable 
-                );
+                .Where(p => includePrimaryKey || p.Name != PrimaryKeyColumn);
         }
     }
 

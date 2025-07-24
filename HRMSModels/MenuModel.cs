@@ -15,9 +15,7 @@ namespace HRMSModels
         public string ControllerName { get; set; }
         public string IconeClass { get; set; }
         public int DisplayOrder { get; set; }
-
         public int? ParentMenuID { get; set; }
-
     }
         
 }

@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/HRMS Project/Web.config
+/HRMS Project/Web.Debug.config
+/HRMS Project/Web.Release.config

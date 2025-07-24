@@ -59,7 +59,7 @@ namespace HRMSDAL.Helper
             using (var command = CreateCommand(commandText, connection, commandType, parameters))
             {
                 connection.Open();
-                using (var reader = command.ExecuteReader())
+                using ( var reader = command.ExecuteReader())
                 {
                     var results = new List<Dictionary<string, object>>();
 

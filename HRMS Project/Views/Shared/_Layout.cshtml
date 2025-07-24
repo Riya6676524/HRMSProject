@@ -7,13 +7,14 @@
     
    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="~/Content/MvcGrid/mvc-grid.css" rel="stylesheet">
+    <link href="~/Content/Dashboard.css" rel="stylesheet" />
+    <link href="~/Content/Components.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/jquery")
     <link href="~/Content/Layout.css" rel="stylesheet" />
-
-
-
 </head>
-<body>
 
+<body>
     <!-- Header -->
     <div class="header">
         <div class="left-logo">
@@ -84,6 +85,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/Scripts/Dashbboard.js"></script>
+    <script src="~/Scripts/MvcGrid/mvc-grid.js"></script>
+    <script>
+       [].forEach.call(document.getElementsByClassName('mvc-grid'), function (element) {
+                          new MvcGrid(element);
+                      });
+    </script>
 
     <script>
     window.onload = function () {

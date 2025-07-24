@@ -1,0 +1,42 @@
+﻿@model HRMSModels.LeaveRequestModel
+
+@{
+    ViewBag.Title = "LeaveForm";
+}
+
+<div class="form-card">
+
+    <header class="form-card-header">
+        Leave Request
+    </header>
+
+
+    @using (Html.BeginForm())
+    {
+        <div class="form-card-body">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            @Html.Partial("_LeaveFormPartial", Model)
+
+        </div>
+        <div class="form-card-footer">
+            <input type="SUBMIT" value="Create" class="btn btn-success" />
+            @Html.ActionLink("Cancel", "Leaves", null, new { @class = "btn btn-danger" })
+        </div>
+    }
+</div>
+
+@Html.Action("UpcomingHolidays", "Leave", new { count = 5})
+<script>
+    $("#StartDate, #EndDate, #SecondHalf, #FirstHalf").change(function () {
+        $.get('/Leave/CalculateLeaveDays', {
+            fromDate: $("#StartDate").val(),
+            toDate: $("#EndDate").val(),
+            fromSecondHalf: $("#SecondHalf").is(":checked"),
+            uptoFirstHalf: $("#FirstHalf").is(":checked")
+        }, function (data) {
+            $("#TotalDays").val(data.leaveDays);
+        });
+    });
+</script>

@@ -46,6 +46,7 @@ namespace HRMSProject.Controllers
             {
                 return Json(new { success = false, message = "Session expired" }, JsonRequestBehavior.AllowGet);
             }
+
             int empId = (int)Session["Emp_ID"];
             var result = _dashboardService.GetNavbarData(empId);
 
@@ -69,7 +70,7 @@ namespace HRMSProject.Controllers
         [OutputCache(Duration =69)]
         public JsonResult GetMenus()
         {
-            int roleId = (int)Session["RoleID"];
+            int roleId = 1;
 
             var roleMenus = _roleMenuService.GetAll()
                               .Where(rm => rm.RoleID == roleId)
