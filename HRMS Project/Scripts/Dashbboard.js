@@ -121,12 +121,12 @@ function selectAttendance(mode) {
     document.getElementById("modeForm").submit();
 }
 
-//Hide attendance dropdown on outside click
+// Hide attendance dropdown on outside click
 window.addEventListener('click', function () {
     document.getElementById('attendanceOptions').style.display = 'none';
 });
 
-//Dashboard Welcome Message
+// Dashboard Welcome Message
 function loadDashboadData() {
     $.getJSON('/Dashboard/GetDashboardData', function (data) {
         $('#welcomeText').text(`Welcome, ${data.FirstName}`);
@@ -135,7 +135,7 @@ function loadDashboadData() {
     });
 }
 
-//Navbar Data
+// Navbar Data
 function loadNavbarData() {
     $.getJSON('/Dashboard/GetNavbarData', function (data) {
         const middle = data.MiddleName && data.MiddleName.trim() !== '' ? ` ${data.MiddleName}` : '';
@@ -144,7 +144,7 @@ function loadNavbarData() {
         $('#profileRol').text(`Role: ${data.RoleName}`);
     });
 }
-//Leave Chart
+// Leave Chart
 function leavepiechart() {
     $.getJSON('/Dashboard/GetLeaveChartData', function (data) {
         const ctx = document.getElementById('leaveChart');
@@ -160,7 +160,7 @@ function leavepiechart() {
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, 
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'bottom',
@@ -178,7 +178,7 @@ function leavepiechart() {
 }
 
 
-//Calendar
+//  Calendar
 function loadAttendanceCalendar() {
     const calendarEl = document.getElementById('fullcalendar');
     if (!calendarEl) return;

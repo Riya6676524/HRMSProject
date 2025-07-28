@@ -122,6 +122,11 @@ label.control-label {
     color: darkred;
 }
 
+
+.text-success{
+    color: darkgreen;
+}
+
 .field-validation-error {
     font-size: 13px;
 }
@@ -173,8 +178,52 @@ button.mvc-grid-filter{
 
     .shape.circle {
         border-radius: 50%;
+        margin-right: 10px;
     }
 
 .bg-light-green {
     background-color: lightgreen;
+}
+
+.bg-light-red {
+    background-color: lightcoral;
+}
+
+/*CSS for normal card*/
+.normal-card {
+    width: -webkit-fill-available;
+    background: white;
+    margin: 10px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+.normal-card-header {
+    background: darkblue;
+    padding: 6px 12px;
+    color: white;
+}
+
+
+/*Css for holiday list*/
+.sub-text {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.text-with-sub-text {
+    padding: 10px;
+    display: flex;
+    border-bottom: 1px solid darkgray;
+    align-items: center;
+}
+
+.d-flex{
+    display: flex;
+}
+
+tr.pd-cell-10 > td{
+    padding:10px;
+}
+
+tr.normal-card-header > th{
+    font-weight:inherit;
 }

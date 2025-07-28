@@ -95,7 +95,7 @@ public class AttendanceService : IAttendanceService
                 AttendanceDate = Convert.ToDateTime(row["AttendanceDate"]),
                 FirstHalfStatus = row["FirstHalfStatus"]?.ToString(),
                 SecondHalfStatus = row["SecondHalfStatus"]?.ToString(),
-                ModeID = row["ModeID"] != DBNull.Value ? Convert.ToInt32(row["ModeID"]) : (int?)null,
+                ModeID = row["ModeID"] != null ? Convert.ToInt32(row["ModeID"]) : (int?)null,
                 LoginTime = row["LoginTime"] != DBNull.Value ? Convert.ToDateTime(row["LoginTime"]) : (DateTime?)null,
                 LogoutTime = row["LogoutTime"] != DBNull.Value ? Convert.ToDateTime(row["LogoutTime"]) : (DateTime?)null
             };
@@ -121,7 +121,24 @@ public class AttendanceService : IAttendanceService
             var date = Convert.ToDateTime(row["AttendanceDate"]);
             var first = row["FirstHalfStatus"]?.ToString();
             var second = row["SecondHalfStatus"]?.ToString();
-            var status = (first == "Present" || second == "Present") ? "Present" : "Absent";
+            string status = "";
+
+            if (first == "Present" && second == "Present")
+            {
+                status = "Present";
+            }
+            else if (first == "Present" && second != "Present")
+            {
+                status = "1stHalf: Present";
+            }
+            else if (first != "Present" && second == "Present")
+            {
+                status = "2ndHalf: Present";
+            }
+            else
+            {
+                status = "Absent";
+            }
 
             list.Add(new AttendanceModel
             {

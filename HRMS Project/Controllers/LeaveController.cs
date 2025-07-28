@@ -13,7 +13,6 @@ using HRMSUtility;
 
 namespace HRMS.Controllers
 {
-    [DummyDataFilter]
     public class LeaveController : Controller
     {
         private readonly ILeaveRequestService _leaveRequestService;
@@ -70,6 +69,27 @@ namespace HRMS.Controllers
         }
 
         [HttpGet]
+        public ActionResult LeaveBalancePartial()
+        {
+            var balance = new List<LeaveBalanceModel>();
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
+            var leaveTypes = _leaveTypeService.GetAll();
+            var leaveHistory = _leaveRequestService.GetLeavesByEmp_ID(empId);
+            foreach (var leaveType in leaveTypes)
+            {
+                var leaveBalance = new LeaveBalanceModel()
+                {
+                    LeaveName = leaveType.LeaveName,
+                    LeaveLimit = leaveType.LeaveLimits,
+                    LeaveTaken = leaveHistory.Where(x => leaveType.LeaveTypeID == x.LeaveTypeID).Sum(x => x.TotalDays),
+                };
+                leaveBalance.LeaveBalance = leaveBalance.LeaveLimit - leaveBalance.LeaveTaken;
+                balance.Add(leaveBalance);
+            }
+            return PartialView(balance);
+        }
+
+        [HttpGet]
         public ActionResult UpcomingHolidays(int count = 1)
         {
             var holidays = _holidayService.GetAll();
@@ -86,6 +106,7 @@ namespace HRMS.Controllers
             List<int> allIDS = _employeeService.GetSubOrdinatesByManager(empId);
             var personLeaves = _leaveRequestService.GetLeavesByEmp_ID(empId);
             var allLeaves = new List<LeaveRequestModel>();
+            allLeaves.AddRange(personLeaves);
             foreach (int id in allIDS)
             {
                 allLeaves.AddRange(_leaveRequestService.GetLeavesByEmp_ID(id));

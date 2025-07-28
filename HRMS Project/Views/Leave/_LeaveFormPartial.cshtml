@@ -1,6 +1,7 @@
 ﻿@model HRMSModels.LeaveRequestModel
 
 
+
 <div class="form-group">
     <div class="row">
         @Html.LabelFor(model => model.EMP_ID, htmlAttributes: new { @class = "control-label " })
@@ -16,7 +17,7 @@
     <div class="row">
         @Html.LabelFor(model => model.LeaveTypeID, htmlAttributes: new { @class = "control-label " })
 
-        @Html.DropDownListFor(model => model.LeaveTypeID, ViewBag.LeaveTypes as SelectList, null, new { @class = "form-control" })
+        @Html.DropDownListFor(model => model.LeaveTypeID, ViewBag.LeaveTypes as SelectList, "Select Leave Type", new { @class = "form-control" })
     </div>
     <div class="row">
         @Html.ValidationMessageFor(model => model.LeaveTypeID, "", new { @class = "text-danger" })

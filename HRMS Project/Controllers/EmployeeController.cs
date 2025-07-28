@@ -9,8 +9,6 @@ using System.Threading;
 using System.Web.ApplicationServices;
 using System.Web.Mvc;
 using System.Web.UI;
-using HRMSDAL.Service;
-using HRMSModels;
 using HRMSProject.Models;
 using HRMSUtility;
 
@@ -19,6 +17,7 @@ namespace HRMS.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IEmployeeProfileService _employeeProfileService;
         private readonly IGenderService _genderService;
         private readonly IDepartmentService _departmentService;
         private readonly IRoleService _roleService;
@@ -28,6 +27,7 @@ namespace HRMS.Controllers
 
         public EmployeeController(
             IEmployeeService employeeService,
+            IEmployeeProfileService employeeProfileService,
             IGenderService genderService,
             IDepartmentService departmentService,
             IRoleService roleService,
@@ -37,6 +37,7 @@ namespace HRMS.Controllers
             )
         {
             _employeeService = employeeService;
+            _employeeProfileService = employeeProfileService;
             _genderService = genderService;
             _departmentService = departmentService;
             _roleService = roleService;
@@ -64,7 +65,7 @@ namespace HRMS.Controllers
             var genders = _genderService.GetAll() ?? new List<GenderModel>();
             var departments = _departmentService.GetAll() ?? new List<DepartmentModel>();
             var roles = _roleService.GetAll() ?? new List<RoleModel>();
-            var managers = _employeeService.GetAll() ?? new List<EmployeeModel>();
+            var managers = _employeeService.GetAll().Where(x=> x.RoleID == 2 ) ?? new List<EmployeeModel>();
 
             ViewBag.Countries = new SelectList(countries, "CountryID", "CountryName");
             ViewBag.Genders = new SelectList(genders, "GenderID", "GenderName");
@@ -84,17 +85,11 @@ namespace HRMS.Controllers
             return View(EmployeeViewList);
         }
 
-
-        public ActionResult Index()
-        {
-             return View();
-                    }
-
 [HttpGet]
 public ActionResult Profile()
 {
     int empId = Convert.ToInt32(Session["Emp_ID"]);
-    var model = _employeeService.GetProfile(empId);
+    var model = _employeeProfileService.GetProfile(empId);
     return View(model);
 }
 
@@ -106,7 +101,7 @@ public ActionResult ChangePassword()
 }
 
 [HttpPost]
-public ActionResult ChangePassword(EmployeeModel model)
+public ActionResult ChangePassword(EmployeeProfileModel model)
 {
  
 
@@ -115,7 +110,7 @@ public ActionResult ChangePassword(EmployeeModel model)
 
     int empId = Convert.ToInt32(Session["Emp_ID"]);
 
-    bool result = _employeeService.ChangePassword(empId, model.currpassword, model.newpassword);
+    bool result = _employeeProfileService.ChangePassword(empId, model.currpassword, model.newpassword);
 
     if (result)
     {
@@ -129,12 +124,14 @@ public ActionResult ChangePassword(EmployeeModel model)
         return View(model);
     }
 }
-
- public ActionResult Add()
+        [HttpGet]
+        public ActionResult Add()
         {
             PopulateDropdowns();
             return View();
         }
+
+        [HttpPost]
         public ActionResult Add(EmployeeRegModel regModel)
         {
 

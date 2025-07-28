@@ -78,10 +78,12 @@ namespace HRMSProject.Controllers
                 {
                     title = att.Status,
                     start = att.Date.ToString("yyyy-MM-dd"),
-                    color = att.Status == "Present" ? "#28a745" :
-                            att.Status == "Absent" ? "#dc3545" :
-                            "#ffc107" 
-                });
+                    color = (att.Status == "Present" ||
+                                  att.Status == "1stHalf: Present" ||
+                                   att.Status == "2ndHalf: Present") ? "#28a745" :
+                                   (att.Status == "Absent" ? "#dc3545" :
+                                   "#ffc107")
+                }); 
             }
 
     

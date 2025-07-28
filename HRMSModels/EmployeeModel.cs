@@ -1,13 +1,11 @@
+﻿using HRMS_Project.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using HRMS_Project.Models;
 
 namespace HRMSModels
 {
@@ -40,7 +38,7 @@ namespace HRMSModels
 
         [Required]
         [DisplayName("Contact Number")]
-        public string ContactNumber {  get; set; }
+        public string ContactNumber { get; set; }
 
         [Required]
         public string Address { get; set; }
@@ -72,7 +70,7 @@ namespace HRMSModels
 
         [Required]
         [DisplayName("Role")]
-        public int RoleID  { get; set; }
+        public int RoleID { get; set; }
 
 
         [DisplayName("Manager")]
@@ -91,16 +89,6 @@ namespace HRMSModels
         [DataType(DataType.Password)]
         [Required]
         public string Password { get; set; }
-      
-      [Required(ErrorMessage = "Current password is required")]
-        public string currpassword { get; set; }
 
-        [Required(ErrorMessage = "New password is required")]
-        public string newpassword { get; set; }
-        public string RoleName { get; set; }
-        public string StateName { get; set; }
-        public string CityName { get;set;}
-        public string CountryName { get; set; }  
     }
-
 }

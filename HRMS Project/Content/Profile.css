@@ -1,27 +1,4 @@
-﻿body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    height: 100vh; 
-}
-
-html {
-    height: 100%;
-}
-
-.container {
-    width: 100vw;
-    height: 100vh;
-    padding: 10px;
-    padding-left: 15px;
-    padding-right:15px;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    border-radius: 10px; 
-    box-shadow: none; 
-}
-
+﻿
 .page-title {
     color: #0a2240;
     font-weight: bold;
@@ -32,48 +9,33 @@ html {
 
 .profile-card {
     display: flex;
-    flex-wrap: wrap;
-    background-color: #fff;
-    padding: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    align-items: flex-start;
+    background-color: #ffffff;
+    padding: 20px;
     border-radius: 10px;
-    gap: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    gap: 30px;
+    margin-top: 20px;
 }
-
 .profile-image {
-    margin:35px;
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     object-fit: cover;
     border-radius: 50%;
-    border: 3px solid #0a2240;
+    border: 3px solid #007bff;
+}
+.form-card-body {
+    align-items: stretch;
+    display: grid;
+    gap: 15px;
 }
 
-.profile-details {
-    text-align: left;
-    max-width: 450px;
+.form-group {
+    margin-bottom: 10px;
 }
 
-    .profile-details h5 {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 15px;
-    }
 
-.info-row {
-    display: flex;
-    margin-bottom: 8px;
-}
 
-    .info-row label {
-        width: 140px;
-        font-weight: 600;
-        color: #555;
-    }
-
-    .info-row span {
-        color: #000;
-    }
 
 /* Button */
 

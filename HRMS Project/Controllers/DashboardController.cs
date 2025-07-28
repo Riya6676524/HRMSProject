@@ -38,7 +38,7 @@ namespace HRMSProject.Controllers
         }
 
         [HttpGet]
-        [OutputCache(Duration = 69)]
+    
 
         public JsonResult GetNavbarData()
         {
@@ -67,11 +67,14 @@ namespace HRMSProject.Controllers
 
 
         [HttpGet]
-        [OutputCache(Duration =69)]
+
         public JsonResult GetMenus()
         {
-            int roleId = 1;
-
+            if (Session["RoleID"] == null)
+            {
+                return Json(new { success = false, message = "Session expired" }, JsonRequestBehavior.AllowGet);
+            }
+            int roleId = (int)Session["RoleID"];
             var roleMenus = _roleMenuService.GetAll()
                               .Where(rm => rm.RoleID == roleId)
                               .ToList();

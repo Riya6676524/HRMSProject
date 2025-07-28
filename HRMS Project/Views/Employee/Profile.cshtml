@@ -1,64 +1,104 @@
-﻿@model HRMSModels.EmployeeModel
+﻿@model HRMSModels.EmployeeProfileModel
 @{
     ViewBag.Title = "My Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/Content/Profile.css" rel="stylesheet" />
 
-    <link href="~/Content/Profile.css" rel="stylesheet" />
+<div class="container mt-4">
+    <h2 class="page-title mb-4">My Profile</h2>
 
-    <div class="container">
-        <h2 class="page-title">My Profile</h2>
+    <div class="row profile-card p-4 shadow rounded" style="background-color: white;">
+        <!-- Image Column -->
+        <div class="col-md-4 text-center d-flex align-items-start justify-content-center">
+            <img src="@Url.Action("GetProfileImage", "Dashboard", new { empId = Session["Emp_ID"] })"
+                 class="profile-image img-fluid rounded-circle border"
+                 style="max-width: 200px; height: auto;"
+                 alt="Profile Image" />
+        </div>
 
-        <!-- Profile Section -->
-        <div class="profile-card">
-            <img src="@Url.Action("GetProfileImage", "Dashboard", new { empId = Session["Emp_ID"] })" class="profile-image" alt="Profile Image" />
+        <!-- Form Column -->
+        <div class="col-md-8">
+            <div class="form-card-body">
 
-            <div class="profile-details">
-                <h5>@Model.FirstName @Model.LastName</h5>
-
-                <div class="info-row">
-                    <label>Full Name:</label>
-                    <span>
-                        @{
-                            var fullName = Model.FirstName;
-                            if (!string.IsNullOrWhiteSpace(Model.MiddleName))
-                            {
-                                fullName += " " + Model.MiddleName;
-                            }
-                            fullName += " " + Model.LastName;
-                        }
-                        @fullName
-                    </span>
+                <div class="form-group row">
+                    @Html.Label("Full Name", new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBox("FullName", string.Join(" ", Model.FirstName, Model.MiddleName, Model.LastName), new { @class = "form-control", @readonly = "readonly" })
+                    </div>
                 </div>
 
-                <div class="info-row">
-                    <label>Role:</label>
-                    <span>@Model.RoleName</span>
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.GenderName, new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.GenderName, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
                 </div>
-                <div class="info-row">
-                    <label>Email:</label>
-                    <span>@Model.Email</span>
-                </div>
-                <div class="info-row">
-                    <label>Contact Number:</label>
-                    <span>@Model.ContactNumber</span>
-                </div>
-                <div class="info-row">
-                    <label>Address:</label>
-                    <span>@($"{Model.Address} {Model.CityName} {Model.StateName} {Model.CountryName}")</span>
-                </div>
-            </div>
-            <div class="changpassbutton">
 
-                @Html.ActionLink("Change Password", "ChangePassword", "Employee", null, new { @class = "btn-custom" })
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.DOB, new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBox("DOB", Model.DOB?.ToString("dd MMM yyyy"), new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
 
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Email, new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
 
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.ContactNumber, new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.ContactNumber, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.Label("Address", new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBox("Address", $"{Model.Address}, {Model.CityName}, {Model.StateName}, {Model.CountryName}", new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.ZipCode, new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.ZipCode, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.RoleName, new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.RoleName, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.DepartmentName, new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.DepartmentName, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.ReportingManagerName, new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.ReportingManagerName, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="form-group text-end mt-3">
+                    @Html.ActionLink("Change Password", "ChangePassword", "Employee", null, new { @class = "btn btn-primary" })
+                </div>
 
             </div>
         </div>
-        </div>
-
-      
+    </div>
+</div>
 
 

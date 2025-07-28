@@ -82,9 +82,10 @@ namespace HRMSProject.Controllers
                 DateTime today = DateTime.Today;
 
                 var attendance = _attendanceService.GetAttendanceByDate(empId, today);
-                int? modeId = attendance?.ModeID;
+                int? modeId = attendance != null ? attendance.ModeID : null;
 
-                _attendanceService.MarkLoginTime(empId, modeId);
+
+            _attendanceService.MarkLoginTime(empId, modeId);
 
 
                 return RedirectToAction("Index", "Dashboard");

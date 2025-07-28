@@ -141,7 +141,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action Filters\DummyDataFilter.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -160,6 +159,7 @@
     </Compile>
     <Compile Include="Models\EmployeeListModel.cs" />
     <Compile Include="Models\EmployeeRegModel.cs" />
+    <Compile Include="Models\LeaveBalanceModel.cs" />
     <Compile Include="Models\LeaveListViewData.cs" />
     <Compile Include="Models\LeaveReqMoWithReqCom.cs" />
     <Compile Include="Models\MessageBoxViewModel.cs" />
@@ -184,8 +184,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
-    <Content Include="Content\Components.css" />
     <Content Include="Content\ChangePassword.css" />
+    <Content Include="Content\Components.css" />
     <Content Include="Content\Dashboard.css" />
     <Content Include="Content\HRPolicies.css" />
     <Content Include="Content\Layout.css" />
@@ -247,8 +247,6 @@
     <Content Include="Views\Documents\HRPolicies.cshtml" />
     <Content Include="Views\Documents\Index.cshtml" />
     <Content Include="Views\Employee\Profile.cshtml" />
-    <Content Include="Views\Employee\Index.cshtml" />
-    <Content Include="Views\Leave\Manage.cshtml" />
     <Content Include="Views\Shared\Pagination.cshtml" />
     <Content Include="Views\Shared\MvcGrid\_Pager.cshtml" />
     <Content Include="Views\Shared\MvcGrid\_Grid.cshtml" />
@@ -256,6 +254,7 @@
     <Content Include="Views\Leave\LeaveGridPartial.cshtml" />
     <Content Include="Views\Leave\UpcomingHolidayPartial.cshtml" />
     <Content Include="Views\Employee\ChangePassword.cshtml" />
+    <Content Include="Views\Leave\LeaveBalancePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

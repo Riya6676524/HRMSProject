@@ -10,7 +10,6 @@ namespace HRMSDAL.Service
     {
         string GetNextAvailableEmployeeId();
         List<int> GetSubOrdinatesByManager(int empId);
-        EmployeeModel GetProfile(int empId);
-        bool ChangePassword(int empId, string currentPassword, string newPassword);
+       
     }
 }

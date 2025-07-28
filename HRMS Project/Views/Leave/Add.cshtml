@@ -4,30 +4,34 @@
     ViewBag.Title = "LeaveForm";
 }
 
-<div class="form-card">
+<div style="display:flex">
+    <div class="form-card">
 
-    <header class="form-card-header">
-        Leave Request
-    </header>
+        <header class="form-card-header">
+            Leave Request
+        </header>
 
 
-    @using (Html.BeginForm())
-    {
-        <div class="form-card-body">
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @using (Html.BeginForm())
+        {
+            <div class="form-card-body">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            @Html.Partial("_LeaveFormPartial", Model)
+                @Html.Partial("_LeaveFormPartial", Model)
 
-        </div>
-        <div class="form-card-footer">
-            <input type="SUBMIT" value="Create" class="btn btn-success" />
-            @Html.ActionLink("Cancel", "Leaves", null, new { @class = "btn btn-danger" })
-        </div>
-    }
+            </div>
+            <div class="form-card-footer">
+                <input type="SUBMIT" value="Create" class="btn btn-success" />
+                @Html.ActionLink("Cancel", "Leaves", null, new { @class = "btn btn-danger" })
+            </div>
+        }
+    </div>
+    <div style=" width: -webkit-fill-available; display: flex; flex-direction: column; justify-content: space-between;">
+        @Html.Action("UpcomingHolidays", "Leave", new { count = 3 })
+        @Html.Action("LeaveBalancePartial", "Leave")
+    </div>
 </div>
-
-@Html.Action("UpcomingHolidays", "Leave", new { count = 5})
 <script>
     $("#StartDate, #EndDate, #SecondHalf, #FirstHalf").change(function () {
         $.get('/Leave/CalculateLeaveDays', {

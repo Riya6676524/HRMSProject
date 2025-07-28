@@ -48,6 +48,7 @@
     <Compile Include="Service Implementation\AttendanceService.cs" />
     <Compile Include="Service Implementation\DashboardService.cs" />
     <Compile Include="Service Implementation\DepartmentService.cs" />
+    <Compile Include="Service Implementation\EmployeeProfileService.cs" />
     <Compile Include="Service Implementation\EmployeeService.cs" />
     <Compile Include="Service Implementation\ForgotPasswordService.cs" />
     <Compile Include="Service Implementation\GenderService.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Service\IAttendanceService.cs" />
     <Compile Include="Service\IDashboardService.cs" />
     <Compile Include="Service\IDepartmentService.cs" />
+    <Compile Include="Service\IEmployeeProfileService.cs" />
     <Compile Include="Service\IEmployeeService.cs" />
     <Compile Include="Service\IForgotPasswordService.cs" />
     <Compile Include="Service\IGenderService.cs" />

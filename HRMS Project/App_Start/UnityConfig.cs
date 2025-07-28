@@ -51,6 +51,7 @@ namespace HRMS_Project
             container.RegisterType<IAttendanceService, AttendanceService>();
             container.RegisterType<IHolidayService, HolidayService>();
             container.RegisterType<IEmployeeService, EmployeeService>();
+            container.RegisterType<IEmployeeProfileService, EmployeeProfileService>();
         }
     }
 }

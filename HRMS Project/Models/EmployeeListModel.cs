@@ -29,7 +29,6 @@ namespace HRMSProject.Models
             this.EmployeeID = obj.EmployeeID;
             this.Name = $"{obj.FirstName} {obj.Middlename} {obj.LastName}";
             this.Email = obj.Email;
-            this.Phone = obj.ContactNumber;
             this.CreatedON = obj.CreatedOn;
             this.UpdatedON = obj.ModifiedOn;
         }

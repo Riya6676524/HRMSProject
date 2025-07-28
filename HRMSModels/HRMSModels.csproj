@@ -46,6 +46,7 @@
     <Compile Include="CountryModel.cs" />
     <Compile Include="DepartmentModel.cs" />
     <Compile Include="EmployeeModel.cs" />
+    <Compile Include="EmployeeProfileModel.cs" />
     <Compile Include="ExceptionLogModel.cs" />
     <Compile Include="ForgotPasswordModel.cs" />
     <Compile Include="GenderModel.cs" />
@@ -55,7 +56,6 @@
     <Compile Include="LeaveTypeModel.cs" />
     <Compile Include="LocationModel.cs" />
     <Compile Include="AttendanceModel.cs" />
-    <Compile Include="EmployeeModel.cs" />
     <Compile Include="ExceptionLogModel.cs" />
     <Compile Include="ForgotPasswordModel.cs" />
     <Compile Include="HolidayModel.cs" />
