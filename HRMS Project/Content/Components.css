@@ -93,7 +93,10 @@
     width: 50%;
     margin-bottom:10px;
 }
-
+.column {
+    display: flex;
+    flex-direction: column;
+}
 
 
 .form-group.single-column{

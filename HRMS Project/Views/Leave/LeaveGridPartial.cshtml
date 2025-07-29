@@ -4,17 +4,16 @@
 @{LeaveListViewData leaveListViewData = ViewBag.LeaveListData; }
 
 
-
 @(Html
     .Grid(Model)
     .Build(columns =>
     {
-        columns.Add(model => leaveListViewData.EmployeeNames[model.EMP_ID]).Titled("Name").Filterable(true);
-        columns.Add(model => @leaveListViewData.LeaveTypes[model.LeaveTypeID]).Titled("LeaveType");
-        columns.Add(model => $"{model.StartDate:d} to {model.EndDate.Date:d}").Titled("From and Till");
+        columns.Add(model => model.EMP_ID).Titled("Name").Filterable(true).RenderedAs(model => leaveListViewData.EmployeeNames[model.EMP_ID]);
+        columns.Add(model => model.LeaveTypeID).Titled("LeaveType").RenderedAs(model => @leaveListViewData.LeaveTypes[model.LeaveTypeID]);
+        columns.Add(model => model.StartDate).Titled("From and Till").RenderedAs( model => $"{model.StartDate:d} to {model.EndDate.Date:d}");
         columns.Add(model => model.TotalDays).Titled("Leave Days");
-        columns.Add(model => model.RequestDate.ToShortDateString()).Titled("Requested On");
-        columns.Add(model => leaveListViewData.LeaveStatuses[model.LeaveStatusID]).Titled("Leave Status");
+        columns.Add(model => model.RequestDate).Titled("Requested On").RenderedAs(model => model.RequestDate.ToShortDateString());
+        columns.Add(model => model.LeaveStatusID).Titled("Leave Status").RenderedAs(model => leaveListViewData.LeaveStatuses[model.LeaveStatusID]);
         columns.Add(model => model)
                 .Titled("Action")
                 .Encoded(false)
@@ -24,7 +23,7 @@
                     {
                         if (model.EMP_ID == Convert.ToInt32(Session["EMP_ID"]))
                         {
-                            return @Html.ActionLink("Cancel", "Delete", new { id = model.RequestID });
+                            return @Html.ActionLink("Cancel", "Cancel", new { id = model.RequestID });
                         }
                         else
                         {
@@ -33,9 +32,11 @@
                     }
                     else
                     {
-                        return $"{model.ApproverID} {model.ApproverDate:dd/MM/yyyy}";
+                        return $"";
                     }
                 });
+        columns.Add(model => model.ApproverID).Titled("Approver").Encoded(false).RenderedAs(model => model.ApproverID is null ? "" : @leaveListViewData.EmployeeNames[model.ApproverID ?? 0]);
+        columns.Add(model => model.ApproverDate).Titled("Approve Date");
     }
     )
     .Sortable()
@@ -47,5 +48,4 @@
         pager.CurrentPage = 2;
     }
     )
-    .UsingFilterMode(GridFilterMode.Row)
 )

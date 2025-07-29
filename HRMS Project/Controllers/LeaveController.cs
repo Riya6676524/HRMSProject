@@ -68,6 +68,18 @@ namespace HRMS.Controllers
             };
         }
 
+        public ActionResult PastLeavesPartial(int? id,int count = 3)
+        {
+            int empID = Convert.ToInt32(Session["Emp_ID"]);
+            if (!(id is null))
+            {
+                empID = id ?? Convert.ToInt32(Session["Emp_ID"]);
+            }
+            List<LeaveRequestModel> leaves = _leaveRequestService.GetLeavesByEmp_ID(empID).Take(count).ToList();
+            initLeaveListViewBag(leaves);
+            return PartialView(leaves);
+        }
+
         [HttpGet]
         public ActionResult LeaveBalancePartial()
         {
@@ -138,9 +150,12 @@ namespace HRMS.Controllers
             obj.RequestDate = DateTime.Now;
 
             //This Might Return 0 in case there are no corresponding record with "pending"
-            if(_employeeService.GetById(obj.EMP_ID).ReportingManagerID == null)
+            var emp = _employeeService.GetById(obj.EMP_ID);
+            if (emp.ReportingManagerID is null)
             {
                 obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName.ToUpper() == "APPROVED").Select(x => x.LeaveStatusID).FirstOrDefault();
+                obj.ApproverID = emp.EMP_ID;
+                obj.ApproverDate = DateTime.Now;
             }
             else {
                 obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName.ToUpper() == "PENDING").Select(x => x.LeaveStatusID).FirstOrDefault();
@@ -174,7 +189,7 @@ namespace HRMS.Controllers
                     _leaveRequestService.Update(toBeApprovedModel);
                 }
             }
-            return RedirectToAction("LeaveRequests", "Leave");
+            return RedirectToAction("Leaves", "Leave");
         }
 
         public ActionResult LeaveGridPartial()
@@ -188,10 +203,10 @@ namespace HRMS.Controllers
                 allLeaves.AddRange(_leaveRequestService.GetLeavesByEmp_ID(id));
             }
             initLeaveListViewBag(allLeaves);
-            return View("LeaveGridPartial", allLeaves);
+            return PartialView("LeaveGridPartial", allLeaves);
         }
 
-        public ActionResult Delete(int id)
+        public ActionResult Cancel(int id)
         {
             LeaveRequestModel toBeApprovedModel = _leaveRequestService.GetById(id);
             LeaveStatusModel curStatus = _leaveStatusService.GetById(toBeApprovedModel.LeaveStatusID);
@@ -202,7 +217,7 @@ namespace HRMS.Controllers
                     toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
                     _leaveRequestService.Update(toBeApprovedModel);
             }
-            return RedirectToAction("LeaveRequests", "Leave");
+            return RedirectToAction("Leaves", "Leave");
         }
 
         [HttpGet]

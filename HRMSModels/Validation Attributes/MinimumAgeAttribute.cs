@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace HRMS_Project.Models
+namespace HRMSModels
 {
     public class MinimumAgeAttribute : ValidationAttribute
     {

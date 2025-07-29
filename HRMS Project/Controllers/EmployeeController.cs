@@ -65,7 +65,7 @@ namespace HRMS.Controllers
             var genders = _genderService.GetAll() ?? new List<GenderModel>();
             var departments = _departmentService.GetAll() ?? new List<DepartmentModel>();
             var roles = _roleService.GetAll() ?? new List<RoleModel>();
-            var managers = _employeeService.GetAll().Where(x=> x.RoleID == 2 ) ?? new List<EmployeeModel>();
+            var managers = _employeeService.GetAll().Where(x => x.RoleID == 2) ?? new List<EmployeeModel>();
 
             ViewBag.Countries = new SelectList(countries, "CountryID", "CountryName");
             ViewBag.Genders = new SelectList(genders, "GenderID", "GenderName");
@@ -76,6 +76,7 @@ namespace HRMS.Controllers
 
         public ActionResult Employees()
         {
+            
             var EmployeeList = _employeeService.GetAll();
             var EmployeeViewList = new List<EmployeeListModel>();
             foreach (EmployeeModel item in EmployeeList)
@@ -85,45 +86,45 @@ namespace HRMS.Controllers
             return View(EmployeeViewList);
         }
 
-[HttpGet]
-public ActionResult Profile()
-{
-    int empId = Convert.ToInt32(Session["Emp_ID"]);
-    var model = _employeeProfileService.GetProfile(empId);
-    return View(model);
-}
+        [HttpGet]
+        public ActionResult Profile()
+        {
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
+            var model = _employeeProfileService.GetProfile(empId);
+            return View(model);
+        }
 
-[HttpGet]
-public ActionResult ChangePassword()
-{
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
 
-    return View();
-}
+            return View();
+        }
 
-[HttpPost]
-public ActionResult ChangePassword(EmployeeProfileModel model)
-{
- 
+        [HttpPost]
+        public ActionResult ChangePassword(EmployeeProfileModel model)
+        {
 
-    if (!ModelState.IsValid)
-        return View(model);
 
-    int empId = Convert.ToInt32(Session["Emp_ID"]);
+            if (!ModelState.IsValid)
+                return View(model);
 
-    bool result = _employeeProfileService.ChangePassword(empId, model.currpassword, model.newpassword);
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
 
-    if (result)
-    {
-        TempData["Message"] = "Password updated successfully!";
-        ModelState.Clear();
-        return RedirectToAction("ChangePassword");
-    }
-    else
-    {
-        ModelState.AddModelError("currpassword", "Invalid current password");
-        return View(model);
-    }
-}
+            bool result = _employeeProfileService.ChangePassword(empId, model.currpassword, model.newpassword);
+
+            if (result)
+            {
+                TempData["Message"] = "Password updated successfully!";
+                ModelState.Clear();
+                return RedirectToAction("ChangePassword");
+            }
+            else
+            {
+                ModelState.AddModelError("currpassword", "Invalid current password");
+                return View(model);
+            }
+        }
         [HttpGet]
         public ActionResult Add()
         {

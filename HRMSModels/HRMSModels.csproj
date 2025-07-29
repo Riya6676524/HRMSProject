@@ -67,6 +67,7 @@
     <Compile Include="RoleMenuModel.cs" />
     <Compile Include="RoleModel.cs" />
     <Compile Include="StateModel.cs" />
+    <Compile Include="Validation Attributes\DateAfterAttribute.cs" />
     <Compile Include="Validation Attributes\MinimumAgeAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

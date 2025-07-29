@@ -29,6 +29,7 @@
     </div>
     <div style=" width: -webkit-fill-available; display: flex; flex-direction: column; justify-content: space-between;">
         @Html.Action("UpcomingHolidays", "Leave", new { count = 3 })
+        @Html.Action("PastLeavesPartial", "Leave", new { count = 3 })
         @Html.Action("LeaveBalancePartial", "Leave")
     </div>
 </div>
