@@ -22,11 +22,13 @@
     height: 180px;
     object-fit: cover;
     border-radius: 50%;
-    border: 3px solid #007bff;
+    border: 3px solid #f5f5f5;
 }
 .form-card-body {
-    align-items: stretch;
-    display: grid;
+    width: 750px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     gap: 15px;
 }
 
@@ -34,15 +36,19 @@
     margin-bottom: 10px;
 }
 
+.form-control {
+    border: 2px solid #f5f5f5;
+    font-family: inherit;
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 10px;
+}
 
 
 
 /* Button */
 
-.changpassbutton{
-    margin-top:25px;
-}
-.btn-custom {
+.btn.btn-primary {
     background: linear-gradient(to right, #0a2240, #007bff);
     color: #fff;
     padding: 8px 16px;
@@ -50,15 +56,9 @@
     border-radius: 6px;
     font-size: 15px;
     cursor: pointer;
-    text-decoration:none;
+    text-decoration: none;
 }
-
-    .btn-custom:hover {
-        background: linear-gradient(to right, #007bff, #5ab1f2);
-        text-decoration: none;
-    }
-
-.w-100 {
-    width: 100%;
+.btn.btn-primary:hover{
+    background: linear-gradient(to right, #007bff, #5ab1f2);
+    text-decoration: none;
 }
-

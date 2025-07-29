@@ -10,7 +10,7 @@ namespace HRMSModels
     public class EmployeeProfileModel
     {
         public int Emp_ID { get; set; }
-        public  string Employee_ID { get; set; }
+        public  string EmployeeID { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
@@ -30,10 +30,8 @@ namespace HRMSModels
 
         public string CountryName { get; set; }
 
-        [Required(ErrorMessage = "Current password is required")]
         public string currpassword { get; set; }
-
-        [Required(ErrorMessage = "New password is required")]
         public string newpassword { get; set; }
+        public string confirmNewPassword { get; set; }
     }
 }

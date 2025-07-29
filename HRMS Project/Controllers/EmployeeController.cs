@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using System.Web.UI;
 using HRMSProject.Models;
 using HRMSUtility;
+using System.Reflection;
 
 namespace HRMS.Controllers
 {
@@ -211,12 +212,69 @@ namespace HRMS.Controllers
         {
             _employeeService.Delete(empId);
             return Json(new { success = true });
-
         }
+
+
+        [HttpPost]
+        public ActionResult ChangePassword(EmployeeProfileModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
+
+            if (string.IsNullOrWhiteSpace(model.currpassword))
+            {
+                ModelState.AddModelError("currpassword", "Current password is required.");
+                return View(model);
+            }
+            if (string.IsNullOrWhiteSpace(model.newpassword))
+            {
+                ModelState.AddModelError("newpassword", "New password is required.");
+                return View(model);
+            }
+            if (string.IsNullOrWhiteSpace(model.confirmNewPassword))
+            {
+                ModelState.AddModelError("confirmNewPassword", "Confirm New password is required.");
+                return View(model);
+            }
+
+            if (model.newpassword.Length < 8 ||
+                !model.newpassword.Any(char.IsUpper) ||
+                !model.newpassword.Any(char.IsLower) ||
+                !model.newpassword.Any(char.IsDigit) ||
+                !model.newpassword.Any(ch => !char.IsLetterOrDigit(ch)))
+            {
+                ModelState.AddModelError("newpassword", "Password must be at least 8 characters and include uppercase, lowercase, digit, and special character.");
+                return View(model);
+            }
+
+            if (model.newpassword != model.confirmNewPassword)
+            {
+                ModelState.AddModelError("confirmNewPassword", "Passwords do not match");
+                return View(model);
+            }
+
+            string storedPassword = _employeeProfileService.GetEncodedPassword(empId);
+            string enteredCurrentPassword = Base64Helper.Encode(model.currpassword);
+
+            if (storedPassword != enteredCurrentPassword)
+            {
+                ModelState.AddModelError("currpassword", "Invalid current password");
+                return View(model);
+            }
+
+            string encodedNewPassword = Base64Helper.Encode(model.newpassword);
+            _employeeProfileService.ChangePassword(empId, encodedNewPassword);
+
+                TempData["Message"] = "Password updated successfully!";
+                return RedirectToAction("ChangePassword");
+            }
+        }
+
+
+
     }
-
-}
-
 
 
 
