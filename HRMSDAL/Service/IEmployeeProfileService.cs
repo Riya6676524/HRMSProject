@@ -10,6 +10,7 @@ namespace HRMSDAL.Service
     public interface IEmployeeProfileService
     {
         EmployeeProfileModel GetProfile(int empId);
-        bool ChangePassword(int empId, string currentPassword, string newPassword);
+        bool ChangePassword(int empId, string newPassword);
+        string GetEncodedPassword(int empId);
     }
 }

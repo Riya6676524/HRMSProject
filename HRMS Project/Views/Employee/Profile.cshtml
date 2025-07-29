@@ -3,6 +3,11 @@
     ViewBag.Title = "My Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .form-group{
+        width: 49%;
+    }
+</style>
 
 <link href="~/Content/Profile.css" rel="stylesheet" />
 
@@ -10,29 +15,37 @@
     <h2 class="page-title mb-4">My Profile</h2>
 
     <div class="row profile-card p-4 shadow rounded" style="background-color: white;">
-        <!-- Image Column -->
-        <div class="col-md-4 text-center d-flex align-items-start justify-content-center">
-            <img src="@Url.Action("GetProfileImage", "Dashboard", new { empId = Session["Emp_ID"] })"
-                 class="profile-image img-fluid rounded-circle border"
-                 style="max-width: 200px; height: auto;"
-                 alt="Profile Image" />
-        </div>
 
         <!-- Form Column -->
         <div class="col-md-8">
-            <div class="form-card-body">
-
+            <div class="form-card-body" style="display:flex;flex-direction:row;flex-wrap:wrap;justify-content:space-between;width:inherit">
+                <div class="form-group" style="display:flex;justify-content:center">
+                    <img src="@Url.Action("GetProfileImage", "Dashboard", new { empId = Session["Emp_ID"] })"
+                         class="profile-image img-fluid rounded-circle border"
+                         style="max-width: 200px;"
+                         alt="Profile Image" />
+                </div>
                 <div class="form-group row">
-                    @Html.Label("Full Name", new { @class = "control-label col-sm-4" })
+                    <div style="padding:22px">
+                    @Html.Label("EmployeeID", new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.TextBox("FullName", string.Join(" ", Model.FirstName, Model.MiddleName, Model.LastName), new { @class = "form-control", @readonly = "readonly" })
+                        @Html.TextBoxFor(model => model.EmployeeID, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <br>
+                        <div>                    
+                        @Html.Label("Full Name", new { @class = "control-label col-sm-4" })
+                        <div class="col-sm-8">
+                            @Html.TextBox("Full Name", string.Join(" ", Model.FirstName, Model.MiddleName, Model.LastName), new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                            </div>
                     </div>
                 </div>
+                
 
                 <div class="form-group row">
-                    @Html.LabelFor(model => model.GenderName, new { @class = "control-label col-sm-4" })
+                    @Html.Label("Gender Name", new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.GenderName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.TextBox("Gender Name", string.Join(" ", Model.GenderName), new { @class = "form-control", @readonly = "readonly" })
                     </div>
                 </div>
 
@@ -51,9 +64,9 @@
                 </div>
 
                 <div class="form-group row">
-                    @Html.LabelFor(model => model.ContactNumber, new { @class = "control-label col-sm-4" })
+                    @Html.Label("Contact Number", new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.ContactNumber, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.TextBox("Contact Number", string.Join(" ", Model.ContactNumber), new { @class = "form-control", @readonly = "readonly" })
                     </div>
                 </div>
 
@@ -72,23 +85,16 @@
                 </div>
 
                 <div class="form-group row">
-                    @Html.LabelFor(model => model.RoleName, new { @class = "control-label col-sm-4" })
+                    @Html.Label("Role", new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.RoleName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.TextBox("Role", string.Join(" ", Model.RoleName), new { @class = "form-control", @readonly = "readonly" })
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    @Html.LabelFor(model => model.DepartmentName, new { @class = "control-label col-sm-4" })
+                    @Html.Label("Department Name", new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.DepartmentName, new { @class = "form-control", @readonly = "readonly" })
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    @Html.LabelFor(model => model.ReportingManagerName, new { @class = "control-label col-sm-4" })
-                    <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.ReportingManagerName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.TextBox("Department Name", string.Join(" ", Model.DepartmentName), new { @class = "form-control", @readonly = "readonly" })
                     </div>
                 </div>
 

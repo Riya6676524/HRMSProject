@@ -86,7 +86,6 @@ namespace HRMSProject.Controllers
                 }); 
             }
 
-    
             foreach (var holiday in holidayList)
             {
                 events.Add(new
@@ -97,7 +96,6 @@ namespace HRMSProject.Controllers
                     backgroundColor = "#bfbfbf"
                 });
             }
-
 
             return Json(events, JsonRequestBehavior.AllowGet);
         }

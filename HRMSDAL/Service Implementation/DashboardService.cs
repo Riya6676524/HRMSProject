@@ -1,10 +1,12 @@
 ﻿using HRMSDAL.Helper;
 using HRMSDAL.Service;
+using HRMSDAL.Service_Implementation;
 using HRMSModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace HRMSDAL.Service_Implementation
 {
@@ -36,37 +38,21 @@ namespace HRMSDAL.Service_Implementation
     
             public LeaveSummaryModel GetLeaveSummary(int empId)
             {
-               
-                int currentMonth = DateTime.Now.Month;
-                int totalEntitled = currentMonth * 2;
-                double leaveTaken = 1;
-                double carryForward = 2; //ye databse se aayega as its yearly carryForward leave 
-                                         // we need cary forward leave table which contain the availableleave of previousyear 
 
+            LeaveRequestService obj = new LeaveRequestService();
+            int currentMonth = DateTime.Now.Month;
+            int LeaveTaken = (int)obj.GetLeavesByEmp_ID(empId).Where( item => item.StartDate.Month <= DateTime.Now.Month && item.EndDate.Month <= DateTime.Now.Month).Sum(item => item.TotalDays);
+            int TotalAvailableLeave = currentMonth * 2 - LeaveTaken;
 
+            return new LeaveSummaryModel
+            {
 
-            var result = DBHelper.ExecuteScalar(
-             "GetApprovedLeaveTaken",
-             CommandType.StoredProcedure,
-             new SqlParameter[] { new SqlParameter("@Emp_ID", empId) }
-         );
-
-                if (result != null && result != DBNull.Value)
-                {
-                    leaveTaken = Convert.ToDouble(result);
-                }
-              
-                double totalAvailable = Convert.ToDouble(totalEntitled-leaveTaken+carryForward);
-                
-                return new LeaveSummaryModel
-                {
-                    TotalAvailable = totalAvailable,
-                    LeaveTaken = Convert.ToInt32(leaveTaken)
-                };
-            }
+                LeaveTaken = LeaveTaken,
+                TotalAvailable = TotalAvailableLeave
+            };
         }
     }
-
+    }
 
 
 

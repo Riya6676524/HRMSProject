@@ -28,7 +28,9 @@ namespace HRMSDAL.Service_Implementation
             if (result.Count > 0)
             {
                 var row = result[0];
-
+                model.DOB = Convert.ToDateTime(row["DOB"]);
+                model.EmployeeID = row["EmployeeID"]?.ToString();
+                model.GenderName = row["GenderName"]?.ToString();
                 model.FirstName = row["FirstName"]?.ToString();
                 model.MiddleName = row["MiddleName"]?.ToString();
                 model.LastName = row["LastName"]?.ToString();
@@ -41,24 +43,35 @@ namespace HRMSDAL.Service_Implementation
                 model.CityName = row["CityName"]?.ToString();
                 model.CountryName = row["CountryName"]?.ToString();
                 model.RoleName = row["RoleName"]?.ToString();
+                model.ZipCode = Convert.ToInt32(row["ZipCode"]);
+                model.DepartmentName = row["DepartmentName"]?.ToString();
+
             }
             return model;
-
         }
 
-
-
-        public bool ChangePassword(int empId, string currentPassword, string newPassword)
+        public string GetEncodedPassword(int empId)
         {
-
-            var param = new SqlParameter[] {
-                new SqlParameter("@Emp_ID", empId),
-                new SqlParameter("@CurrentPassword", currentPassword),
-                new SqlParameter("@NewPassword", newPassword)
-            };
-
-            int result = DBHelper.ExecuteNonQuery("sp_ChangePassword", CommandType.StoredProcedure, param);
-            return result > 0;
+            string query = "SELECT Password FROM Employee WHERE Emp_ID = @Emp_ID";
+            SqlParameter[] param = {
+        new SqlParameter("@Emp_ID", empId)
+    };
+            object result = DBHelper.ExecuteScalar(query, CommandType.Text, param);
+            return result?.ToString();
         }
+
+
+        public bool ChangePassword(int empId, string newPassword)
+        {
+            var param = new SqlParameter[] {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@NewPassword", newPassword)
+    };
+
+            int rowsAffected = DBHelper.ExecuteNonQuery("sp_ChangePassword", CommandType.StoredProcedure, param);
+            return rowsAffected > 0;
+        }
+
     }
 }
+
