@@ -102,30 +102,6 @@ namespace HRMS.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult ChangePassword(EmployeeProfileModel model)
-        {
-
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            int empId = Convert.ToInt32(Session["Emp_ID"]);
-
-            bool result = _employeeProfileService.ChangePassword(empId, model.currpassword, model.newpassword);
-
-            if (result)
-            {
-                TempData["Message"] = "Password updated successfully!";
-                ModelState.Clear();
-                return RedirectToAction("ChangePassword");
-            }
-            else
-            {
-                ModelState.AddModelError("currpassword", "Invalid current password");
-                return View(model);
-            }
-        }
         [HttpGet]
         public ActionResult Add()
         {
