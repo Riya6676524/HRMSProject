@@ -1,0 +1,73 @@
+﻿
+
+<div id="deleteModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3>Confirm Deletion</h3>
+        <p>Are you sure you want to delete <strong id="modalEmployeeName"></strong>?</p>
+        <form id="deleteForm" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="deleteEmpId" />
+            <div class="modal-buttons">
+                <button class="btn" type="button" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-danger" type="submit">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+    }
+
+    .modal-box {
+        background-color: white;
+        width: 300px;
+        padding: 20px;
+        margin: 100px auto;
+        border-radius: 8px;
+        box-shadow: 0 0 10px #000;
+        text-align: center;
+    }
+
+    .modal-buttons {
+        margin-top: 20px;
+    }
+
+        .modal-buttons button {
+            padding: 6px 12px;
+            margin: 0 8px;
+            cursor: pointer;
+        }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('.delete-link').on('click', function (e) {
+            e.preventDefault();
+
+            var empId = $(this).data('id');
+            var empName = $(this).data('name');
+
+            $('#modalEmployeeName').text(empName);
+            $('#deleteEmpId').val(empId);
+            $('#deleteForm').attr('action', '/Employee/Delete');
+
+            $('#deleteModal').show(); // Show the custom modal
+        });
+
+        $('.modal-overlay').on('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+    });
+    function closeModal() {
+        $('#deleteModal').hide();
+    }
+</script>

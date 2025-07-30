@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HRMSProject.Models.EmployeeListModel>
+﻿@model IEnumerable<HRMSModels.EmployeeModel>
 
 
 
@@ -7,13 +7,12 @@
     .Build(columns =>
     {
         columns.Add(model => model.EmployeeID).Titled("Employee ID").Sortable(true);
-        columns.Add(model => model.Name).Titled("Name").Sortable(true);
+        columns.Add(model => model.FirstName).Titled("Name").Sortable(true).RenderedAs(model => $"{model.FirstName} {model.Middlename} {model.LastName}");
         columns.Add(model => model.Email).Titled("Email").Sortable(true);
-        columns.Add(model => model.Phone).Titled("Phone").Sortable(true);
-        columns.Add(model => model.CreatedON).Titled("Created On").Sortable(true);
-        columns.Add(model => model.UpdatedON).Titled("Updated On").Sortable(true);
-        columns.Add(item => $"<a class='action-icon icon-warning' href='{Url.Action("Edit", new { id = item.EmployeeID })}'>  <i class='fa fa-edit'></i> </a>" +
-        $"<a class='action-icon icon-danger' href='{Url.Action("Delete", new { id = item.EmployeeID })}'>  <i class='fa-solid fa-trash'></i> </a>"
+        columns.Add(model => model.ContactNumber).Titled("Phone").Sortable(true);
+        columns.Add(model => model.CreatedOn).Titled("Joined On").Sortable(true).RenderedAs(model => model.CreatedOn.ToShortDateString());
+        columns.Add(item => $"<a class='action-icon icon-warning' href='{Url.Action("Edit", new { id = item.EMP_ID })}'>  <i class='fa fa-edit'></i> </a>" +
+        $"<a class='action-icon icon-danger delete-link' href='#' data-id='{item.EMP_ID}' data-name='{item.FirstName} {item.Middlename} {item.LastName}'>  <i class='fa-solid fa-trash'></i> </a>"
         ).Encoded(false);
 
     })
