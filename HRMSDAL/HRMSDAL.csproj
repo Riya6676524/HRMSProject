@@ -54,6 +54,7 @@
     <Compile Include="Service Implementation\GenderService.cs" />
     <Compile Include="Service Implementation\GenericService.cs" />
     <Compile Include="Service Implementation\HolidayService.cs" />
+    <Compile Include="Service Implementation\LeaveBalanceService.cs" />
     <Compile Include="Service Implementation\LeaveRequestService.cs" />
     <Compile Include="Service Implementation\LeaveStatusService.cs" />
     <Compile Include="Service Implementation\LeaveTypeService.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Service\IGenderService.cs" />
     <Compile Include="Service\IGenericService.cs" />
     <Compile Include="Service\IHolidayService.cs" />
+    <Compile Include="Service\ILeaveBalanceService.cs" />
     <Compile Include="Service\ILeaveRequestService.cs" />
     <Compile Include="Service\ILeaveStatusService.cs" />
     <Compile Include="Service\ILeaveTypeService.cs" />

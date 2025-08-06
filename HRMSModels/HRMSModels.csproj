@@ -51,6 +51,7 @@
     <Compile Include="ForgotPasswordModel.cs" />
     <Compile Include="GenderModel.cs" />
     <Compile Include="HolidayModel.cs" />
+    <Compile Include="LeaveBalanceModel.cs" />
     <Compile Include="LeaveRequestModel.cs" />
     <Compile Include="LeaveStatusModel.cs" />
     <Compile Include="LeaveTypeModel.cs" />

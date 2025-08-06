@@ -64,6 +64,10 @@ namespace HRMSModels
         public DateTime DOB { get; set; }
 
         [Required]
+        [DisplayName("Location")]
+        public int LocationID { get; set; }
+
+        [Required]
         [DisplayName("Department")]
         public int DepartmentID { get; set; }
 
