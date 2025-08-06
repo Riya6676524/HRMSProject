@@ -9,9 +9,7 @@ namespace HRMSModels
     public class LocationModel
     {
         public int LocationID { get; set; }
-        public int CityID { get; set; }
-        public int StateID { get; set; }
-        public int CountryID { get; set; }
-        public int ZipCode { get; set; }
+        
+        public string LocationName { get; set; }
     }
 }
