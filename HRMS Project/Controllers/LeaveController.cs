@@ -20,14 +20,16 @@ namespace HRMS.Controllers
         private readonly ILeaveStatusService _leaveStatusService;
         private readonly IEmployeeService _employeeService;
         private readonly IHolidayService _holidayService;
+        private readonly ILeaveBalanceService _leaveBalanceService;
 
-        public LeaveController(IHolidayService holidayService,IEmployeeService employeeService, ILeaveRequestService leaveService, ILeaveTypeService leaveTypeService, ILeaveStatusService leaveStatusService)
+        public LeaveController(ILeaveBalanceService leaveBalanceService, IHolidayService holidayService,IEmployeeService employeeService, ILeaveRequestService leaveService, ILeaveTypeService leaveTypeService, ILeaveStatusService leaveStatusService)
         {
             _leaveRequestService = leaveService;
             _leaveTypeService = leaveTypeService;
             _leaveStatusService = leaveStatusService;
             _employeeService = employeeService;
             _holidayService = holidayService;
+            _leaveBalanceService = leaveBalanceService;
         }
 
         public void initFormViewBag()
@@ -81,27 +83,20 @@ namespace HRMS.Controllers
         }
 
         [HttpGet]
-        public ActionResult LeaveBalancePartial()
+        public ActionResult LeaveBalanceGridPartial(int? empID =null)
         {
-            var balance = new List<LeaveBalanceModel>();
-            int empId = Convert.ToInt32(Session["Emp_ID"]);
-            var leaveTypes = _leaveTypeService.GetAll();
-            var leaveHistory = _leaveRequestService.GetLeavesByEmp_ID(empId);
-            foreach (var leaveType in leaveTypes)
-            {
-                var leaveBalance = new LeaveBalanceModel()
-                {
-                    LeaveName = leaveType.LeaveName,
-                    LeaveLimit = leaveType.LeaveLimits,
-                    LeaveTaken = leaveHistory.Where(x => leaveType.LeaveTypeID == x.LeaveTypeID).Sum(x => x.TotalDays),
-                };
-                leaveBalance.LeaveBalance = leaveBalance.LeaveLimit - leaveBalance.LeaveTaken;
-                balance.Add(leaveBalance);
-            }
-            return PartialView(balance);
+            int empId = empID ?? Convert.ToInt32(Session["Emp_ID"]);
+            var leaveBalances = _leaveBalanceService.GetById(empId);
+            return View(leaveBalances);
         }
 
-        [HttpGet]
+        public ActionResult LeaveBalanceLabelCard(int? empID=null)
+        {
+            int empId = empID ?? Convert.ToInt32(Session["Emp_ID"]);
+            var leaveBalances = _leaveBalanceService.GetByIdandMonth(empId,DateTime.Now);
+            return PartialView(leaveBalances);
+        }
+        
         public ActionResult UpcomingHolidays(int count = 1)
         {
             var holidays = _holidayService.GetAll();
@@ -140,13 +135,18 @@ namespace HRMS.Controllers
             if (!ModelState.IsValid)
             {
                 initFormViewBag();
+                return View("Add",obj);
+            }
+            obj.TotalDays = CalculateTotalLeaveDays(obj.StartDate, obj.EndDate, obj.SecondHalf, obj.FirstHalf);
+            var leaveBalance = _leaveBalanceService.GetByIdandMonth(obj.EMP_ID,DateTime.Now);
+            // Check if the employee has enough leave balance
+            if (leaveBalance.ClosingBalance < obj.TotalDays)
+            {
+                initFormViewBag();
+                ModelState.AddModelError("TotalDays", "You do not have enough leave balance for this request.");
                 return View(obj);
             }
-            else if (obj.StartDate > obj.EndDate)
-            {
-                ModelState.AddModelError("StartDate", "Start Date must be before End Date.");
-            }
-            obj.EMP_ID = Convert.ToInt32(Session["Emp_ID"]);
+
             obj.RequestDate = DateTime.Now;
 
             //This Might Return 0 in case there are no corresponding record with "pending"
@@ -223,15 +223,19 @@ namespace HRMS.Controllers
         [HttpGet]
         public JsonResult CalculateLeaveDays(DateTime fromDate, DateTime toDate, bool fromSecondHalf = false, bool uptoFirstHalf = false)
         {
+            return Json(new { leaveDays = CalculateTotalLeaveDays(fromDate,toDate,fromSecondHalf,uptoFirstHalf) }, JsonRequestBehavior.AllowGet);
+        }
 
+        private float CalculateTotalLeaveDays(DateTime fromDate, DateTime toDate, bool fromSecondHalf = false, bool uptoFirstHalf = false)
+        {
             DateUtility dateUtility = new DateUtility();
-            double result = dateUtility
+            float result = dateUtility
                 .setFrom(fromDate)
                 .setTo(toDate)
                 .setFromSecondHalf(fromSecondHalf)
                 .setUptoFirstHalf(uptoFirstHalf)
                 .CalculateTotalLeaveDays();
-            return Json(new { leaveDays = result }, JsonRequestBehavior.AllowGet);
+            return result;
         }
     }
 }

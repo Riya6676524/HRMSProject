@@ -25,6 +25,7 @@ namespace HRMS.Controllers
         private readonly ICountryService _countryService;
         private readonly IStateService _stateService;
         private readonly ICityService _cityService;
+        private readonly ILocationService _locationService;
 
         public EmployeeController(
             IEmployeeService employeeService,
@@ -34,7 +35,8 @@ namespace HRMS.Controllers
             IRoleService roleService,
             ICountryService countryService,
             IStateService stateService,
-            ICityService cityService
+            ICityService cityService,
+            ILocationService locationService
             )
         {
             _employeeService = employeeService;
@@ -45,20 +47,17 @@ namespace HRMS.Controllers
             _countryService = countryService;
             _stateService = stateService;
             _cityService = cityService;
-
+            _locationService = locationService;
         }
 
 
         public ActionResult EmployeeGridPartial()
         {
-            var EmployeeList = _employeeService.GetAll();
-            var EmployeeViewList = new List<EmployeeListModel>();
-            foreach (EmployeeModel item in EmployeeList)
-            {
-                EmployeeViewList.Add(new EmployeeListModel(item));
-            }
+
+            var EmployeeViewList = _employeeService.GetAll();
             return View(EmployeeViewList);
         }
+
 
         private void PopulateDropdowns()
         {
@@ -67,23 +66,20 @@ namespace HRMS.Controllers
             var departments = _departmentService.GetAll() ?? new List<DepartmentModel>();
             var roles = _roleService.GetAll() ?? new List<RoleModel>();
             var managers = _employeeService.GetAll().Where(x => x.RoleID == 2) ?? new List<EmployeeModel>();
+            var locations = _locationService.GetAll();
 
             ViewBag.Countries = new SelectList(countries, "CountryID", "CountryName");
             ViewBag.Genders = new SelectList(genders, "GenderID", "GenderName");
             ViewBag.Departments = new SelectList(departments, "DepartmentID", "DepartmentName");
             ViewBag.Roles = new SelectList(roles, "RoleID", "RoleName");
             ViewBag.ReportingManagers = new SelectList(managers, "EMP_ID", "FirstName");
+            ViewBag.Locations = new SelectList(locations, "LocationID", "LocationName");
         }
 
         public ActionResult Employees()
         {
             
-            var EmployeeList = _employeeService.GetAll();
-            var EmployeeViewList = new List<EmployeeListModel>();
-            foreach (EmployeeModel item in EmployeeList)
-            {
-                EmployeeViewList.Add(new EmployeeListModel(item));
-            }
+            var EmployeeViewList = _employeeService.GetAll();
             return View(EmployeeViewList);
         }
 
@@ -123,14 +119,29 @@ namespace HRMS.Controllers
             regModel.CreatedOn = DateTime.Now;
             regModel.Password = Base64Helper.Encode(regModel.Password);
             _employeeService.Insert(regModel);
+            return RedirectToAction("Employees");
+        }
 
-            ViewBag.message = new MesssageBoxViewModel()
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            var employee = _employeeService.GetById(id);
+            PopulateDropdowns();
+            return View(employee);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(EmployeeRegModel regModel)
+        {
+
+            if (!ModelState.IsValid)
             {
-                head = "Employee Registered Successfully",
-                body = $"<p><strong>Employee ID:</strong> {regModel.EmployeeID}</p>" +
-                       $"<p><strong>Email:</strong> {regModel.Email}</p>" +
-                       $"<p><strong>Password:</strong> {regModel.Password}</p>"
-            };
+                PopulateDropdowns();
+                return View("Edit", regModel);
+            }
+
+            regModel.ModifiedOn = DateTime.Now;
+            _employeeService.Insert(regModel);
             return RedirectToAction("Employees");
         }
 
@@ -177,19 +188,16 @@ namespace HRMS.Controllers
             return Json(new { success = true });
         }
 
-        public ActionResult DeleteEmployee(EmployeeModel obj)
+        public ActionResult Delete(EmployeeModel obj)
         {
             var employee = _employeeService.GetById(obj.EMP_ID);
             return View(employee);
         }
 
-        [HttpPost]
-        public JsonResult DeleteEmployeeConfirmed(int empId)
+        public ActionResult DeletePromptPartial()
         {
-            _employeeService.Delete(empId);
-            return Json(new { success = true });
+            return PartialView();
         }
-
 
         [HttpPost]
         public ActionResult ChangePassword(EmployeeProfileModel model)
@@ -247,7 +255,6 @@ namespace HRMS.Controllers
                 return RedirectToAction("ChangePassword");
             }
         }
-
 
 
     }

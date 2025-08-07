@@ -39,7 +39,7 @@ namespace HRMSUtility
             return this;
         }
 
-        public double CalculateTotalLeaveDays()
+        public float CalculateTotalLeaveDays()
         {
             if (from == default || to == default)
                 throw new InvalidOperationException("Both From and To dates must be set.");
@@ -47,7 +47,7 @@ namespace HRMSUtility
             if (from > to)
                 throw new InvalidOperationException("From date cannot be after To date.");
 
-            double totalDays = 0;
+            float totalDays = 0;
 
             for (DateTime date = from; date <= to; date = date.AddDays(1))
             {
@@ -59,14 +59,14 @@ namespace HRMSUtility
                 if (date == from)
                 {
                     if (fromSecondHalf)
-                        totalDays += 0.5;
+                        totalDays = 0.5f;
                     else
                         totalDays += 1;
                 }
                 else if (date == to)
                 {
                     if (uptoFirstHalf)
-                        totalDays += 0.5;
+                        totalDays += 0.5f;
                     else
                         totalDays += 1;
                 }

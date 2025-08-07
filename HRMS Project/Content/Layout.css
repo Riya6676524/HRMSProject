@@ -1,6 +1,7 @@
 ﻿body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
+    font-size: 14px;
     background-color: #f8f9fa;
     overflow-x: hidden;
 }

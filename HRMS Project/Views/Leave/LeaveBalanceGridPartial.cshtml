@@ -1,0 +1,24 @@
+﻿@model IEnumerable<HRMSModels.LeaveBalanceModel>
+@using HRMS_Project.Models;
+
+@{LeaveListViewData leaveListViewData = ViewBag.LeaveListData; }
+
+
+@(Html
+    .Grid(Model)
+    .Build(columns =>
+    {
+    columns.Add(model=> model.ForMonth).Titled("For Month").Filterable(true).Sortable(true).RenderedAs(model => model.ForMonth.ToString("MMMM-yyyy"));
+    columns.Add(model => model.OpeningBalance).Titled("Opening");
+    columns.Add(model => model.Credited).Titled("Credited");
+    columns.Add(model => model.ClosingBalance).Titled("Closing");
+    }
+    )
+    .Pageable(pager => {
+        pager.PageSizes = new Dictionary<int, string>() { { 5, "5" }, { 10, "10" }, { 20, "20" }, { 0, "ALL" } };
+        pager.ShowPageSizes = true;
+        pager.PagesToDisplay = 3;
+        pager.CurrentPage = 2;
+    }
+    )
+)

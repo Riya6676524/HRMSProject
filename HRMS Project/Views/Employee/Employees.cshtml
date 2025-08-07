@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HRMSProject.Models.EmployeeListModel>
+﻿@model IEnumerable<HRMSModels.EmployeeModel>
 @using HRMSProject.Models;
 @{
     ViewBag.Title = "Employees";
@@ -16,3 +16,5 @@
 <div class="main-grid-body">
     @Html.Partial("EmployeeGridPartial", Model);
 </div>
+
+@Html.Partial("DeletePromptPartial")
