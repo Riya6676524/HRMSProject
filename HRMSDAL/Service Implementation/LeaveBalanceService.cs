@@ -43,11 +43,11 @@ namespace HRMSDAL.Service_Implementation
 
         public LeaveBalanceModel GetByIdandMonth(int empID, DateTime month)
         {
-            string query = $"SELECT * FROM {TableName} WHERE EMP_ID = @EMP_ID and @Month=Month";
+            string query = $"SELECT * FROM {TableName} WHERE EMP_ID = @EMP_ID and MONTH(ForMonth)=MONTH(@ForMonth) and YEAR(ForMonth) = YEAR(@ForMonth)";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@EMP_ID", empID),
-                new SqlParameter("@Month", month)
+                new SqlParameter("@ForMonth", month)
             };
             var result = DBHelper.ExecuteReader(query, System.Data.CommandType.Text, parameters);
             return MapDictionaryToEntity(result.First());
