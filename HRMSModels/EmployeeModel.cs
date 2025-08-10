@@ -12,9 +12,11 @@ namespace HRMSModels
     {
         public int EMP_ID { get; set; }
 
+
         public byte[] ProfileImagePath { get; set; }
 
         [Required]
+        [DisplayName("Employee ID")]
         public string EmployeeID { get; set; }
 
         [Required]
@@ -55,6 +57,7 @@ namespace HRMSModels
         public int CityID { get; set; }
 
         [Required]
+        [DisplayName("ZipCode")]
         public int ZipCode { get; set; }
 
         [Required]
