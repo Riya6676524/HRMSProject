@@ -10,7 +10,9 @@
         .then(data => {
             if (data.modeName) {
                 document.getElementById("modeName").value = data.modeName;
-                document.getElementById("attendanceButton").innerText = data.modeName;
+                const btn = document.getElementById("attendanceButton");
+                btn.innerText = data.modeName;
+                btn.classList.add("selected");
             }
         });
 });
@@ -109,17 +111,25 @@ function toggleAttendanceMenu(event) {
     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
 }
 
-//Attendance Option Select
 function selectAttendance(mode) {
-    const today = new Date().toISOString().split("T")[0];
-
-
-
-    //Update UI and submit
     document.getElementById("modeName").value = mode;
-    document.getElementById("attendanceButton").innerText = mode;
-    document.getElementById("modeForm").submit();
+    const btn = document.getElementById("attendanceButton");
+    btn.innerText = mode;
+    btn.classList.add("selected");
+
+    const token = document.querySelector('#modeForm input[name="__RequestVerificationToken"]').value;
+
+    $.ajax({
+        url: '/Attendance/SetMode',
+        type: 'POST',
+        data: {
+            modeName: mode,
+            __RequestVerificationToken: token
+        }
+    });
 }
+
+
 
 // Hide attendance dropdown on outside click
 window.addEventListener('click', function () {
@@ -177,14 +187,15 @@ function leavepiechart() {
     });
 }
 
-
-//  Calendar
+//calendar
 function loadAttendanceCalendar() {
     const calendarEl = document.getElementById('fullcalendar');
     if (!calendarEl) return;
 
     const path = window.location.pathname.toLowerCase();
     const isDashboard = path === '/dashboard' || path === '/dashboard/index';
+
+    let calendar;
 
     const calendarOptions = {
         initialView: 'dayGridMonth',
@@ -194,8 +205,18 @@ function loadAttendanceCalendar() {
 
         events: '/Attendance/GetAttendanceEvents',
 
-        eventClick: function (info) {
-            alert(`Attendance on ${info.event.startStr}: ${info.event.title}`);
+        dateClick: function (info) {
+            const clickedDate = info.dateStr;
+            const eventsOnDate = calendar.getEvents().filter(e => e.startStr === clickedDate);
+
+            let statusText = null;
+            if (eventsOnDate.length > 0) {
+                const uniqueStatuses = [...new Set(eventsOnDate.map(e => e.title))];
+                statusText = uniqueStatuses.join(", ");
+            }
+
+            // Show box near clicked date
+            showReportBox(clickedDate, statusText, info.dayEl);
         }
     };
 
@@ -204,8 +225,41 @@ function loadAttendanceCalendar() {
         calendarOptions.expandRows = true;
     }
 
-    const calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
+    calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
     calendar.render();
+
+    // Close on outside click
+    document.addEventListener('click', function (e) {
+        const reportBox = document.getElementById('reportBox');
+        if (reportBox.style.display === 'block' && !reportBox.contains(e.target) && !calendarEl.contains(e.target)) {
+            reportBox.style.display = 'none';
+        }
+    });
 }
 
+// Show report box at clicked cell position
+function showReportBox(date, status, dayCell) {
+    const reportBox = document.getElementById('reportBox');
+    const reportDate = document.getElementById('reportDate');
+    const reportStatusRow = document.getElementById('reportStatusRow');
+    const reportStatus = document.getElementById('reportStatus');
 
+    reportDate.textContent = date;
+
+    if (status) {
+        reportStatus.textContent = status;
+        reportStatusRow.style.display = 'block';
+    } else {
+        reportStatusRow.style.display = 'none';
+    }
+
+    // Get clicked cell position
+    const rect = dayCell.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+
+    // Place box above the cell
+    reportBox.style.top = (rect.top + scrollTop - reportBox.offsetHeight - 5) + "px";
+    reportBox.style.left = (rect.left + scrollLeft) + "px";
+    reportBox.style.display = 'block';
+}

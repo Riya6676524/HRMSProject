@@ -26,16 +26,18 @@
         <div class="right-actions">
 
             <form id="modeForm" action="/Attendance/SetMode" method="post">
+                @Html.AntiForgeryToken()
                 <input type="hidden" name="modeName" id="modeName" />
 
                 <div class="attendance-dropdown" onclick="toggleAttendanceMenu(event)">
-                    <button type="button" id="attendanceButton">Mark Attendance</button>
+                    <button type="button" id="attendanceButton" class="btn-attendance">Mark Attendance</button>
                     <div class="attendance-options" id="attendanceOptions">
                         <div onclick="selectAttendance('WFH')">WFH</div>
                         <div onclick="selectAttendance('WFO')">WFO</div>
                     </div>
                 </div>
             </form>
+
 
 
             <i class="fas fa-bell notification"></i>

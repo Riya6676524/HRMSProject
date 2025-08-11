@@ -36,8 +36,7 @@ namespace HRMSProject.Controllers
 
         [HttpPost]
         public ActionResult Index(LoginModel model)
-        {
-          
+        {          
                 if (string.IsNullOrWhiteSpace(model.Email))
                 {
                     ModelState.AddModelError("Email", "Please enter email");

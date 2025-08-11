@@ -15,7 +15,7 @@ public class AttendanceService : IAttendanceService
 
         if (today.DayOfWeek == DayOfWeek.Saturday || today.DayOfWeek == DayOfWeek.Sunday)
         {
-            return; 
+            return;
         }
 
         var parameters = new SqlParameter[]

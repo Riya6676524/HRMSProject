@@ -23,21 +23,21 @@ namespace HRMSProject.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult SetMode(string modeName)
         {
             int empId = Convert.ToInt32(Session["Emp_ID"]);
 
-            if (string.IsNullOrWhiteSpace(modeName))
+            if (!string.IsNullOrWhiteSpace(modeName))
             {
-                return RedirectToAction("Index", "Dashboard");
+                int modeId = _attendanceService.GetModeIdByName(modeName);
+                _attendanceService.UpdateMode(empId, modeId);
             }
 
-            int modeId = _attendanceService.GetModeIdByName(modeName);
-
-            _attendanceService.UpdateMode(empId, modeId);
-
-            return RedirectToAction("Index", "Dashboard");
+            return Json(new { }); 
         }
+
+
 
 
         [HttpGet]
@@ -59,19 +59,23 @@ namespace HRMSProject.Controllers
 
 
         [HttpGet]
-      
         public JsonResult GetAttendanceEvents()
         {
             int empId = Convert.ToInt32(Session["Emp_ID"]);
-            int month = DateTime.Now.Month;
-            int year = DateTime.Now.Year;
 
-            var attendanceList = _attendanceService.GetAttendanceCalendar(empId);
+            var today = DateTime.Today;
+
+            // Only fetch up to yesterday
+            var attendanceList = _attendanceService
+                .GetAttendanceCalendar(empId)
+                .Where(a => a.Date < today) // exclude today
+                .ToList();
+
             var holidayList = _attendanceService.GetLocationHoliday(empId);
 
             var events = new List<object>();
 
-       
+            // Attendance events
             foreach (var att in attendanceList)
             {
                 events.Add(new
@@ -79,13 +83,13 @@ namespace HRMSProject.Controllers
                     title = att.Status,
                     start = att.Date.ToString("yyyy-MM-dd"),
                     color = (att.Status == "Present" ||
-                                  att.Status == "1stHalf: Present" ||
-                                   att.Status == "2ndHalf: Present") ? "#28a745" :
-                                   (att.Status == "Absent" ? "#dc3545" :
-                                   "#ffc107")
-                }); 
+                             att.Status == "1stHalf: Present" ||
+                             att.Status == "2ndHalf: Present") ? "#28a745" :
+                             (att.Status == "Absent" ? "#dc3545" : "#ffc107")
+                });
             }
 
+            // Holiday events
             foreach (var holiday in holidayList)
             {
                 events.Add(new
@@ -93,12 +97,14 @@ namespace HRMSProject.Controllers
                     title = holiday.HolidayName,
                     start = holiday.HolidayDate.ToString("yyyy-MM-dd"),
                     display = "background",
-                    backgroundColor = "#bfbfbf"
+                    backgroundColor = "#bfbfbf",
+                     interactive = true
                 });
             }
 
             return Json(events, JsonRequestBehavior.AllowGet);
         }
-    }
 
     }
+
+}

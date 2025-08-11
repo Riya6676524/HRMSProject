@@ -50,7 +50,6 @@ body::-webkit-scrollbar-thumb {
             color: #0a2240;
             margin-right: 30px;
         }
-
 .attendance-dropdown {
     position: relative;
     font-size: 13px;
@@ -59,18 +58,25 @@ body::-webkit-scrollbar-thumb {
     .attendance-dropdown button {
         padding: 9px 11px;
         border: 1px solid gray;
-        background-color: #2657a5;
+        background-color: #2657a5; /* Blue by default */
         color: white;
         border-radius: 10px;
         cursor: pointer;
         font-family: 'Segoe UI', sans-serif;
         font-size: 13px;
+        transition: all 0.3s ease;
     }
+
         .attendance-dropdown button:hover {
             background-color: #2657a5;
             color: white;
             border-color: #1c3b5a;
-            transition: all 0.3s ease;
+        }
+
+        /* Green after selection */
+        .attendance-dropdown button.selected {
+            background-color: #28a745 !important; /* Green */
+            border-color: #1e7e34 !important;
         }
 
 .attendance-options {
