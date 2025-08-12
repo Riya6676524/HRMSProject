@@ -11,7 +11,7 @@
         columns.Add(model => model.EMP_ID).Titled("Name").Filterable(true).RenderedAs(model => leaveListViewData.EmployeeNames[model.EMP_ID]);
         columns.Add(model => model.StartDate).Titled("From - Till").RenderedAs( model => $"{model.StartDate:d} to {model.EndDate.Date:d}");
         columns.Add(model => model.TotalDays).Titled("Days");
-        columns.Add(model => model.RequestDate).Titled("Requested On").RenderedAs(model => model.RequestDate.ToShortDateString());
+        columns.Add(model => model.Reason).Titled("Reason");
         columns.Add(model => model.LeaveStatusID).Titled("Leave Status").RenderedAs(model => leaveListViewData.LeaveStatuses[model.LeaveStatusID]);
         columns.Add(model => model.ApproverID).Titled("Approver").Encoded(false).RenderedAs(model => model.ApproverID is null ? "" : @leaveListViewData.EmployeeNames[model.ApproverID ?? 0]);
         columns.Add(model => model.Comment).Titled("Comment").Encoded(false).RenderedAs(model => string.IsNullOrEmpty(model.Comment) ? "" : model.Comment);

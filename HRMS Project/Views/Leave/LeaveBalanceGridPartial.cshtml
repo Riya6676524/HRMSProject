@@ -8,11 +8,11 @@
     .Grid(Model)
     .Build(columns =>
     {
-        columns.Add(model=> model.ForMonth).Titled("For Month").Filterable(true).Sortable(true).RenderedAs(model => model.ForMonth.ToString("MMMM-yyyy"));
-        columns.Add(model => model.OpeningBalance).Titled("Opening");
-        columns.Add(model => model.Credited).Titled("Credited");
-        columns.Add(model => model.ClosingBalance).Titled("Closing");
-        columns.Add(model => model).Titled("Leaves Taken").RenderedAs(model => (model.OpeningBalance + model.Credited) - model.ClosingBalance);
+        columns.Add(model=> model.ForMonth).Titled("For Month").Filterable(true).Sortable(true).RenderedAs(model => model.ForMonth.ToString("MMMM-yyyy")).Css("text-left");
+        columns.Add(model => model.OpeningBalance).Titled("Opening").Css("text-center fit-content"); ;
+        columns.Add(model => model.Credited).Titled("Credited").Css("text-center fit-content"); ;
+        columns.Add(model => model.ClosingBalance).Titled("Closing").Css("text-center fit-content"); ;
+        columns.Add(model => model).Titled("Leaves Taken").RenderedAs(model => (model.OpeningBalance + model.Credited) - model.ClosingBalance).Css("text-center fit-content"); ;
     }
     )
     .Pageable(pager => {
@@ -23,3 +23,17 @@
     }
     )
 )
+
+<style>
+    .text-center {
+        text-align: center;
+    }
+
+    .fit-content {
+        width: 1%;
+        white-space: nowrap;
+    }
+    .text-left{
+        text-align: left;
+    }
+</style>

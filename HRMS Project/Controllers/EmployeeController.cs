@@ -114,7 +114,8 @@ namespace HRMS.Controllers
                 PopulateDropdowns();
                 return View("Add", regModel);
             }
-
+            regModel.CreatedByID = Convert.ToInt32(Session["Emp_ID"]);
+            regModel.ModifiedByID = Convert.ToInt32(Session["Emp_ID"]);
             regModel.ModifiedOn = DateTime.Now;
             regModel.CreatedOn = DateTime.Now;
             regModel.Password = Base64Helper.Encode(regModel.Password);
@@ -135,14 +136,32 @@ namespace HRMS.Controllers
         [HttpPost]
         public ActionResult Edit(EmployeeRegModel regModel)
         {
-
+            var employee = _employeeService.GetById(regModel.EMP_ID);
+            if (regModel.Password is null)
+            {
+                ModelState.Remove("Password"); // Exclude Password from validation if not changing
+                ModelState.Remove("ConfirmPassword"); // Exclude ConfirmPassword from validation if not changing
+            }
+            ModelState.Remove("ProfilePostedFile"); // Exclude ProfilePostedFile from validation if not changing
             if (!ModelState.IsValid)
             {
                 PopulateDropdowns();
+                ViewBag.States = new SelectList(_stateService.GetAll().Where(s => s.CountryID == employee.CountryID).ToList(), "StateID", "StateName");
+                ViewBag.Cities = new SelectList(_cityService.GetAll().Where(s => s.StateID == employee.StateID).ToList(), "CityID", "CityName");
                 return View("Edit", regModel);
             }
 
+            if (regModel.ProfileImagePath is null) regModel.ProfileImagePath = employee.ProfileImagePath;
+            if (regModel.Password is null) regModel.Password = employee.Password;
+            else
+            {
+                regModel.Password = Base64Helper.Encode(regModel.Password);
+            }
+            regModel.CreatedByID = employee.CreatedByID;
+            regModel.ModifiedByID = Convert.ToInt32(Session["Emp_ID"]);
             regModel.ModifiedOn = DateTime.Now;
+            regModel.CreatedOn = employee.CreatedOn;
+
             _employeeService.Update(regModel);
             return RedirectToAction("Employees");
         }
@@ -190,10 +209,10 @@ namespace HRMS.Controllers
             return Json(new { success = true });
         }
 
-        public ActionResult Delete(EmployeeModel obj)
+        public ActionResult Delete(int id)
         {
-            var employee = _employeeService.GetById(obj.EMP_ID);
-            return View(employee);
+            _employeeService.Delete(id);
+            return RedirectToAction("Employees");
         }
 
         public ActionResult DeletePromptPartial()

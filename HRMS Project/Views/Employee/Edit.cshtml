@@ -16,12 +16,14 @@
 
     @using (Html.BeginForm("Edit", "Employee", new { id =""}, FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        <div class="form-card-body">
+        @Html.HiddenFor(model => model.EMP_ID)
+        <div class="form-card-body" id="formCardBody">
             @Html.Partial("EmployeeFormPartial", Model)
         </div>
         <div class="form-card-footer">
             <input type="SUBMIT" value="Save" class="btn btn-success" />
             @Html.ActionLink("Cancel", "Employees", null, new { @class = "btn btn-danger" })
+            <button style="margin-left:auto" type="button" id="btnChangePassword" class="btn btn-warning">Change Password</button>
         </div>
     }
 </div>
@@ -75,4 +77,46 @@
                     });
                 }
             });
+
+    $('#btnChangePassword').click(function () {
+        let $btn = $(this);
+        let passwordFieldsId = "passwordFields";
+
+        if ($("#" + passwordFieldsId).length) {
+            // Remove the password fields if already present
+            $("#" + passwordFieldsId).remove();
+            $btn.text("Change Password");
+        } else {
+            // Append password fields dynamically
+            let passwordHtml = `
+            <div id="${passwordFieldsId}">
+                <div class="row">
+                    <div class="form-group triple-column">
+                        <div class="column">
+                            <label for="Password" class="control-label">Password</label>
+                            <input class="form-control" type="password" id="Password" name="Password" />
+                        </div>
+                        <div class="column">
+                            <span class="text-danger field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group triple-column">
+                        <div class="column">
+                            <label for="ConfirmPassword" class="control-label">Confirm Password</label>
+                            <input class="form-control" type="password" id="ConfirmPassword" name="ConfirmPassword" />
+                        </div>
+                        <div class="column">
+                            <span class="text-danger field-validation-valid" data-valmsg-for="ConfirmPassword" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+            $("#formCardBody").append(passwordHtml);
+            $btn.text("Remove Password Fields");
+        }
+    });
+
 </script>

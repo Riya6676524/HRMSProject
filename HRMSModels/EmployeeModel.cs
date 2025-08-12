@@ -57,7 +57,8 @@ namespace HRMSModels
         public int CityID { get; set; }
 
         [Required]
-        [DisplayName("ZipCode")]
+        [Range(100000,999999, ErrorMessage = "Zip Code Must be 6 digits long")]
+        [DisplayName("Zip Code")]
         public int ZipCode { get; set; }
 
         [Required]

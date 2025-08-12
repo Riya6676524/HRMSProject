@@ -200,6 +200,9 @@ button.mvc-grid-filter{
 .bg-light-red {
     background-color: lightcoral;
 }
+.bg-gold{
+    background-color:gold;
+}
 
 /*CSS for normal card*/
 .normal-card {
