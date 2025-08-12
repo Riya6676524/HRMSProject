@@ -16,6 +16,7 @@ public class AttendanceModel
     public DateTime CreatedOn { get; set; }
     public DateTime Date { get; set; } 
     public string Status { get; set; }
+    public string FullStatus { get; set; }
     public string AttendanceMode { get; set; } 
     public string SelectedHalf { get; set; } 
 

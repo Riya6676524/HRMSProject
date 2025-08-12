@@ -207,16 +207,20 @@ function loadAttendanceCalendar() {
 
         dateClick: function (info) {
             const clickedDate = info.dateStr;
+
+     
             const eventsOnDate = calendar.getEvents().filter(e => e.startStr === clickedDate);
 
-            let statusText = null;
+            let detailText = null;
+
             if (eventsOnDate.length > 0) {
-                const uniqueStatuses = [...new Set(eventsOnDate.map(e => e.title))];
-                statusText = uniqueStatuses.join(", ");
+
+                const uniqueDetails = [...new Set(eventsOnDate.map(e => e.extendedProps.fullStatus))];
+                detailText = uniqueDetails.join(", ");
             }
 
-            // Show box near clicked date
-            showReportBox(clickedDate, statusText, info.dayEl);
+
+            showReportBox(clickedDate, detailText, info.dayEl);
         }
     };
 
@@ -228,16 +232,18 @@ function loadAttendanceCalendar() {
     calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
     calendar.render();
 
-    // Close on outside click
+
     document.addEventListener('click', function (e) {
         const reportBox = document.getElementById('reportBox');
-        if (reportBox.style.display === 'block' && !reportBox.contains(e.target) && !calendarEl.contains(e.target)) {
+        if (reportBox.style.display === 'block' &&
+            !reportBox.contains(e.target) &&
+            !calendarEl.contains(e.target)) {
             reportBox.style.display = 'none';
         }
     });
 }
 
-// Show report box at clicked cell position
+
 function showReportBox(date, status, dayCell) {
     const reportBox = document.getElementById('reportBox');
     const reportDate = document.getElementById('reportDate');
@@ -247,18 +253,16 @@ function showReportBox(date, status, dayCell) {
     reportDate.textContent = date;
 
     if (status) {
-        reportStatus.textContent = status;
+        reportStatus.innerHTML = status;
         reportStatusRow.style.display = 'block';
     } else {
         reportStatusRow.style.display = 'none';
     }
 
-    // Get clicked cell position
     const rect = dayCell.getBoundingClientRect();
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
 
-    // Place box above the cell
     reportBox.style.top = (rect.top + scrollTop - reportBox.offsetHeight - 5) + "px";
     reportBox.style.left = (rect.left + scrollLeft) + "px";
     reportBox.style.display = 'block';
