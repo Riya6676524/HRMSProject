@@ -7,6 +7,6 @@
         <div style=" padding-left: 8px; margin-right: auto;" id="LeaveBalance#@Model.Emp_ID">
             @Html.DisplayFor(model => model.ClosingBalance) Days
         </div>
-        @Html.ActionLink("Balance History", "LeaveBalanceGridPartial", new {empID=Model.Emp_ID})
+        @Html.ActionLink("View Details", "LeaveBalanceGridPartial", new {empID=Model.Emp_ID})
     </div>
 </div>

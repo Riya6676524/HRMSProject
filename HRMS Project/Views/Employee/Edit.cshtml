@@ -1,4 +1,4 @@
-﻿@model HRMSModels.EmployeeModel
+﻿@model HRMSProject.Models.EmployeeRegModel
 
 @{
     ViewBag.Title = "Register";
@@ -14,7 +14,7 @@
     </header>
 
 
-    @using (Html.BeginForm(Html.BeginForm("Add", "Employee", FormMethod.Post, new { enctype = "multipart/form-data" })))
+    @using (Html.BeginForm("Edit", "Employee", new { id =""}, FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <div class="form-card-body">
             @Html.Partial("EmployeeFormPartial", Model)
@@ -74,22 +74,5 @@
                         });
                     });
                 }
-            });
-
-            function getLatestEmployeeId() {
-                $.ajax({
-                    url: '/Employee/GetLatestEmployeeId',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        $('#EmployeeID').val(data.latestId);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error fetching Employee ID:', error);
-                    }
-                });
-            }
-            $(document).ready(function () {
-                getLatestEmployeeId();
             });
 </script>

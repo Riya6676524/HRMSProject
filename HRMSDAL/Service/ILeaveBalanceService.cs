@@ -15,5 +15,6 @@ namespace HRMSDAL.Service
         void Insert (LeaveBalanceModel entity);
         void Update (LeaveBalanceModel entity);
         void CreditMonthlyLeaves();
+        List<LeaveBalanceModel> GetAllMonthByID(int empID);
     }
 }

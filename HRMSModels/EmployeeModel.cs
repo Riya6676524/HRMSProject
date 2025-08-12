@@ -63,6 +63,7 @@ namespace HRMSModels
         [Required]
         [DataType(DataType.Date)]
         [MinimumAge(18, ErrorMessage = "You must be at least 18 years old to register.")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DisplayName("Date Of Birth")]
         public DateTime DOB { get; set; }
 
@@ -84,7 +85,6 @@ namespace HRMSModels
 
         public int? CreatedByID { get; set; }
 
-        [Required]
         public DateTime CreatedOn { get; set; }
 
         public int? ModifiedByID { get; set; }

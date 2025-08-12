@@ -20,16 +20,16 @@
                 .Encoded(false)
                 .RenderedAs(model =>
                 {
-                    if (leaveListViewData.LeaveStatuses[model.LeaveStatusID].ToUpper() == "PENDING")
+
+                    if ( ( model.LeaveStatusID ==1 && model.EMP_ID == Convert.ToInt32( Session["EMP_ID"] ) ) || // Pending and Current Employee
+                          (model.LeaveStatusID == 2 && model.ApproverID == Convert.ToInt32(Session["EMP_ID"]) && model.EMP_ID == model.ApproverID) // Approved and Current Approver
+                    )
                     {
-                        if (model.EMP_ID == Convert.ToInt32(Session["EMP_ID"]))
-                        {
-                            return @Html.ActionLink("Cancel", "Cancel", new { id = model.RequestID });
-                        }
-                        else
-                        {
-                            return @Html.ActionLink("Approve/Reject", "Approve", new { id = model.RequestID });
-                        }
+                        return @Html.ActionLink("Cancel", "Cancel", new { id = model.RequestID });
+                    }
+                    else if (model.LeaveStatusID !=4 && model.EMP_ID != Convert.ToInt32(Session["EMP_ID"]))
+                    {
+                        return @Html.ActionLink("Approve/Reject", "Approve", new { id = model.RequestID });
                     }
                     else
                     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace HRMSDAL.Service_Implementation
     {
         protected override string TableName => "LeaveBalance";
 
-        protected override string PrimaryKeyColumn => throw new NotImplementedException("This table does not contain a single primary key column");
+        protected override string PrimaryKeyColumn => "LeaveBalanceID";
 
 
         private void RefreshBalanceMonths()
@@ -53,7 +54,8 @@ namespace HRMSDAL.Service_Implementation
             return MapDictionaryToEntity(result.First());
         }
 
-        List<LeaveBalanceModel> ILeaveBalanceService.GetById(int empID)
+
+        List<LeaveBalanceModel> GetAllMonthByID(int empID)
         {
             string query = $"SELECT * FROM {TableName} WHERE EMP_ID = @EMP_ID";
             SqlParameter[] parameters = new SqlParameter[]

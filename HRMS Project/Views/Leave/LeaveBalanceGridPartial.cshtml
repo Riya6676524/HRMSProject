@@ -8,10 +8,11 @@
     .Grid(Model)
     .Build(columns =>
     {
-    columns.Add(model=> model.ForMonth).Titled("For Month").Filterable(true).Sortable(true).RenderedAs(model => model.ForMonth.ToString("MMMM-yyyy"));
-    columns.Add(model => model.OpeningBalance).Titled("Opening");
-    columns.Add(model => model.Credited).Titled("Credited");
-    columns.Add(model => model.ClosingBalance).Titled("Closing");
+        columns.Add(model=> model.ForMonth).Titled("For Month").Filterable(true).Sortable(true).RenderedAs(model => model.ForMonth.ToString("MMMM-yyyy"));
+        columns.Add(model => model.OpeningBalance).Titled("Opening");
+        columns.Add(model => model.Credited).Titled("Credited");
+        columns.Add(model => model.ClosingBalance).Titled("Closing");
+        columns.Add(model => model).Titled("Leaves Taken").RenderedAs(model => (model.OpeningBalance + model.Credited) - model.ClosingBalance);
     }
     )
     .Pageable(pager => {

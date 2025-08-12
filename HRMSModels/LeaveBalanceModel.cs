@@ -8,6 +8,7 @@ namespace HRMSModels
 {
     public class LeaveBalanceModel
     {
+        public int LeaveBalanceID { get; set; }
         public int Emp_ID { get; set; }
 
         public float OpeningBalance { get; set; }

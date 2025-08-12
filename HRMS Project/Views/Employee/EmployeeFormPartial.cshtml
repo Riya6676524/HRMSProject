@@ -123,7 +123,7 @@
         <div class="form-group triple-column">
             <div class="column">
                 @Html.LabelFor(m => m.StateID, htmlAttributes: new { @class = "control-label " })
-                @Html.DropDownListFor(m => m.StateID, new SelectList(Enumerable.Empty<SelectListItem>()), "Select State", new { @class = "form-control", @id = "StateID" })
+                @Html.DropDownListFor(m => m.StateID, ViewBag.States as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()), "Select State", new { @class = "form-control", @id = "StateID" })
             </div>
             <div class="column">
                 @Html.ValidationMessageFor(m => m.StateID, "", new { @class = "text-danger" })
@@ -133,14 +133,13 @@
         <div class="form-group triple-column">
             <div class="column">
                 @Html.LabelFor(m => m.CityID, htmlAttributes: new { @class = "control-label " })
-                @Html.DropDownListFor(m => m.CityID, new SelectList(Enumerable.Empty<SelectListItem>()), "Select City", new { @class = "form-control", @id = "CityID" })
+                @Html.DropDownListFor(m => m.CityID, ViewBag.Cities as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()), "Select City", new { @class = "form-control", @id = "CityID" })
             </div>
             <div class="column">
                 @Html.ValidationMessageFor(m => m.CityID, "", new { @class = "text-danger" })
             </div>
         </div>
-    </div>
-    <div class="row">
+
         <div class="form-group triple-column">
             <div class="column">
                 @Html.LabelFor(m => m.ZipCode, htmlAttributes: new { @class = "control-label " })
@@ -161,8 +160,6 @@
                 @Html.ValidationMessageFor(m => m.RoleID, "", new { @class = "text-danger" })
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="form-group triple-column">
             <div class="column">
                 @Html.LabelFor(m => m.LocationID, htmlAttributes: new { @class = "control-label " })

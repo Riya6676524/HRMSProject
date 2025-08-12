@@ -127,7 +127,9 @@ namespace HRMS.Controllers
         {
             var employee = _employeeService.GetById(id);
             PopulateDropdowns();
-            return View(employee);
+            ViewBag.States = new SelectList(_stateService.GetAll().Where(s => s.CountryID == employee.CountryID).ToList(),"StateID","StateName");
+            ViewBag.Cities = new SelectList(_cityService.GetAll().Where(s => s.StateID == employee.StateID).ToList(), "CityID", "CityName");
+            return View(new EmployeeRegModel(employee));
         }
 
         [HttpPost]
@@ -141,7 +143,7 @@ namespace HRMS.Controllers
             }
 
             regModel.ModifiedOn = DateTime.Now;
-            _employeeService.Insert(regModel);
+            _employeeService.Update(regModel);
             return RedirectToAction("Employees");
         }
 
