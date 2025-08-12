@@ -129,21 +129,23 @@ public class AttendanceService : IAttendanceService
             }
             else if (first == "Present" && second != "Present")
             {
-                status = "1stHalf: Present";
+                status = "Present";
             }
             else if (first != "Present" && second == "Present")
             {
-                status = "2ndHalf: Present";
+                status = "Present";
             }
             else
             {
                 status = "Absent";
             }
+            string fullStatus = $"1st Half: {first} <br> 2nd Half: {second}";
 
             list.Add(new AttendanceModel
             {
                 Date = date,
-                Status = status
+                Status = status,
+                FullStatus = fullStatus
             });
         }
 
