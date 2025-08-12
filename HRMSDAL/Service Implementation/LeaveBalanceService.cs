@@ -55,7 +55,7 @@ namespace HRMSDAL.Service_Implementation
         }
 
 
-        List<LeaveBalanceModel> GetAllMonthByID(int empID)
+        public List<LeaveBalanceModel> GetAllMonthByID(int empID)
         {
             string query = $"SELECT * FROM {TableName} WHERE EMP_ID = @EMP_ID";
             SqlParameter[] parameters = new SqlParameter[]
@@ -66,10 +66,6 @@ namespace HRMSDAL.Service_Implementation
             return result.Select(x => MapDictionaryToEntity(x)).ToList();
         }
 
-
-        public override LeaveBalanceModel GetById(int id)
-        {
-            throw new NotImplementedException("This method is not valid for the given service class.");
-        }
+       
     }
 }

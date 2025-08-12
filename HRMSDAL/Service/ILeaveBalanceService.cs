@@ -10,7 +10,7 @@ namespace HRMSDAL.Service
     public interface ILeaveBalanceService 
     {
         List<LeaveBalanceModel> GetAll();
-        List<LeaveBalanceModel> GetById(int id);
+        LeaveBalanceModel GetById(int id);
         LeaveBalanceModel GetByIdandMonth(int id, DateTime month);
         void Insert (LeaveBalanceModel entity);
         void Update (LeaveBalanceModel entity);
