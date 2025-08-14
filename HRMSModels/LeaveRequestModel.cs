@@ -29,15 +29,18 @@ namespace HRMSModels
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DisplayName("Start Date")]
         public DateTime StartDate { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DateAfter("StartDate")]
+        [DisplayName("End Date")]
         public DateTime EndDate { get; set; }
 
         [Required]
+        [DisplayName("Total Days")]
         public float TotalDays { get; set; }
 
         [DataType(DataType.Date)]

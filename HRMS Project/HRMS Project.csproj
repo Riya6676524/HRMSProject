@@ -282,6 +282,7 @@
     <Content Include="Views\Employee\EmployeeFormPartial.cshtml" />
     <Content Include="Views\Employee\Edit.cshtml" />
     <Content Include="Views\Leave\LeaveBalanceLabelCard.cshtml" />
+    <Content Include="Views\Leave\CancePromptPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

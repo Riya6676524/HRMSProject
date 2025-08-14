@@ -14,11 +14,38 @@
     </header>
 
 
-    @using (Html.BeginForm("Edit", "Employee", new { id =""}, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("Edit", "Employee", new { id = "" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.HiddenFor(model => model.EMP_ID)
         <div class="form-card-body" id="formCardBody">
             @Html.Partial("EmployeeFormPartial", Model)
+            @if (ViewBag.appendPasswordFields is bool append && append)
+            {
+                <div id="passwordFields">
+                    <div class="row">
+                        <div class="form-group triple-column">
+                            <div class="column">
+                                @Html.LabelFor(m => m.Password, htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(m => m.Password, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="column">
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group triple-column">
+                            <div class="column">
+                                @Html.LabelFor(m => m.ConfirmPassword, htmlAttributes: new { @class = "control-label " })
+                                @Html.EditorFor(m => m.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="column">
+                                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
         </div>
         <div class="form-card-footer">
             <input type="SUBMIT" value="Save" class="btn btn-success" />
@@ -30,53 +57,53 @@
 
 
 <script>
-            $('#ProfilePostedFile').change(function (event) {
-                var input = event.target;
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $('#profilePreview')
-                            .attr('src', e.target.result)
-                            .show();
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                } else {
-                    $('#profilePreview').hide();
-                }
+    $('#ProfilePostedFile').change(function (event) {
+        var input = event.target;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#profilePreview')
+                    .attr('src', e.target.result)
+                    .show();
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            $('#profilePreview').hide();
+        }
+    });
+
+    $('#CountryID').change(function () {
+        var countryId = $(this).val();
+        $('#StateID').empty().append('<option>Select State</option>');
+        $('#CityID').empty().append('<option>Select City</option>');
+
+        if (countryId) {
+            $.get('/Employee/GetStates', { countryID: countryId }, function (data) {
+                $.each(data, function (index, item) {
+                    $('#StateID').append($('<option>', {
+                        value: item.StateID,
+                        text: item.StateName
+                    }));
+                });
             });
+        }
+    });
 
-            $('#CountryID').change(function () {
-                var countryId = $(this).val();
-                $('#StateID').empty().append('<option>Select State</option>');
-                $('#CityID').empty().append('<option>Select City</option>');
+    $('#StateID').change(function () {
+        var stateId = $(this).val();
+        $('#CityID').empty().append('<option>Select City</option>');
 
-                if (countryId) {
-                    $.get('/Employee/GetStates', { countryID: countryId }, function (data) {
-                        $.each(data, function (index, item) {
-                            $('#StateID').append($('<option>', {
-                                value: item.StateID,
-                                text: item.StateName
-                            }));
-                        });
-                    });
-                }
+        if (stateId) {
+            $.get('/Employee/GetCities', { stateID: stateId }, function (data) {
+                $.each(data, function (index, item) {
+                    $('#CityID').append($('<option>', {
+                        value: item.CityID,
+                        text: item.CityName
+                    }));
+                });
             });
-
-            $('#StateID').change(function () {
-                var stateId = $(this).val();
-                $('#CityID').empty().append('<option>Select City</option>');
-
-                if (stateId) {
-                    $.get('/Employee/GetCities', { stateID: stateId }, function (data) {
-                        $.each(data, function (index, item) {
-                            $('#CityID').append($('<option>', {
-                                value: item.CityID,
-                                text: item.CityName
-                            }));
-                        });
-                    });
-                }
-            });
+        }
+    });
 
     $('#btnChangePassword').click(function () {
         let $btn = $(this);

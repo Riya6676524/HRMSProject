@@ -142,6 +142,10 @@ namespace HRMS.Controllers
                 ModelState.Remove("Password"); // Exclude Password from validation if not changing
                 ModelState.Remove("ConfirmPassword"); // Exclude ConfirmPassword from validation if not changing
             }
+            else
+            {
+                ViewBag.appendPasswordFields = true;
+            }
             ModelState.Remove("ProfilePostedFile"); // Exclude ProfilePostedFile from validation if not changing
             if (!ModelState.IsValid)
             {

@@ -4,48 +4,53 @@
 @{LeaveListViewData leaveListViewData = ViewBag.LeaveListData; }
 
 
-@(Html
+@{
+    var grid = Html
     .Grid(Model)
     .Build(columns =>
     {
         columns.Add(model => model.EMP_ID).Titled("Name").Filterable(true).RenderedAs(model => leaveListViewData.EmployeeNames[model.EMP_ID]);
-        columns.Add(model => model.StartDate).Titled("From - Till").RenderedAs( model => $"{model.StartDate:d} to {model.EndDate.Date:d}");
+        columns.Add(model => model.StartDate).Titled("From - Till").RenderedAs(model => $"{model.StartDate:d} to {model.EndDate.Date:d}");
         columns.Add(model => model.TotalDays).Titled("Days");
         columns.Add(model => model.Reason).Titled("Reason");
         columns.Add(model => model.LeaveStatusID).Titled("Leave Status").RenderedAs(model => leaveListViewData.LeaveStatuses[model.LeaveStatusID]);
         columns.Add(model => model.ApproverID).Titled("Approver").Encoded(false).RenderedAs(model => model.ApproverID is null ? "" : @leaveListViewData.EmployeeNames[model.ApproverID ?? 0]);
         columns.Add(model => model.Comment).Titled("Comment").Encoded(false).RenderedAs(model => string.IsNullOrEmpty(model.Comment) ? "" : model.Comment);
         columns.Add(model => model)
-                .Titled("Action")
-                .Encoded(false)
-                .RenderedAs(model =>
-                {
+            .Titled("Action")
+            .Encoded(false)
+            .RenderedAs(model =>
+            {
 
-                    if ( ( model.LeaveStatusID ==1 && model.EMP_ID == Convert.ToInt32( Session["EMP_ID"] ) ) || // Pending and Current Employee
-                          (model.LeaveStatusID == 2 && model.ApproverID == Convert.ToInt32(Session["EMP_ID"]) && model.EMP_ID == model.ApproverID) // Approved and Current Approver
-                    )
-                    {
-                        return @Html.ActionLink("Cancel", "Cancel", new { id = model.RequestID });
-                    }
-                    else if (model.LeaveStatusID !=4 && model.EMP_ID != Convert.ToInt32(Session["EMP_ID"]))
-                    {
-                        return @Html.ActionLink("Approve/Reject", "Approve", new { id = model.RequestID });
-                    }
-                    else
-                    {
-                        return $"";
-                    }
-                });
+                if ((model.LeaveStatusID == 1 && model.EMP_ID == Convert.ToInt32(Session["EMP_ID"])) || // Pending and Current Employee
+                      (model.LeaveStatusID == 2 && model.ApproverID == Convert.ToInt32(Session["EMP_ID"]) && model.EMP_ID == model.ApproverID) // Approved and Current Approver
+                )
+                {
+                    return $"<a class='delete-link' href='#' data-id='{model.RequestID}' data-name='From {model.StartDate.ToShortDateString()} to {model.EndDate.ToShortDateString()}'> Cancel </a>";
+                }
+                else if (model.LeaveStatusID != 4 && model.EMP_ID != Convert.ToInt32(Session["EMP_ID"]))
+                {
+                    return @Html.ActionLink("Approve/Reject", "Approve", new { id = model.RequestID });
+                }
+                else
+                {
+                    return $"";
+                }
+            });
 
     }
     )
     .Sortable()
-    .Filterable()
-    .Pageable(pager => {
-        pager.PageSizes = new Dictionary<int, string>() { { 5, "5" }, { 10, "10" }, { 20, "20" }, { 0, "ALL" } };
-        pager.ShowPageSizes = true;
-        pager.PagesToDisplay = 3;
-        pager.CurrentPage = 2;
+    .Filterable();
+    if (Model.Count() > 10)
+    {
+        grid.Pageable(pager =>
+        {
+            pager.PageSizes = new Dictionary<int, string>() { { 10, "10" }, { 20, "20" }, { 0, "ALL" } };
+            pager.ShowPageSizes = true;
+            pager.PagesToDisplay = 3;
+            pager.CurrentPage = 2;
+        });
     }
-    )
-)
+    @grid
+}

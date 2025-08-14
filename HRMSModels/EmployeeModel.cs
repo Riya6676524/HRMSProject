@@ -94,6 +94,7 @@ namespace HRMSModels
         public DateTime ModifiedOn { get; set; }
 
         [DataType(DataType.Password)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         [Required]
         public string Password { get; set; }
 
