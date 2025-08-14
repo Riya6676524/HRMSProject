@@ -82,12 +82,15 @@ namespace HRMSProject.Controllers
 
             // Add self
             var empIter = _employeeService.GetById(loggedInEmpId);
-            empSelectList.Add(new SelectListItem
+            if (empIter != null) // <-- Null check
             {
-                Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
-                Value = empIter.EMP_ID.ToString(),
-                Selected = (selectedEmpId == null || selectedEmpId == loggedInEmpId)
-            });
+                empSelectList.Add(new SelectListItem
+                {
+                    Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
+                    Value = empIter.EMP_ID.ToString(),
+                    Selected = (selectedEmpId == null || selectedEmpId == loggedInEmpId)
+                });
+            }
 
             // Add subordinates
             foreach (int id in empIDs)

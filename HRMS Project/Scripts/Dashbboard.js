@@ -143,8 +143,7 @@ function selectAttendance(mode) {
     });
 }
 
-
-
+ 
 // Hide attendance dropdown on outside click
 window.addEventListener('click', function () {
     document.getElementById('attendanceOptions').style.display = 'none';

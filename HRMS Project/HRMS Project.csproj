@@ -288,7 +288,6 @@
     <Content Include="Views\Leave\Leaves.cshtml" />
     <Content Include="Views\Leave\Approve.cshtml" />
     <Content Include="Views\Leave\_LeaveFormPartial.cshtml" />
-    <Content Include="Views\Attendance\Index.cshtml" />
     <Content Include="Views\Documents\HRPolicies.cshtml" />
     <Content Include="Views\Documents\Index.cshtml" />
     <Content Include="Views\Employee\Profile.cshtml" />
