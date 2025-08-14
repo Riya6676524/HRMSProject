@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/Attendance.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="mb-4">Attendance</h2>
+
+    <h4> Employee</h4>
+    @Html.DropDownList(
+            "empId",
+            ViewBag.IDs as List<SelectListItem>,
+            new { @id = "employeeDropdown", onchange = "document.getElementById('attendanceForm').submit();" }
+        )
+
+    <h4>Attendance Calendar</h4>
+    <div id="fullcalendarselectedemp"></div>
+
+    <div id="reportBox" style="display:none;
+    position:absolute; background: rgb(191, 191, 191); padding:20px;
+    border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.3); z-index:999;">
+        <h4>Attendance Report</h4>
+        <p><strong>Date:</strong> <span id="reportDate"></span></p>
+        <p id="reportStatusRow"><strong>Status:</strong> <span id="reportStatus"></span></p>
+    </div>
+
+</div>

@@ -38,19 +38,35 @@ namespace HRMSDAL.Service_Implementation
 
         public LeaveSummaryModel GetLeaveSummary(int empId)
         {
+            LeaveSummaryModel summary = new LeaveSummaryModel();
 
-            LeaveRequestService obj = new LeaveRequestService();
-            int currentMonth = DateTime.Now.Month;
-            int LeaveTaken = (int)obj.GetLeavesByEmp_ID(empId).Where(item => item.StartDate.Month <= DateTime.Now.Month && item.EndDate.Month <= DateTime.Now.Month).Sum(item => item.TotalDays);
-            int TotalAvailableLeave = currentMonth * 2 - LeaveTaken;
+            var leaveData = DBHelper.ExecuteReader(
+                "sp_GetLeaveSummary",
+                CommandType.StoredProcedure,
+                new SqlParameter[]
+                {
+            new SqlParameter("@Emp_ID", empId)
+                }
+            );
+
+            if (leaveData.Count > 0)
+            {
+                var row = leaveData[0];
+
+                summary.TotalOpening = row["TotalOpening"] != DBNull.Value ? Convert.ToDecimal(row["TotalOpening"]) : 0;
+                summary.TotalCredited = row["TotalCredited"] != DBNull.Value ? Convert.ToDecimal(row["TotalCredited"]) : 0;
+                summary.TotalClosing = row["TotalClosing"] != DBNull.Value ? Convert.ToDecimal(row["TotalClosing"]) : 0;
+            }
 
             return new LeaveSummaryModel
             {
 
-                LeaveTaken = LeaveTaken,
-                TotalAvailable = TotalAvailableLeave
+                LeaveTaken = (summary.TotalOpening + summary.TotalCredited) - summary.TotalClosing,
+                TotalAvailable = summary.TotalClosing
             };
         }
+
+
     }
 }
 

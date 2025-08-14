@@ -27,7 +27,6 @@ namespace HRMSProject.Controllers
             if (CommonHelper.AreNotEqual(cookie, null))
             {
                 model.Email = cookie["Email"];
-                model.Password = cookie["Password"];
                 model.RememberMe = true;
             }
 

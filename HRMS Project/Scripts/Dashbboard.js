@@ -3,7 +3,21 @@
     loadSidebarMenus();
     loadDashboadData();
     leavepiechart();
-    loadAttendanceCalendar();
+    // Normal calendar
+    loadAttendanceCalendarGeneric({
+        calendarId: 'fullcalendar',
+        eventsUrl: '/Attendance/GetAttendanceEvents',
+        isDashboard: window.location.pathname.toLowerCase() === '/dashboard' ||
+            window.location.pathname.toLowerCase() === '/dashboard/index'
+    });
+
+    // Selected employee calendar
+    loadAttendanceCalendarGeneric({
+        calendarId: 'fullcalendarselectedemp',
+        eventsUrl: '/Attendance/Attendanceselectedemp',
+        dropdownId: 'employeeDropdown'
+    });
+
 
     fetch('/Attendance/GetTodayMode')
         .then(response => response.json())
@@ -129,6 +143,15 @@ function selectAttendance(mode) {
     });
 }
 
+    $.ajax({
+        url: '/Attendance/SetMode',
+        type: 'POST',
+        data: {
+            modeName: mode,
+            __RequestVerificationToken: token
+        }
+    });
+
 
 
 // Hide attendance dropdown on outside click
@@ -188,51 +211,67 @@ function leavepiechart() {
 }
 
 //calendar
-function loadAttendanceCalendar() {
-    const calendarEl = document.getElementById('fullcalendar');
+
+//calendar
+function loadAttendanceCalendarGeneric({
+    calendarId,
+    eventsUrl,
+    dropdownId = null,
+    isDashboard = false
+}) {
+    const calendarEl = document.getElementById(calendarId);
     if (!calendarEl) return;
 
-    const path = window.location.pathname.toLowerCase();
-    const isDashboard = path === '/dashboard' || path === '/dashboard/index';
+    const empDropdown = dropdownId ? document.getElementById(dropdownId) : null;
 
-    let calendar;
-
-    const calendarOptions = {
+    let calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: isDashboard
             ? { left: '', center: 'title', right: '' }
             : { left: 'prev,next today', center: 'title', right: '' },
 
-        events: '/Attendance/GetAttendanceEvents',
+        events: function (fetchInfo, successCallback, failureCallback) {
+            let url = eventsUrl;
+            if (empDropdown) {
+                url += (url.includes("?") ? "&" : "?") + `empId=${empDropdown.value}`;
+            }
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => successCallback(data))
+                .catch(err => failureCallback(err));
+        },
 
         dateClick: function (info) {
             const clickedDate = info.dateStr;
-
-     
             const eventsOnDate = calendar.getEvents().filter(e => e.startStr === clickedDate);
 
             let detailText = null;
-
             if (eventsOnDate.length > 0) {
-
                 const uniqueDetails = [...new Set(eventsOnDate.map(e => e.extendedProps.fullStatus))];
-                detailText = uniqueDetails.join(", ");
+                detailText = uniqueDetails.join("<br>");
             }
-
 
             showReportBox(clickedDate, detailText, info.dayEl);
         }
-    };
+    });
 
+    // Dashboard-specific adjustments
     if (isDashboard) {
-        calendarOptions.contentHeight = '100%';
-        calendarOptions.expandRows = true;
+        calendar.setOption('contentHeight', '100%');
+        calendar.setOption('expandRows', true);
     }
 
-    calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
     calendar.render();
 
+    // Refresh when dropdown changes
+    if (empDropdown) {
+        empDropdown.addEventListener("change", function () {
+            calendar.refetchEvents();
+        });
+    }
 
+    // Hide report box on outside click
     document.addEventListener('click', function (e) {
         const reportBox = document.getElementById('reportBox');
         if (reportBox.style.display === 'block' &&
@@ -242,7 +281,6 @@ function loadAttendanceCalendar() {
         }
     });
 }
-
 
 function showReportBox(date, status, dayCell) {
     const reportBox = document.getElementById('reportBox');

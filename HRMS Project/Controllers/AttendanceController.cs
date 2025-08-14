@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Web.Mvc;
 using HRMSDAL.Service;
+using HRMSDAL.Service_Implementation;
 
 
 namespace HRMSProject.Controllers
@@ -11,11 +12,15 @@ namespace HRMSProject.Controllers
     public class AttendanceController : Controller
     {
         private readonly IAttendanceService _attendanceService;
+        private readonly IEmployeeService _employeeService;
 
-        public AttendanceController(IAttendanceService attendanceService)
+      
+        public AttendanceController(IAttendanceService attendanceService, IEmployeeService employeeService)
         {
             _attendanceService = attendanceService;
+            _employeeService = employeeService;
         }
+
         [HttpGet]
         public ActionResult Index()
         {
@@ -40,6 +45,8 @@ namespace HRMSProject.Controllers
 
 
 
+
+
         [HttpGet]
         public JsonResult GetTodayMode()
         {
@@ -59,13 +66,48 @@ namespace HRMSProject.Controllers
 
 
         [HttpGet]
-        public JsonResult GetAttendanceEvents()
+        public ActionResult Manage()
         {
-            int empId = Convert.ToInt32(Session["Emp_ID"]);
+            InitEmpViewBag();
+            return View();
+        }
 
+
+        public void InitEmpViewBag(int? selectedEmpId = null)
+        {
+            int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
+            var empIDs = _employeeService.GetSubOrdinatesByManager(loggedInEmpId);
+
+            var empSelectList = new List<SelectListItem>();
+
+            // Add self
+            var empIter = _employeeService.GetById(loggedInEmpId);
+            empSelectList.Add(new SelectListItem
+            {
+                Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
+                Value = empIter.EMP_ID.ToString(),
+                Selected = (selectedEmpId == null || selectedEmpId == loggedInEmpId)
+            });
+
+            // Add subordinates
+            foreach (int id in empIDs)
+            {
+                empIter = _employeeService.GetById(id);
+                empSelectList.Add(new SelectListItem
+                {
+                    Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
+                    Value = empIter.EMP_ID.ToString(),
+                    Selected = (selectedEmpId == id)
+                });
+            }
+
+            ViewBag.IDs = empSelectList;
+        }
+
+        private JsonResult BuildAttendanceEvents(int empId)
+        {
             var today = DateTime.Today;
 
-            // Only fetch up to yesterday
             var attendanceList = _attendanceService
                 .GetAttendanceCalendar(empId)
                 .Where(a => a.Date < today) // exclude today
@@ -86,7 +128,7 @@ namespace HRMSProject.Controllers
                              (att.Status == "Absent" ? "#dc3545" : "#ffc107"),
                     extendedProps = new
                     {
-                    fullStatus = att.FullStatus 
+                        fullStatus = att.FullStatus
                     }
                 });
             }
@@ -100,13 +142,34 @@ namespace HRMSProject.Controllers
                     start = holiday.HolidayDate.ToString("yyyy-MM-dd"),
                     display = "background",
                     backgroundColor = "#bfbfbf",
-                     interactive = true
+                    interactive = true
                 });
             }
 
             return Json(events, JsonRequestBehavior.AllowGet);
         }
 
-    }
+        [HttpGet]
+        public JsonResult GetAttendanceEvents(int? EmpId)
+        {
+            int empIdToUse = EmpId ?? Convert.ToInt32(Session["Emp_ID"]);
+            return BuildAttendanceEvents(empIdToUse);
+        }
 
+        [HttpGet]
+        public JsonResult Attendanceselectedemp(int? empId)
+        {
+            int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
+            int selectedEmpId = empId ?? loggedInEmpId;
+
+            InitEmpViewBag(selectedEmpId);
+
+            return BuildAttendanceEvents(selectedEmpId);
+        }
+
+
+
+    }
 }
+
+   
