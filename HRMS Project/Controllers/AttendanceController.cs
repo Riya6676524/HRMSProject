@@ -45,6 +45,8 @@ namespace HRMSProject.Controllers
 
 
 
+
+
         [HttpGet]
         public JsonResult GetTodayMode()
         {
