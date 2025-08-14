@@ -179,6 +179,9 @@ button.mvc-grid-filter{
     color: var(--danger-hover);
 }
 
+.icon-primary:hover{
+    color:var(--primary-hover)
+}
 
 /*CSS form shapes*/
 .shape {

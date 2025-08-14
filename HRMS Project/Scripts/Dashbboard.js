@@ -143,15 +143,6 @@ function selectAttendance(mode) {
     });
 }
 
-    $.ajax({
-        url: '/Attendance/SetMode',
-        type: 'POST',
-        data: {
-            modeName: mode,
-            __RequestVerificationToken: token
-        }
-    });
-
 
 
 // Hide attendance dropdown on outside click

@@ -26,22 +26,21 @@
                       (model.LeaveStatusID == 2 && model.ApproverID == Convert.ToInt32(Session["EMP_ID"]) && model.EMP_ID == model.ApproverID) // Approved and Current Approver
                 )
                 {
-                    return $"<a class='delete-link' href='#' data-id='{model.RequestID}' data-name='From {model.StartDate.ToShortDateString()} to {model.EndDate.ToShortDateString()}'> Cancel </a>";
+                    return $"<a class='action-icon icon-danger delete-link' href='#' data-id='{model.RequestID}' data-name='From {model.StartDate.ToShortDateString()} to {model.EndDate.ToShortDateString()}'> Cancel </a>";
                 }
                 else if (model.LeaveStatusID != 4 && model.EMP_ID != Convert.ToInt32(Session["EMP_ID"]))
                 {
-                    return @Html.ActionLink("Approve/Reject", "Approve", new { id = model.RequestID });
+                    return @Html.ActionLink("Approve/Reject", "Approve", new { id = model.RequestID },new { @class= "action-icon icon-primary" });
                 }
                 else
                 {
                     return $"";
                 }
-            });
+            }).Css("text-center");
 
     }
     )
-    .Sortable()
-    .Filterable();
+    .Sortable();
     if (Model.Count() > 10)
     {
         grid.Pageable(pager =>
@@ -54,3 +53,18 @@
     }
     @grid
 }
+
+<style>
+    .text-center {
+        text-align: center;
+    }
+
+    .fit-content {
+        width: 1%;
+        white-space: nowrap;
+    }
+
+    .text-left {
+        text-align: left;
+    }
+</style>
