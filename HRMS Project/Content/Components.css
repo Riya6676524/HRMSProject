@@ -14,15 +14,15 @@
 .btn {
     font-family: inherit;
     display: inline-block;
-    background-color: black;
+    background-color: lightslategray;
     text-decoration: none;
-    color: #fff;
+    color: white;
     padding: 6px 12px;
     border: none;
     border-radius: 6px;
     font-weight: 500;
     cursor: pointer;
-    font-size: 0.95em;
+    font-size: 0.8rem;
     margin: 0;
 }
 
@@ -36,6 +36,10 @@
 
 .btn.btn-warning {
     background-color: var(--warning);
+}
+
+.btn:hover{
+    background-color: slategray;
 }
 
 .btn.btn-primary:hover {
@@ -87,14 +91,20 @@
 .check-box {
     margin: 0;
     display: block;
+    align-self: flex-start;
 }
 .form-group {
     float: left;
     width: 50%;
     margin-bottom:10px;
 }
-
-
+.column {
+    display: flex;
+    flex-direction: column;
+}
+.row{
+    display:flex;
+}
 
 .form-group.single-column{
     width: 100%;
@@ -136,6 +146,8 @@ textarea.form-control{
 }
 
 /*Css for the GRID*/
+
+
 
 button.mvc-grid-filter{
     color:white;
@@ -187,6 +199,9 @@ button.mvc-grid-filter{
 
 .bg-light-red {
     background-color: lightcoral;
+}
+.bg-gold{
+    background-color:gold;
 }
 
 /*CSS for normal card*/

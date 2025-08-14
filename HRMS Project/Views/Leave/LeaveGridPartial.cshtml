@@ -4,38 +4,39 @@
 @{LeaveListViewData leaveListViewData = ViewBag.LeaveListData; }
 
 
-
 @(Html
     .Grid(Model)
     .Build(columns =>
     {
-        columns.Add(model => leaveListViewData.EmployeeNames[model.EMP_ID]).Titled("Name").Filterable(true);
-        columns.Add(model => @leaveListViewData.LeaveTypes[model.LeaveTypeID]).Titled("LeaveType");
-        columns.Add(model => $"{model.StartDate:d} to {model.EndDate.Date:d}").Titled("From and Till");
-        columns.Add(model => model.TotalDays).Titled("Leave Days");
-        columns.Add(model => model.RequestDate.ToShortDateString()).Titled("Requested On");
-        columns.Add(model => leaveListViewData.LeaveStatuses[model.LeaveStatusID]).Titled("Leave Status");
+        columns.Add(model => model.EMP_ID).Titled("Name").Filterable(true).RenderedAs(model => leaveListViewData.EmployeeNames[model.EMP_ID]);
+        columns.Add(model => model.StartDate).Titled("From - Till").RenderedAs( model => $"{model.StartDate:d} to {model.EndDate.Date:d}");
+        columns.Add(model => model.TotalDays).Titled("Days");
+        columns.Add(model => model.Reason).Titled("Reason");
+        columns.Add(model => model.LeaveStatusID).Titled("Leave Status").RenderedAs(model => leaveListViewData.LeaveStatuses[model.LeaveStatusID]);
+        columns.Add(model => model.ApproverID).Titled("Approver").Encoded(false).RenderedAs(model => model.ApproverID is null ? "" : @leaveListViewData.EmployeeNames[model.ApproverID ?? 0]);
+        columns.Add(model => model.Comment).Titled("Comment").Encoded(false).RenderedAs(model => string.IsNullOrEmpty(model.Comment) ? "" : model.Comment);
         columns.Add(model => model)
                 .Titled("Action")
                 .Encoded(false)
                 .RenderedAs(model =>
                 {
-                    if (leaveListViewData.LeaveStatuses[model.LeaveStatusID].ToUpper() == "PENDING")
+
+                    if ( ( model.LeaveStatusID ==1 && model.EMP_ID == Convert.ToInt32( Session["EMP_ID"] ) ) || // Pending and Current Employee
+                          (model.LeaveStatusID == 2 && model.ApproverID == Convert.ToInt32(Session["EMP_ID"]) && model.EMP_ID == model.ApproverID) // Approved and Current Approver
+                    )
                     {
-                        if (model.EMP_ID == Convert.ToInt32(Session["EMP_ID"]))
-                        {
-                            return @Html.ActionLink("Cancel", "Delete", new { id = model.RequestID });
-                        }
-                        else
-                        {
-                            return @Html.ActionLink("Approve/Reject", "Approve", new { id = model.RequestID });
-                        }
+                        return @Html.ActionLink("Cancel", "Cancel", new { id = model.RequestID });
+                    }
+                    else if (model.LeaveStatusID !=4 && model.EMP_ID != Convert.ToInt32(Session["EMP_ID"]))
+                    {
+                        return @Html.ActionLink("Approve/Reject", "Approve", new { id = model.RequestID });
                     }
                     else
                     {
-                        return $"{model.ApproverID} {model.ApproverDate:dd/MM/yyyy}";
+                        return $"";
                     }
                 });
+
     }
     )
     .Sortable()
@@ -47,5 +48,4 @@
         pager.CurrentPage = 2;
     }
     )
-    .UsingFilterMode(GridFilterMode.Row)
 )

@@ -3,14 +3,32 @@
     loadSidebarMenus();
     loadDashboadData();
     leavepiechart();
-    loadAttendanceCalendar();
+
+    // Normal calendar
+    loadAttendanceCalendarGeneric({
+        calendarId: 'fullcalendar',
+        eventsUrl: '/Attendance/GetAttendanceEvents',
+        isDashboard: window.location.pathname.toLowerCase() === '/dashboard' ||
+            window.location.pathname.toLowerCase() === '/dashboard/index'
+    });
+
+    // Selected employee calendar
+    loadAttendanceCalendarGeneric({
+        calendarId: 'fullcalendarselectedemp',
+        eventsUrl: '/Attendance/Attendanceselectedemp',
+        dropdownId: 'employeeDropdown'
+    });
+
+    
 
     fetch('/Attendance/GetTodayMode')
         .then(response => response.json())
         .then(data => {
             if (data.modeName) {
                 document.getElementById("modeName").value = data.modeName;
-                document.getElementById("attendanceButton").innerText = data.modeName;
+                const btn = document.getElementById("attendanceButton");
+                btn.innerText = data.modeName;
+                btn.classList.add("selected");
             }
         });
 });
@@ -109,17 +127,25 @@ function toggleAttendanceMenu(event) {
     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
 }
 
-//Attendance Option Select
 function selectAttendance(mode) {
-    const today = new Date().toISOString().split("T")[0];
-
-
-
-    //Update UI and submit
     document.getElementById("modeName").value = mode;
-    document.getElementById("attendanceButton").innerText = mode;
-    document.getElementById("modeForm").submit();
+    const btn = document.getElementById("attendanceButton");
+    btn.innerText = mode;
+    btn.classList.add("selected");
+
+    const token = document.querySelector('#modeForm input[name="__RequestVerificationToken"]').value;
+
+    $.ajax({
+        url: '/Attendance/SetMode',
+        type: 'POST',
+        data: {
+            modeName: mode,
+            __RequestVerificationToken: token
+        }
+    });
 }
+
+
 
 // Hide attendance dropdown on outside click
 window.addEventListener('click', function () {
@@ -177,35 +203,99 @@ function leavepiechart() {
     });
 }
 
-
-//  Calendar
-function loadAttendanceCalendar() {
-    const calendarEl = document.getElementById('fullcalendar');
+//calendar
+function loadAttendanceCalendarGeneric({
+    calendarId,
+    eventsUrl,
+    dropdownId = null,
+    isDashboard = false
+}) {
+    const calendarEl = document.getElementById(calendarId);
     if (!calendarEl) return;
 
-    const path = window.location.pathname.toLowerCase();
-    const isDashboard = path === '/dashboard' || path === '/dashboard/index';
+    const empDropdown = dropdownId ? document.getElementById(dropdownId) : null;
 
-    const calendarOptions = {
+    let calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: isDashboard
             ? { left: '', center: 'title', right: '' }
             : { left: 'prev,next today', center: 'title', right: '' },
 
-        events: '/Attendance/GetAttendanceEvents',
+        events: function (fetchInfo, successCallback, failureCallback) {
+            let url = eventsUrl;
+            if (empDropdown) {
+                url += (url.includes("?") ? "&" : "?") + `empId=${empDropdown.value}`;
+            }
 
-        eventClick: function (info) {
-            alert(`Attendance on ${info.event.startStr}: ${info.event.title}`);
+            fetch(url)
+                .then(response => response.json())
+                .then(data => successCallback(data))
+                .catch(err => failureCallback(err));
+        },
+
+        dateClick: function (info) {
+            const clickedDate = info.dateStr;
+            const eventsOnDate = calendar.getEvents().filter(e => e.startStr === clickedDate);
+
+            let detailText = null;
+            if (eventsOnDate.length > 0) {
+                const uniqueDetails = [...new Set(eventsOnDate.map(e => e.extendedProps.fullStatus))];
+                detailText = uniqueDetails.join("<br>");
+            }
+
+            showReportBox(clickedDate, detailText, info.dayEl);
         }
-    };
+    });
 
+    // Dashboard-specific adjustments
     if (isDashboard) {
-        calendarOptions.contentHeight = '100%';
-        calendarOptions.expandRows = true;
+        calendar.setOption('contentHeight', '100%');
+        calendar.setOption('expandRows', true);
     }
 
-    const calendar = new FullCalendar.Calendar(calendarEl, calendarOptions);
     calendar.render();
+
+    // Refresh when dropdown changes
+    if (empDropdown) {
+        empDropdown.addEventListener("change", function () {
+            calendar.refetchEvents();
+        });
+    }
+
+    // Hide report box on outside click
+    document.addEventListener('click', function (e) {
+        const reportBox = document.getElementById('reportBox');
+        if (reportBox.style.display === 'block' &&
+            !reportBox.contains(e.target) &&
+            !calendarEl.contains(e.target)) {
+            reportBox.style.display = 'none';
+        }
+    });
 }
+
+function showReportBox(date, status, dayCell) {
+    const reportBox = document.getElementById('reportBox');
+    const reportDate = document.getElementById('reportDate');
+    const reportStatusRow = document.getElementById('reportStatusRow');
+    const reportStatus = document.getElementById('reportStatus');
+
+    reportDate.textContent = date;
+
+    if (status) {
+        reportStatus.innerHTML = status;
+        reportStatusRow.style.display = 'block';
+    } else {
+        reportStatusRow.style.display = 'none';
+    }
+
+    const rect = dayCell.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+
+    reportBox.style.top = (rect.top + scrollTop - reportBox.offsetHeight - 5) + "px";
+    reportBox.style.left = (rect.left + scrollLeft) + "px";
+    reportBox.style.display = 'block';
+}
+
 
 

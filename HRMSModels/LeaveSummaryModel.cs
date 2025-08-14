@@ -8,9 +8,12 @@ namespace HRMSModels
 {
     public class LeaveSummaryModel
     {
-        public double TotalAvailable { get; set; }
-        public double LeaveTaken { get; set; }
-        public double CarryForward { get; set; }
-    }
+        public decimal TotalAvailable { get; set; }
+        public decimal LeaveTaken { get; set; }
+        public decimal TotalOpening { get; set; }
+        public decimal TotalCredited { get; set; }
+        public decimal TotalClosing { get; set; }
+    
+}
 
 }

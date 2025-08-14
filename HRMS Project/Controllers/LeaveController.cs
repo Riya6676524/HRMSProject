@@ -20,14 +20,16 @@ namespace HRMS.Controllers
         private readonly ILeaveStatusService _leaveStatusService;
         private readonly IEmployeeService _employeeService;
         private readonly IHolidayService _holidayService;
+        private readonly ILeaveBalanceService _leaveBalanceService;
 
-        public LeaveController(IHolidayService holidayService,IEmployeeService employeeService, ILeaveRequestService leaveService, ILeaveTypeService leaveTypeService, ILeaveStatusService leaveStatusService)
+        public LeaveController(ILeaveBalanceService leaveBalanceService, IHolidayService holidayService, IEmployeeService employeeService, ILeaveRequestService leaveService, ILeaveTypeService leaveTypeService, ILeaveStatusService leaveStatusService)
         {
             _leaveRequestService = leaveService;
             _leaveTypeService = leaveTypeService;
             _leaveStatusService = leaveStatusService;
             _employeeService = employeeService;
             _holidayService = holidayService;
+            _leaveBalanceService = leaveBalanceService;
         }
 
         public void initFormViewBag()
@@ -68,35 +70,39 @@ namespace HRMS.Controllers
             };
         }
 
-        [HttpGet]
-        public ActionResult LeaveBalancePartial()
+        public ActionResult PastLeavesPartial(int? id, int count = 3)
         {
-            var balance = new List<LeaveBalanceModel>();
-            int empId = Convert.ToInt32(Session["Emp_ID"]);
-            var leaveTypes = _leaveTypeService.GetAll();
-            var leaveHistory = _leaveRequestService.GetLeavesByEmp_ID(empId);
-            foreach (var leaveType in leaveTypes)
-            {
-                var leaveBalance = new LeaveBalanceModel()
-                {
-                    LeaveName = leaveType.LeaveName,
-                    LeaveLimit = leaveType.LeaveLimits,
-                    LeaveTaken = leaveHistory.Where(x => leaveType.LeaveTypeID == x.LeaveTypeID).Sum(x => x.TotalDays),
-                };
-                leaveBalance.LeaveBalance = leaveBalance.LeaveLimit - leaveBalance.LeaveTaken;
-                balance.Add(leaveBalance);
-            }
-            return PartialView(balance);
+            int empID = id ?? Convert.ToInt32(Session["Emp_ID"]);
+            List<LeaveRequestModel> leaves = _leaveRequestService.GetLeavesByEmp_ID(empID).Take(count).ToList();
+            initLeaveListViewBag(leaves);
+            return PartialView(leaves);
         }
 
         [HttpGet]
+        public ActionResult LeaveBalanceGridPartial(int? empID = null)
+        {
+            int empId = empID ?? Convert.ToInt32(Session["Emp_ID"]);
+            var leaveBalances = _leaveBalanceService.GetAllMonthByID(empId);
+            return View(leaveBalances);
+        }
+
+        public ActionResult LeaveBalanceLabelCard(int? empID = null)
+        {
+            int empId = empID ?? Convert.ToInt32(Session["Emp_ID"]);
+            var leaveBalance = _leaveBalanceService.GetByIdandMonth(empId, DateTime.Now);
+            return PartialView(leaveBalance);
+        }
+
         public ActionResult UpcomingHolidays(int count = 1)
         {
             var holidays = _holidayService.GetAll();
-            var upcomingHolidays = holidays.Where(h => h.HolidayDate >= DateTime.Now)
-                .OrderBy(h => h.HolidayDate)
-                .Take(count)
-                .ToList();
+            var upcomingHolidays = holidays
+                    .Where(h => h.HolidayDate >= DateTime.Now)
+                    .GroupBy(h => h.HolidayName) // Group by distinct holiday name
+                    .Select(g => g.OrderBy(h => h.HolidayDate).First()) // Take earliest date for each name
+                    .OrderBy(h => h.HolidayDate) // Order the distinct list
+                    .Take(count)
+                    .ToList();
             return PartialView("UpcomingHolidayPartial", upcomingHolidays);
         }
 
@@ -128,21 +134,31 @@ namespace HRMS.Controllers
             if (!ModelState.IsValid)
             {
                 initFormViewBag();
+                return View("Add", obj);
+            }
+            obj.TotalDays = CalculateTotalLeaveDays(obj.StartDate, obj.EndDate, obj.SecondHalf, obj.FirstHalf);
+            var leaveBalance = _leaveBalanceService.GetByIdandMonth(obj.EMP_ID, DateTime.Now);
+            // Check if the employee has enough leave balance
+            if (leaveBalance.ClosingBalance < obj.TotalDays-1)
+            {
+                initFormViewBag();
+                ModelState.AddModelError("TotalDays", "You do not have enough leave balance for this request.");
                 return View(obj);
             }
-            else if (obj.StartDate > obj.EndDate)
-            {
-                ModelState.AddModelError("StartDate", "Start Date must be before End Date.");
-            }
-            obj.EMP_ID = Convert.ToInt32(Session["Emp_ID"]);
+
             obj.RequestDate = DateTime.Now;
 
-            //This Might Return 0 in case there are no corresponding record with "pending"
-            if(_employeeService.GetById(obj.EMP_ID).ReportingManagerID == null)
+
+            var emp = _employeeService.GetById(obj.EMP_ID);
+            if (emp.ReportingManagerID is null)
             {
                 obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName.ToUpper() == "APPROVED").Select(x => x.LeaveStatusID).FirstOrDefault();
+                obj.ApproverID = emp.EMP_ID;
+                obj.ApproverDate = DateTime.Now;
             }
-            else {
+            else
+            {
+                //This Might Return 0 in case there are no corresponding record with "pending"
                 obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName.ToUpper() == "PENDING").Select(x => x.LeaveStatusID).FirstOrDefault();
             }
             _leaveRequestService.Insert(obj);
@@ -162,19 +178,46 @@ namespace HRMS.Controllers
             LeaveRequestModel toBeApprovedModel = _leaveRequestService.GetById(id);
             LeaveStatusModel curStatus = _leaveStatusService.GetById(toBeApprovedModel.LeaveStatusID);
             List<LeaveStatusModel> allStatuses = _leaveStatusService.GetAll().ToList();
-            if (curStatus.StatusName.ToUpper() == "PENDING")
+            if (curStatus.LeaveStatusID == 1 || curStatus.LeaveStatusID == 3) //Pending
             {
                 if (Action == "APPROVE" || Action == "DENY")
                 {
-                    LeaveStatusModel approveStatus = (Action == "APPROVED") ? allStatuses.FirstOrDefault(x => x.StatusName.ToUpper() == "APPROVED") : allStatuses.FirstOrDefault(x => x.StatusName.ToUpper() == "REJECTED");
+                    var leaveBalance = _leaveBalanceService.GetByIdandMonth(toBeApprovedModel.EMP_ID, DateTime.Now);
+                    LeaveStatusModel approveStatus = (Action == "APPROVE") ? allStatuses.FirstOrDefault(x => x.LeaveStatusID == 2) : allStatuses.FirstOrDefault(x => x.LeaveStatusID == 3);
                     toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
                     toBeApprovedModel.ApproverID = Convert.ToInt32(Session["Emp_ID"]);
                     toBeApprovedModel.Comment = obj.Comment;
                     toBeApprovedModel.ApproverDate = DateTime.Now;
+                    if (approveStatus.LeaveStatusID == 2)
+                    {
+                        if (leaveBalance.ClosingBalance < obj.TotalDays-1)
+                        {
+                            initFormViewBag();
+                            ModelState.AddModelError("TotalDays", "Does not have enough leave balance for this request.");
+                            return View(obj);
+                        }
+                        leaveBalance.ClosingBalance -= toBeApprovedModel.TotalDays;
+                        _leaveBalanceService.Update(leaveBalance);
+                    }
                     _leaveRequestService.Update(toBeApprovedModel);
                 }
             }
-            return RedirectToAction("LeaveRequests", "Leave");
+            else if (curStatus.LeaveStatusID == 2) //Approved
+            {
+                if (Action == "DENY")
+                {
+                    var leaveBalance = _leaveBalanceService.GetByIdandMonth(toBeApprovedModel.EMP_ID, DateTime.Now);
+                    LeaveStatusModel approveStatus = allStatuses.FirstOrDefault(x => x.LeaveStatusID == 3);
+                    toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
+                    toBeApprovedModel.ApproverID = Convert.ToInt32(Session["Emp_ID"]);
+                    toBeApprovedModel.Comment = obj.Comment;
+                    toBeApprovedModel.ApproverDate = DateTime.Now;
+                    leaveBalance.ClosingBalance += toBeApprovedModel.TotalDays;
+                    _leaveBalanceService.Update(leaveBalance);
+                    _leaveRequestService.Update(toBeApprovedModel);
+                }
+            }
+            return RedirectToAction("Leaves", "Leave");
         }
 
         public ActionResult LeaveGridPartial()
@@ -188,35 +231,49 @@ namespace HRMS.Controllers
                 allLeaves.AddRange(_leaveRequestService.GetLeavesByEmp_ID(id));
             }
             initLeaveListViewBag(allLeaves);
-            return View("LeaveGridPartial", allLeaves);
+            return PartialView("LeaveGridPartial", allLeaves);
         }
 
-        public ActionResult Delete(int id)
+
+        public ActionResult Cancel(int id)
         {
-            LeaveRequestModel toBeApprovedModel = _leaveRequestService.GetById(id);
-            LeaveStatusModel curStatus = _leaveStatusService.GetById(toBeApprovedModel.LeaveStatusID);
+            LeaveRequestModel toBeApprovedReq = _leaveRequestService.GetById(id);
+            LeaveStatusModel curStatus = _leaveStatusService.GetById(toBeApprovedReq.LeaveStatusID);
             List<LeaveStatusModel> allStatuses = _leaveStatusService.GetAll().ToList();
-            if (curStatus.StatusName.ToUpper() == "PENDING")
+            EmployeeModel toBeApprovedEmp = _employeeService.GetById(toBeApprovedReq.EMP_ID);
+            if ((curStatus.LeaveStatusID == 1 && toBeApprovedEmp.EMP_ID == Convert.ToInt16(Session["Emp_ID"])) || // Leave is Pending and Employee Cancels
+                ((toBeApprovedEmp.ReportingManagerID is null) && (toBeApprovedEmp.EMP_ID == Convert.ToInt16(Session["Emp_ID"]))) //Employee with no Manager Cancels his own leave
+                )
             {
-                LeaveStatusModel approveStatus = allStatuses.FirstOrDefault(x => x.StatusName.ToUpper() == "CANCELLED");
-                    toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
-                    _leaveRequestService.Update(toBeApprovedModel);
+                LeaveStatusModel approveStatus = allStatuses.FirstOrDefault(x => x.LeaveStatusID == 4);//Cancelled
+                toBeApprovedReq.LeaveStatusID = approveStatus.LeaveStatusID;
+                if (toBeApprovedEmp.ReportingManagerID is null)
+                {
+                    var leaveBalance = _leaveBalanceService.GetByIdandMonth(toBeApprovedReq.EMP_ID, DateTime.Now);
+                    leaveBalance.ClosingBalance += toBeApprovedReq.TotalDays;
+                    _leaveBalanceService.Update(leaveBalance);
+                }
+                _leaveRequestService.Update(toBeApprovedReq);
             }
-            return RedirectToAction("LeaveRequests", "Leave");
+            return RedirectToAction("Leaves", "Leave");
         }
 
         [HttpGet]
         public JsonResult CalculateLeaveDays(DateTime fromDate, DateTime toDate, bool fromSecondHalf = false, bool uptoFirstHalf = false)
         {
+            return Json(new { leaveDays = CalculateTotalLeaveDays(fromDate, toDate, fromSecondHalf, uptoFirstHalf) }, JsonRequestBehavior.AllowGet);
+        }
 
+        private float CalculateTotalLeaveDays(DateTime fromDate, DateTime toDate, bool fromSecondHalf = false, bool uptoFirstHalf = false)
+        {
             DateUtility dateUtility = new DateUtility();
-            double result = dateUtility
+            float result = dateUtility
                 .setFrom(fromDate)
                 .setTo(toDate)
                 .setFromSecondHalf(fromSecondHalf)
                 .setUptoFirstHalf(uptoFirstHalf)
                 .CalculateTotalLeaveDays();
-            return Json(new { leaveDays = result }, JsonRequestBehavior.AllowGet);
+            return result;
         }
     }
 }

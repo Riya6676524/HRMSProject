@@ -31,6 +31,7 @@ namespace HRMSProject.Models
             this.Email = obj.Email;
             this.CreatedON = obj.CreatedOn;
             this.UpdatedON = obj.ModifiedOn;
+            this.Phone = obj.ContactNumber;
         }
     }
 }

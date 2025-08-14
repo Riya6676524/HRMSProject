@@ -115,7 +115,7 @@ namespace HRMSDAL.Service_Implementation
             }).ToArray();
         }
 
-        private IEnumerable<PropertyDescriptor> GetProperties(bool includePrimaryKey)
+        protected virtual IEnumerable<PropertyDescriptor> GetProperties(bool includePrimaryKey)
         {
             return TypeDescriptor.GetProperties(typeof(T))
                 .Cast<PropertyDescriptor>()

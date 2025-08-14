@@ -27,7 +27,6 @@ namespace HRMSProject.Controllers
             if (CommonHelper.AreNotEqual(cookie, null))
             {
                 model.Email = cookie["Email"];
-                model.Password = cookie["Password"];
                 model.RememberMe = true;
             }
 
@@ -36,8 +35,7 @@ namespace HRMSProject.Controllers
 
         [HttpPost]
         public ActionResult Index(LoginModel model)
-        {
-          
+        {          
                 if (string.IsNullOrWhiteSpace(model.Email))
                 {
                     ModelState.AddModelError("Email", "Please enter email");

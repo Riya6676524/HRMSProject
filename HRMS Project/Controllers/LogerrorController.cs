@@ -8,7 +8,6 @@ namespace HRMS_Project.Controllers
 {
     public class LogerrorController : Controller
     {
-   
         public ActionResult Index()
         {
             return View();

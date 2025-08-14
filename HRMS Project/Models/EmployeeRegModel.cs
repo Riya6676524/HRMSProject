@@ -16,7 +16,7 @@ namespace HRMSProject.Models
 
         private HttpPostedFileBase profilePostedFile;
 
-        [DisplayName("PHOTO")]
+        [DisplayName("Profile Photo")]
         public HttpPostedFileBase ProfilePostedFile
         {
             get
@@ -33,6 +33,34 @@ namespace HRMSProject.Models
                     this.ProfileImagePath = imageData;
                 }
             }
+        }
+
+        public EmployeeRegModel(EmployeeModel obj)
+        {
+            this.EMP_ID = obj.EMP_ID;
+            this.ProfileImagePath = obj.ProfileImagePath;
+            this.EmployeeID = obj.EmployeeID;
+            this.FirstName = obj.FirstName;
+            this.Middlename = obj.Middlename;
+            this.LastName = obj.LastName;
+            this.GenderID = obj.GenderID;
+            this.Email = obj.Email;
+            this.ContactNumber = obj.ContactNumber;
+            this.Address = obj.Address;
+            this.CountryID = obj.CountryID;
+            this.StateID = obj.StateID;
+            this.CityID = obj.CityID;
+            this.ZipCode = obj.ZipCode;
+            this.RoleID = obj.RoleID;
+            this.DepartmentID = obj.DepartmentID;
+            this.ReportingManagerID = obj.ReportingManagerID;
+            this.LocationID = obj.LocationID;
+            this.DOB = obj.DOB;
+        }
+
+        public EmployeeRegModel()
+        {
+
         }
     }
 

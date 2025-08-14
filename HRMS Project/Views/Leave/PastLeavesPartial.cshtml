@@ -1,0 +1,34 @@
+﻿@model IEnumerable<HRMSModels.LeaveRequestModel>
+
+@{
+    HRMS_Project.Models.LeaveListViewData leaveListViewData = ViewBag.LeaveListData;
+}
+<div class="normal-card">
+    <header class="normal-card-header">
+        Previous Leaves
+    </header>
+    <div class="normal-card-body">
+
+        @foreach (var item in Model)
+        {
+            <div class="text-with-sub-text">
+                <div class="shape circle @(item.LeaveStatusID == 2 ? "bg-light-green"
+                    : item.LeaveStatusID == 4 ? "bg-light-red"
+                    : item.LeaveStatusID == 1 ? "bg-gold"
+                    : item.LeaveStatusID == 3 ? "bg-light-red"
+                    : "")">
+                </div>
+                <div class="text">
+                    <div class="main-text">
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                        to
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    </div>
+                    <div class="sub-text">
+                        @Html.DisplayFor(modelItem => leaveListViewData.LeaveStatuses[item.LeaveStatusID])
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

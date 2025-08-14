@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace HRMSModels
 {
     public class LeaveRequestModel
@@ -35,6 +34,7 @@ namespace HRMSModels
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DateAfter("StartDate")]
         public DateTime EndDate { get; set; }
 
         [Required]

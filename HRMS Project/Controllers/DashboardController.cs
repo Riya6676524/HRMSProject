@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Web.SessionState;
 
 namespace HRMSProject.Controllers
 {
@@ -67,7 +68,6 @@ namespace HRMSProject.Controllers
 
 
         [HttpGet]
-
         public JsonResult GetMenus()
         {
             if (Session["RoleID"] == null)

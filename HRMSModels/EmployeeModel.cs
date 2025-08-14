@@ -1,5 +1,4 @@
-﻿using HRMS_Project.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
@@ -13,9 +12,11 @@ namespace HRMSModels
     {
         public int EMP_ID { get; set; }
 
+
         public byte[] ProfileImagePath { get; set; }
 
         [Required]
+        [DisplayName("Employee ID")]
         public string EmployeeID { get; set; }
 
         [Required]
@@ -56,13 +57,20 @@ namespace HRMSModels
         public int CityID { get; set; }
 
         [Required]
+        [Range(100000,999999, ErrorMessage = "Zip Code Must be 6 digits long")]
+        [DisplayName("Zip Code")]
         public int ZipCode { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
         [MinimumAge(18, ErrorMessage = "You must be at least 18 years old to register.")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DisplayName("Date Of Birth")]
         public DateTime DOB { get; set; }
+
+        [Required]
+        [DisplayName("Location")]
+        public int LocationID { get; set; }
 
         [Required]
         [DisplayName("Department")]
@@ -78,7 +86,6 @@ namespace HRMSModels
 
         public int? CreatedByID { get; set; }
 
-        [Required]
         public DateTime CreatedOn { get; set; }
 
         public int? ModifiedByID { get; set; }

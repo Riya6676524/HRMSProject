@@ -30,7 +30,7 @@ namespace HRMS_Project
 
         public static void RegisterTypes(IUnityContainer container)
         {
-
+            container.RegisterType<ILocationService,LocationService>();
             container.RegisterType<ILoginService, LoginService>();
             container.RegisterType<IForgotPasswordService, ForgotPasswordService>();
             container.RegisterType<IDashboardService, DashboardService>();
@@ -38,6 +38,7 @@ namespace HRMS_Project
             container.RegisterType<IRoleMenuService, RoleMenuService>();
             container.RegisterType<IEmployeeService, EmployeeService>();
             container.RegisterType<ILeaveRequestService, LeaveRequestService>();
+            container.RegisterType<ILeaveBalanceService, LeaveBalanceService>();
             container.RegisterType<IGenderService, GenderService>();
             container.RegisterType<ICountryService, CountryService>();
             container.RegisterType<IStateService, StateService>();

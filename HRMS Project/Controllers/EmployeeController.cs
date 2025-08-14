@@ -25,6 +25,7 @@ namespace HRMS.Controllers
         private readonly ICountryService _countryService;
         private readonly IStateService _stateService;
         private readonly ICityService _cityService;
+        private readonly ILocationService _locationService;
 
         public EmployeeController(
             IEmployeeService employeeService,
@@ -34,7 +35,8 @@ namespace HRMS.Controllers
             IRoleService roleService,
             ICountryService countryService,
             IStateService stateService,
-            ICityService cityService
+            ICityService cityService,
+            ILocationService locationService
             )
         {
             _employeeService = employeeService;
@@ -45,20 +47,17 @@ namespace HRMS.Controllers
             _countryService = countryService;
             _stateService = stateService;
             _cityService = cityService;
-
+            _locationService = locationService;
         }
 
 
         public ActionResult EmployeeGridPartial()
         {
-            var EmployeeList = _employeeService.GetAll();
-            var EmployeeViewList = new List<EmployeeListModel>();
-            foreach (EmployeeModel item in EmployeeList)
-            {
-                EmployeeViewList.Add(new EmployeeListModel(item));
-            }
+
+            var EmployeeViewList = _employeeService.GetAll();
             return View(EmployeeViewList);
         }
+
 
         private void PopulateDropdowns()
         {
@@ -66,40 +65,38 @@ namespace HRMS.Controllers
             var genders = _genderService.GetAll() ?? new List<GenderModel>();
             var departments = _departmentService.GetAll() ?? new List<DepartmentModel>();
             var roles = _roleService.GetAll() ?? new List<RoleModel>();
-            var managers = _employeeService.GetAll().Where(x=> x.RoleID == 2 ) ?? new List<EmployeeModel>();
+            var managers = _employeeService.GetAll().Where(x => x.RoleID == 2) ?? new List<EmployeeModel>();
+            var locations = _locationService.GetAll();
 
             ViewBag.Countries = new SelectList(countries, "CountryID", "CountryName");
             ViewBag.Genders = new SelectList(genders, "GenderID", "GenderName");
             ViewBag.Departments = new SelectList(departments, "DepartmentID", "DepartmentName");
             ViewBag.Roles = new SelectList(roles, "RoleID", "RoleName");
             ViewBag.ReportingManagers = new SelectList(managers, "EMP_ID", "FirstName");
+            ViewBag.Locations = new SelectList(locations, "LocationID", "LocationName");
         }
 
         public ActionResult Employees()
         {
-            var EmployeeList = _employeeService.GetAll();
-            var EmployeeViewList = new List<EmployeeListModel>();
-            foreach (EmployeeModel item in EmployeeList)
-            {
-                EmployeeViewList.Add(new EmployeeListModel(item));
-            }
+            
+            var EmployeeViewList = _employeeService.GetAll();
             return View(EmployeeViewList);
         }
 
-[HttpGet]
-public ActionResult Profile()
-{
-    int empId = Convert.ToInt32(Session["Emp_ID"]);
-    var model = _employeeProfileService.GetProfile(empId);
-    return View(model);
-}
+        [HttpGet]
+        public ActionResult Profile()
+        {
+            int empId = Convert.ToInt32(Session["Emp_ID"]);
+            var model = _employeeProfileService.GetProfile(empId);
+            return View(model);
+        }
 
-[HttpGet]
-public ActionResult ChangePassword()
-{
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
 
-    return View();
-}
+            return View();
+        }
 
         [HttpGet]
         public ActionResult Add()
@@ -117,19 +114,55 @@ public ActionResult ChangePassword()
                 PopulateDropdowns();
                 return View("Add", regModel);
             }
-
+            regModel.CreatedByID = Convert.ToInt32(Session["Emp_ID"]);
+            regModel.ModifiedByID = Convert.ToInt32(Session["Emp_ID"]);
             regModel.ModifiedOn = DateTime.Now;
             regModel.CreatedOn = DateTime.Now;
             regModel.Password = Base64Helper.Encode(regModel.Password);
             _employeeService.Insert(regModel);
+            return RedirectToAction("Employees");
+        }
 
-            ViewBag.message = new MesssageBoxViewModel()
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            var employee = _employeeService.GetById(id);
+            PopulateDropdowns();
+            ViewBag.States = new SelectList(_stateService.GetAll().Where(s => s.CountryID == employee.CountryID).ToList(),"StateID","StateName");
+            ViewBag.Cities = new SelectList(_cityService.GetAll().Where(s => s.StateID == employee.StateID).ToList(), "CityID", "CityName");
+            return View(new EmployeeRegModel(employee));
+        }
+
+        [HttpPost]
+        public ActionResult Edit(EmployeeRegModel regModel)
+        {
+            var employee = _employeeService.GetById(regModel.EMP_ID);
+            if (regModel.Password is null)
             {
-                head = "Employee Registered Successfully",
-                body = $"<p><strong>Employee ID:</strong> {regModel.EmployeeID}</p>" +
-                       $"<p><strong>Email:</strong> {regModel.Email}</p>" +
-                       $"<p><strong>Password:</strong> {regModel.Password}</p>"
-            };
+                ModelState.Remove("Password"); // Exclude Password from validation if not changing
+                ModelState.Remove("ConfirmPassword"); // Exclude ConfirmPassword from validation if not changing
+            }
+            ModelState.Remove("ProfilePostedFile"); // Exclude ProfilePostedFile from validation if not changing
+            if (!ModelState.IsValid)
+            {
+                PopulateDropdowns();
+                ViewBag.States = new SelectList(_stateService.GetAll().Where(s => s.CountryID == employee.CountryID).ToList(), "StateID", "StateName");
+                ViewBag.Cities = new SelectList(_cityService.GetAll().Where(s => s.StateID == employee.StateID).ToList(), "CityID", "CityName");
+                return View("Edit", regModel);
+            }
+
+            if (regModel.ProfileImagePath is null) regModel.ProfileImagePath = employee.ProfileImagePath;
+            if (regModel.Password is null) regModel.Password = employee.Password;
+            else
+            {
+                regModel.Password = Base64Helper.Encode(regModel.Password);
+            }
+            regModel.CreatedByID = employee.CreatedByID;
+            regModel.ModifiedByID = Convert.ToInt32(Session["Emp_ID"]);
+            regModel.ModifiedOn = DateTime.Now;
+            regModel.CreatedOn = employee.CreatedOn;
+
+            _employeeService.Update(regModel);
             return RedirectToAction("Employees");
         }
 
@@ -176,19 +209,16 @@ public ActionResult ChangePassword()
             return Json(new { success = true });
         }
 
-        public ActionResult DeleteEmployee(EmployeeModel obj)
+        public ActionResult Delete(int id)
         {
-            var employee = _employeeService.GetById(obj.EMP_ID);
-            return View(employee);
+            _employeeService.Delete(id);
+            return RedirectToAction("Employees");
         }
 
-        [HttpPost]
-        public JsonResult DeleteEmployeeConfirmed(int empId)
+        public ActionResult DeletePromptPartial()
         {
-            _employeeService.Delete(empId);
-            return Json(new { success = true });
+            return PartialView();
         }
-
 
         [HttpPost]
         public ActionResult ChangePassword(EmployeeProfileModel model)
@@ -246,7 +276,6 @@ public ActionResult ChangePassword()
                 return RedirectToAction("ChangePassword");
             }
         }
-
 
 
     }

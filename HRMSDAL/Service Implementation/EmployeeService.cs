@@ -12,12 +12,49 @@ using HRMSDAL.Service;
 
 namespace HRMSDAL.Service_Implementation
 {
-public class EmployeeService : GenericService<EmployeeModel>, IEmployeeService
+    public class EmployeeService : GenericService<EmployeeModel>, IEmployeeService
     {
         protected override string TableName => "Employee";
         protected override string PrimaryKeyColumn => "EMP_ID";
-        
-            public string GetNextAvailableEmployeeId()
+
+        public override List<EmployeeModel> GetAll()
+        {
+            string columnList = string.Join(", ", GetProperties(true).Select(p => p.Name));
+            string query = $"SELECT {columnList} FROM {TableName} where isActive = 1";
+
+            var result = DBHelper.ExecuteReader(query, CommandType.Text);
+
+            return result.Select(MapDictionaryToEntity).ToList();
+        }
+
+        public override EmployeeModel GetById(int id)
+        {
+            string columnList = string.Join(", ", GetProperties(true).Select(p => p.Name));
+            string query = $"SELECT {columnList} FROM {TableName} WHERE {PrimaryKeyColumn} = @{PrimaryKeyColumn} and isActive = 1";
+
+            var parameters = new IDataParameter[]
+            {
+            new SqlParameter("@" + PrimaryKeyColumn, id)
+            };
+
+            var result = DBHelper.ExecuteReader(query, CommandType.Text, parameters);
+            return result.Count > 0 ? MapDictionaryToEntity(result.First()) : null;
+        }
+
+        public override void Delete(int id)
+        {
+            string query = "UPDATE Employee SET IsActive = 0 WHERE EMP_ID = @EMP_ID";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@EMP_ID", id)
+            };
+
+            DBHelper.ExecuteNonQuery(query, CommandType.Text, parameters);
+            return;
+        }
+
+        public string GetNextAvailableEmployeeId()
         {
             string query = "SELECT TOP 1 EmployeeID FROM Employee WHERE EmployeeID LIKE 'Optimum-%' ORDER BY EmployeeID DESC";
 
@@ -58,8 +95,8 @@ public class EmployeeService : GenericService<EmployeeModel>, IEmployeeService
                 }
             }
             return subordinates;
-        }
-}
+        }   
+    }
 }
 
 

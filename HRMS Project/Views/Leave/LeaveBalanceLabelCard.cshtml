@@ -1,0 +1,12 @@
+﻿@model HRMSModels.LeaveBalanceModel
+
+
+<div class="normal-card">
+    <div style=" padding: 15px; display: flex; justify-content: space-between;" class="normal-card-body balance-card">
+        <strong>Leave Balance: </strong>
+        <div style=" padding-left: 8px; margin-right: auto;" id="LeaveBalance#@Model.Emp_ID">
+            @Html.DisplayFor(model => model.ClosingBalance) Days
+        </div>
+        @Html.ActionLink("View Details", "LeaveBalanceGridPartial", new {empID=Model.Emp_ID})
+    </div>
+</div>

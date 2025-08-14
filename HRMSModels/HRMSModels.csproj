@@ -51,6 +51,7 @@
     <Compile Include="ForgotPasswordModel.cs" />
     <Compile Include="GenderModel.cs" />
     <Compile Include="HolidayModel.cs" />
+    <Compile Include="LeaveBalanceModel.cs" />
     <Compile Include="LeaveRequestModel.cs" />
     <Compile Include="LeaveStatusModel.cs" />
     <Compile Include="LeaveTypeModel.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="RoleMenuModel.cs" />
     <Compile Include="RoleModel.cs" />
     <Compile Include="StateModel.cs" />
+    <Compile Include="Validation Attributes\DateAfterAttribute.cs" />
     <Compile Include="Validation Attributes\MinimumAgeAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
