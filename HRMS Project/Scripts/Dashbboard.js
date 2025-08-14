@@ -3,7 +3,6 @@
     loadSidebarMenus();
     loadDashboadData();
     leavepiechart();
-
     // Normal calendar
     loadAttendanceCalendarGeneric({
         calendarId: 'fullcalendar',
@@ -19,7 +18,6 @@
         dropdownId: 'employeeDropdown'
     });
 
-    
 
     fetch('/Attendance/GetTodayMode')
         .then(response => response.json())
@@ -204,6 +202,8 @@ function leavepiechart() {
 }
 
 //calendar
+
+//calendar
 function loadAttendanceCalendarGeneric({
     calendarId,
     eventsUrl,
@@ -296,6 +296,3 @@ function showReportBox(date, status, dayCell) {
     reportBox.style.left = (rect.left + scrollLeft) + "px";
     reportBox.style.display = 'block';
 }
-
-
-

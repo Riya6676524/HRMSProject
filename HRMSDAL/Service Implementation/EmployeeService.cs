@@ -95,7 +95,7 @@ namespace HRMSDAL.Service_Implementation
                 }
             }
             return subordinates;
-        }   
+        }
     }
 }
 

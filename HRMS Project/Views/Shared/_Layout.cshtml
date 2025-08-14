@@ -1,5 +1,4 @@
-﻿﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -51,7 +50,7 @@
         <div class="sidebar">
             <div class="profile-section">
                 <br />
-                <img src="@Url.Action("GetProfileImage", "Dashboard", new { empId = Session["Emp_ID"] })" class="profile-img" alt="Profile Image" />
+                <img src="@Url.Action("GetProfileImage", "Dashboard", new { empId = Session["Emp_ID"] })" class="profile-img" alt="Profile Image"/>
 
                 <div>
                     <strong id="profileName"></strong><br />
@@ -87,9 +86,9 @@
     <script src="~/Scripts/Dashbboard.js"></script>
     <script src="~/Scripts/MvcGrid/mvc-grid.js"></script>
     <script>
-        [].forEach.call(document.getElementsByClassName('mvc-grid'), function (element) {
-            new MvcGrid(element);
-        });
+       [].forEach.call(document.getElementsByClassName('mvc-grid'), function (element) {
+                          new MvcGrid(element);
+                      });
     </script>
 
     <script>

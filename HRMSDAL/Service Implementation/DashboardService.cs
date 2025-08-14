@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection;
 
 namespace HRMSDAL.Service_Implementation
 {
@@ -37,7 +36,6 @@ namespace HRMSDAL.Service_Implementation
             return model;
         }
 
-      
         public LeaveSummaryModel GetLeaveSummary(int empId)
         {
             LeaveSummaryModel summary = new LeaveSummaryModel();

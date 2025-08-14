@@ -13,7 +13,8 @@ namespace HRMSModels
         public decimal TotalOpening { get; set; }
         public decimal TotalCredited { get; set; }
         public decimal TotalClosing { get; set; }
-    
-}
+
+    }
 
 }
+

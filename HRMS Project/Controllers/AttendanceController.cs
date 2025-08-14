@@ -5,8 +5,6 @@ using System.Linq;
 using System.Web.Mvc;
 using HRMSDAL.Service;
 using HRMSDAL.Service_Implementation;
-using Newtonsoft.Json.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 
 namespace HRMSProject.Controllers
@@ -16,11 +14,13 @@ namespace HRMSProject.Controllers
         private readonly IAttendanceService _attendanceService;
         private readonly IEmployeeService _employeeService;
 
+      
         public AttendanceController(IAttendanceService attendanceService, IEmployeeService employeeService)
         {
             _attendanceService = attendanceService;
             _employeeService = employeeService;
         }
+
         [HttpGet]
         public ActionResult Index()
         {
@@ -39,7 +39,7 @@ namespace HRMSProject.Controllers
                 _attendanceService.UpdateMode(empId, modeId);
             }
 
-            return Json(new { });
+            return Json(new { }); 
         }
 
 
@@ -63,14 +63,14 @@ namespace HRMSProject.Controllers
         }
 
 
-     [HttpGet]
+        [HttpGet]
         public ActionResult Manage()
         {
             InitEmpViewBag();
             return View();
         }
 
-       
+
         public void InitEmpViewBag(int? selectedEmpId = null)
         {
             int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
@@ -169,3 +169,5 @@ namespace HRMSProject.Controllers
 
     }
 }
+
+   
