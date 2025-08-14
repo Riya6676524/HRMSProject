@@ -11,7 +11,7 @@
     @Html.DropDownList(
             "empId",
             ViewBag.IDs as List<SelectListItem>,
-            new { @id = "employeeDropdown", onchange = "document.getElementById('attendanceForm').submit();" }
+            new { @id = "employeeDropdown", @class = "form-control employee-dropdown", onchange = "document.getElementById('attendanceForm').submit();" }
         )
 
     <h4>Attendance Calendar</h4>
