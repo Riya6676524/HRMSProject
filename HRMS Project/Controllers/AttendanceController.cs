@@ -72,36 +72,57 @@ namespace HRMSProject.Controllers
         public void InitEmpViewBag(int? selectedEmpId = null)
         {
             int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
-            var empIDs = _employeeService.GetSubOrdinatesByManager(loggedInEmpId);
+            int roleId = Convert.ToInt32(Session["RoleID"]);
 
             var empSelectList = new List<SelectListItem>();
 
-            // Add self
-            var empIter = _employeeService.GetById(loggedInEmpId);
-            if (empIter != null) // <-- Null check
+            if (roleId == 1) // Admin -> Show all employees
             {
-                empSelectList.Add(new SelectListItem
+                var allEmployees = _employeeService.GetAll();
+                foreach (var emp in allEmployees)
                 {
-                    Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
-                    Value = empIter.EMP_ID.ToString(),
-                    Selected = (selectedEmpId == null || selectedEmpId == loggedInEmpId)
-                });
+                    empSelectList.Add(new SelectListItem
+                    {
+                        Text = $"{emp.FirstName} {emp.Middlename} {emp.LastName}",
+                        Value = emp.EMP_ID.ToString(),
+                        Selected = (selectedEmpId == emp.EMP_ID || (selectedEmpId == null && emp.EMP_ID == loggedInEmpId))
+                    });
+                }
             }
-
-            // Add subordinates
-            foreach (int id in empIDs)
+            else // Manager/Employee -> Show self + subordinates
             {
-                empIter = _employeeService.GetById(id);
-                empSelectList.Add(new SelectListItem
+                // Add self
+                var empIter = _employeeService.GetById(loggedInEmpId);
+                if (empIter != null)
                 {
-                    Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
-                    Value = empIter.EMP_ID.ToString(),
-                    Selected = (selectedEmpId == id)
-                });
+                    empSelectList.Add(new SelectListItem
+                    {
+                        Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
+                        Value = empIter.EMP_ID.ToString(),
+                        Selected = (selectedEmpId == null || selectedEmpId == loggedInEmpId)
+                    });
+                }
+
+                // Add subordinates
+                var empIDs = _employeeService.GetSubOrdinatesByManager(loggedInEmpId);
+                foreach (int id in empIDs)
+                {
+                    empIter = _employeeService.GetById(id);
+                    if (empIter != null)
+                    {
+                        empSelectList.Add(new SelectListItem
+                        {
+                            Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
+                            Value = empIter.EMP_ID.ToString(),
+                            Selected = (selectedEmpId == id)
+                        });
+                    }
+                }
             }
 
             ViewBag.IDs = empSelectList;
         }
+
 
         private JsonResult BuildAttendanceEvents(int empId)
         {
@@ -181,7 +202,7 @@ namespace HRMSProject.Controllers
                 endDate.Value
             );
 
-            // Send selected values back to the view
+            
             ViewBag.SelectedStartDate = startDate.Value.ToString("yyyy-MM-dd");
             ViewBag.SelectedEndDate = endDate.Value.ToString("yyyy-MM-dd");
 
