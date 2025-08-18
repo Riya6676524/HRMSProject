@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using HRMSDAL.Service;
 using HRMSDAL.Service_Implementation;
+using HRMSModels;
 
 
 namespace HRMSProject.Controllers
@@ -14,7 +15,7 @@ namespace HRMSProject.Controllers
         private readonly IAttendanceService _attendanceService;
         private readonly IEmployeeService _employeeService;
 
-      
+
         public AttendanceController(IAttendanceService attendanceService, IEmployeeService employeeService)
         {
             _attendanceService = attendanceService;
@@ -39,7 +40,7 @@ namespace HRMSProject.Controllers
                 _attendanceService.UpdateMode(empId, modeId);
             }
 
-            return Json(new { }); 
+            return Json(new { });
         }
 
 
@@ -65,12 +66,7 @@ namespace HRMSProject.Controllers
         }
 
 
-        [HttpGet]
-        public ActionResult Manage()
-        {
-            InitEmpViewBag();
-            return View();
-        }
+
 
 
         public void InitEmpViewBag(int? selectedEmpId = null)
@@ -160,16 +156,69 @@ namespace HRMSProject.Controllers
         }
 
         [HttpGet]
-        public JsonResult Attendanceselectedemp(int? empId)
+        public ActionResult Manage()
+        {
+            InitEmpViewBag();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Manage(int? empId, DateTime? startDate, DateTime? endDate)
         {
             int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
             int selectedEmpId = empId ?? loggedInEmpId;
 
             InitEmpViewBag(selectedEmpId);
 
-            return BuildAttendanceEvents(selectedEmpId);
+            if (!startDate.HasValue || !endDate.HasValue)
+            {
+                return View(new List<AttendanceModel>());
+            }
+
+            var attendanceList = _attendanceService.GetAttendanceByStartEndDate(
+                selectedEmpId,
+                startDate.Value,
+                endDate.Value
+            );
+
+            // Send selected values back to the view
+            ViewBag.SelectedStartDate = startDate.Value.ToString("yyyy-MM-dd");
+            ViewBag.SelectedEndDate = endDate.Value.ToString("yyyy-MM-dd");
+
+            return View(attendanceList);
         }
 
+        [HttpGet]
+        public ActionResult Edit(int empId, DateTime attendanceDate)
+        {
+            var record = _attendanceService.GetAttendance(empId, attendanceDate);
+
+            if (record == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(record); 
+        }
+
+        [HttpPost]
+     
+        public ActionResult Edit(AttendanceModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isUpdated = _attendanceService.UpdateAttendance(model);
+                if (isUpdated)
+                {
+                    return RedirectToAction("Manage");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Failed to update attendance.");
+                }
+            }
+            return View(model);
+        }
 
 
     }

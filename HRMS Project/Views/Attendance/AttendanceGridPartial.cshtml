@@ -1,0 +1,72 @@
+﻿@model IEnumerable<HRMSModels.AttendanceModel>
+
+<style>
+    .action-col {
+        text-align: center !important;
+        vertical-align: middle !important;
+        width: 80px !important;
+        text-decoration: none;
+    }
+
+        .action-col a {
+            font-size: 16px !important;
+            cursor: pointer;
+            color: #007bff !important;
+        }
+</style>
+
+@(Html
+       .Grid(Model ?? Enumerable.Empty<HRMSModels.AttendanceModel>
+    ())
+    .Build(columns =>
+    {
+        columns.Add(model => model.AttendanceDate.ToString("dd-MM-yyyy"))
+        .Titled("Date")
+        .Sortable(true);
+
+        columns.Add(model => model.FirstHalfStatus)
+        .Titled("First Half")
+        .Sortable(true);
+
+        columns.Add(model => model.SecondHalfStatus)
+        .Titled("Second Half")
+        .Sortable(true);
+
+        columns.Add(model => model.ModeID == 1 ? "WFH" :
+        model.ModeID == 2 ? "WFO" : "")
+        .Titled("Mode")
+        .Sortable(true);
+
+        columns.Add(model => model.LoginTime.HasValue
+        ? model.LoginTime.Value.ToString("hh:mm tt")
+        : "-")
+        .Titled("Login Time")
+        .Sortable(true);
+
+        columns.Add(model => model.LogoutTime.HasValue
+        ? model.LogoutTime.Value.ToString("hh:mm tt")
+        : "-")
+        .Titled("Logout Time")
+        .Sortable(true);
+
+        columns.Add(model => new HtmlString(
+       Convert.ToInt32(Session["RoleID"]) != 3
+       ? $"<a href='/Attendance/Edit?empId={model.Emp_ID}&attendanceDate={model.AttendanceDate:yyyy-MM-dd}'><i class='fa fa-edit'></i></a>"
+       : "<a href='#'><i class='fa fa-edit'></i></a>"
+       ))
+       .Titled(Convert.ToInt32(HttpContext.Current.Session["RoleID"]) == 3 ? "Correction Request" : "Action")
+       .Encoded(false)
+       .Css("action-col");
+
+
+    })
+    .Sortable()
+    .Filterable()
+    .Pageable(pager => {
+        pager.PageSizes = new Dictionary<int, string>
+            () { { 5, "5" }, { 10, "10" }, { 20, "20" }, { 0, "ALL" } };
+        pager.ShowPageSizes = true;
+        pager.PagesToDisplay = 3;
+        pager.CurrentPage = 1;
+    })
+        )

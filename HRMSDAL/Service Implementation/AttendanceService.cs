@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 public class AttendanceService : IAttendanceService
 {
@@ -174,6 +175,73 @@ public class AttendanceService : IAttendanceService
 
         return holidays;
     }
+
+    public List<AttendanceModel> GetAttendanceByStartEndDate(int empId, DateTime startDate, DateTime endDate)
+    {
+        var parameters = new SqlParameter[]
+        {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@StartDate", startDate),
+        new SqlParameter("@EndDate", endDate),
+        };
+
+        var result = DBHelper.ExecuteReader("sp_GetAttendanceByStartEndDate", CommandType.StoredProcedure, parameters);
+
+        var attendanceList = new List<AttendanceModel>();
+
+        foreach (var row in result)
+        {
+            attendanceList.Add(new AttendanceModel
+            {
+                Emp_ID = Convert.ToInt32(row["Emp_ID"]),
+                AttendanceDate = Convert.ToDateTime(row["AttendanceDate"]),
+                FirstHalfStatus = row["FirstHalfStatus"]?.ToString(),
+                SecondHalfStatus = row["SecondHalfStatus"]?.ToString(),
+                ModeID = row["ModeID"] != DBNull.Value ? Convert.ToInt32(row["ModeID"]) : (int?)null,
+                LoginTime = Convert.ToDateTime(row["LoginTime"]),
+                LogoutTime = Convert.ToDateTime(row["LogoutTime"]),
+                FirstName = row["FirstName"].ToString(),
+                MiddleName = row["MiddleName"].ToString(),
+                LastName = row["LastName"].ToString()
+
+            });
+        }
+
+        return attendanceList;
+    }
+
+    public AttendanceModel GetAttendance(int empId, DateTime attendanceDate)
+    {
+        return GetAttendanceByStartEndDate(empId, attendanceDate, attendanceDate).FirstOrDefault();
+    }
+
+
+    public bool UpdateAttendance(AttendanceModel model)
+    {
+        try
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+            new SqlParameter("@Emp_ID", model.Emp_ID),
+            new SqlParameter("@AttendanceDate", model.AttendanceDate),
+            new SqlParameter("@FirstHalfStatus", model.FirstHalfStatus ?? (object)DBNull.Value),
+            new SqlParameter("@SecondHalfStatus", model.SecondHalfStatus ?? (object)DBNull.Value),
+            new SqlParameter("@ModeID", model.ModeID ?? (object)DBNull.Value),
+            new SqlParameter("@LoginTime", (object)model.LoginTime ?? DBNull.Value),
+            new SqlParameter("@LogoutTime", (object)model.LogoutTime ?? DBNull.Value)
+            };
+
+            int rowsAffected = DBHelper.ExecuteNonQuery("sp_UpdateAttendance", CommandType.StoredProcedure, parameters);
+
+            return rowsAffected > 0;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error updating attendance", ex);
+        }
+    }
+
+
 
 
 

@@ -45,6 +45,8 @@ namespace HRMSDAL.Service_Implementation
                 model.RoleName = row["RoleName"]?.ToString();
                 model.ZipCode = Convert.ToInt32(row["ZipCode"]);
                 model.DepartmentName = row["DepartmentName"]?.ToString();
+                model.LocationName = row.ContainsKey("LocationName") ? row["LocationName"]?.ToString() : null;
+
 
             }
             return model;

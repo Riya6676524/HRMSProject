@@ -11,14 +11,6 @@
             window.location.pathname.toLowerCase() === '/dashboard/index'
     });
 
-    // Selected employee calendar
-    loadAttendanceCalendarGeneric({
-        calendarId: 'fullcalendarselectedemp',
-        eventsUrl: '/Attendance/Attendanceselectedemp',
-        dropdownId: 'employeeDropdown'
-    });
-
-
     fetch('/Attendance/GetTodayMode')
         .then(response => response.json())
         .then(data => {
