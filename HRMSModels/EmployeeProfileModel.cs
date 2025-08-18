@@ -29,7 +29,7 @@ namespace HRMSModels
         public DateTime? DOB { get; set; }
 
         public string CountryName { get; set; }
-
+        public string LocationName { get; set; }
         public string currpassword { get; set; }
         public string newpassword { get; set; }
         public string confirmNewPassword { get; set; }

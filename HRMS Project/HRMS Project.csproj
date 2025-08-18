@@ -306,6 +306,10 @@
     <Content Include="Views\Leave\LeaveBalanceLabelCard.cshtml" />
     <Content Include="Views\Attendance\Manage.cshtml" />
     <Content Include="Views\Leave\CancePromptPartial.cshtml" />
+    <Content Include="Views\Attendance\Index.cshtml" />
+    <Content Include="Views\Attendance\AttendanceGridPartial.cshtml" />
+    <Content Include="Views\Attendance\Edit.cshtml" />
+    <Content Include="Views\Attendance\EditPartialView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

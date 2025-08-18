@@ -1,0 +1,28 @@
+﻿@model HRMSModels.AttendanceModel
+
+@{
+    ViewBag.Title = "Edit Attendance";
+}
+
+@Html.HiddenFor(m => m.Emp_ID)
+<div class="form-card">
+    <header class="form-card-header">
+        Edit Attendance
+    </header>
+
+    @using (Html.BeginForm("Edit", "Attendance", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-card-body" id="formCardBody">
+            @Html.Partial("EditPartialView", Model)
+        </div>
+
+        <div class="form-card-footer d-flex justify-content-between">
+            <input type="submit" value="Save" class="btn btn-success" style="margin-right:10px;" />
+
+            @Html.ActionLink("Cancle", "Manage", "Attendance", new { @class = "btn btn-danger" })
+        </div>
+    }
+</div>

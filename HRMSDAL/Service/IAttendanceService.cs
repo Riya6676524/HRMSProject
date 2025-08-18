@@ -17,6 +17,9 @@ namespace HRMSDAL.Service
         void UpdateMode(int empId, int modeId);
         string GetTodayModeName(int empId);
         AttendanceModel GetAttendanceByDate(int empId, DateTime date);
+        List<AttendanceModel> GetAttendanceByStartEndDate(int empId, DateTime startDate, DateTime endDate);
+        AttendanceModel GetAttendance(int empId, DateTime attendanceDate);
+        bool UpdateAttendance(AttendanceModel model);
 
     }
 }

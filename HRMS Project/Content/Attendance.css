@@ -11,7 +11,7 @@ h2, h4 {
     color: #0a2240;
     font-weight: bold;
     margin-top: 1px;
-    
+    margin-bottom:5px
    
 }
 
@@ -45,23 +45,13 @@ h2, h4 {
 
 .employee-dropdown {
     width: 150px;
-    padding: 8px 12px;
-    border: 1px solid #007bff;
-    border-radius: 6px;
+    padding: 5px 9px;
+    border: 2px solid gray;
     background-color: #ffffff;
     color: #0a2240;
     font-size: 14px;
     font-family: 'Segoe UI', sans-serif;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  
 }
 
-    .employee-dropdown:focus {
-        border-color: #5ab1f2;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        outline: none;
-    }
-
-    .employee-dropdown:hover {
-        border-color: #5ab1f2;
-    }
 

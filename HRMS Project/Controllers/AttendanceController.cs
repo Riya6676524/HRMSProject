@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using HRMSDAL.Service;
 using HRMSDAL.Service_Implementation;
+using HRMSModels;
 
 
 namespace HRMSProject.Controllers
@@ -14,7 +15,7 @@ namespace HRMSProject.Controllers
         private readonly IAttendanceService _attendanceService;
         private readonly IEmployeeService _employeeService;
 
-      
+
         public AttendanceController(IAttendanceService attendanceService, IEmployeeService employeeService)
         {
             _attendanceService = attendanceService;
@@ -39,7 +40,7 @@ namespace HRMSProject.Controllers
                 _attendanceService.UpdateMode(empId, modeId);
             }
 
-            return Json(new { }); 
+            return Json(new { });
         }
 
 
@@ -65,47 +66,63 @@ namespace HRMSProject.Controllers
         }
 
 
-        [HttpGet]
-        public ActionResult Manage()
-        {
-            InitEmpViewBag();
-            return View();
-        }
+
 
 
         public void InitEmpViewBag(int? selectedEmpId = null)
         {
             int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
-            var empIDs = _employeeService.GetSubOrdinatesByManager(loggedInEmpId);
+            int roleId = Convert.ToInt32(Session["RoleID"]);
 
             var empSelectList = new List<SelectListItem>();
 
-            // Add self
-            var empIter = _employeeService.GetById(loggedInEmpId);
-            if (empIter != null) // <-- Null check
+            if (roleId == 1) // Admin -> Show all employees
             {
-                empSelectList.Add(new SelectListItem
+                var allEmployees = _employeeService.GetAll();
+                foreach (var emp in allEmployees)
                 {
-                    Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
-                    Value = empIter.EMP_ID.ToString(),
-                    Selected = (selectedEmpId == null || selectedEmpId == loggedInEmpId)
-                });
+                    empSelectList.Add(new SelectListItem
+                    {
+                        Text = $"{emp.FirstName} {emp.Middlename} {emp.LastName}",
+                        Value = emp.EMP_ID.ToString(),
+                        Selected = (selectedEmpId == emp.EMP_ID || (selectedEmpId == null && emp.EMP_ID == loggedInEmpId))
+                    });
+                }
             }
-
-            // Add subordinates
-            foreach (int id in empIDs)
+            else // Manager/Employee -> Show self + subordinates
             {
-                empIter = _employeeService.GetById(id);
-                empSelectList.Add(new SelectListItem
+                // Add self
+                var empIter = _employeeService.GetById(loggedInEmpId);
+                if (empIter != null)
                 {
-                    Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
-                    Value = empIter.EMP_ID.ToString(),
-                    Selected = (selectedEmpId == id)
-                });
+                    empSelectList.Add(new SelectListItem
+                    {
+                        Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
+                        Value = empIter.EMP_ID.ToString(),
+                        Selected = (selectedEmpId == null || selectedEmpId == loggedInEmpId)
+                    });
+                }
+
+                // Add subordinates
+                var empIDs = _employeeService.GetSubOrdinatesByManager(loggedInEmpId);
+                foreach (int id in empIDs)
+                {
+                    empIter = _employeeService.GetById(id);
+                    if (empIter != null)
+                    {
+                        empSelectList.Add(new SelectListItem
+                        {
+                            Text = $"{empIter.FirstName} {empIter.Middlename} {empIter.LastName}",
+                            Value = empIter.EMP_ID.ToString(),
+                            Selected = (selectedEmpId == id)
+                        });
+                    }
+                }
             }
 
             ViewBag.IDs = empSelectList;
         }
+
 
         private JsonResult BuildAttendanceEvents(int empId)
         {
@@ -160,16 +177,69 @@ namespace HRMSProject.Controllers
         }
 
         [HttpGet]
-        public JsonResult Attendanceselectedemp(int? empId)
+        public ActionResult Manage()
+        {
+            InitEmpViewBag();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Manage(int? empId, DateTime? startDate, DateTime? endDate)
         {
             int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
             int selectedEmpId = empId ?? loggedInEmpId;
 
             InitEmpViewBag(selectedEmpId);
 
-            return BuildAttendanceEvents(selectedEmpId);
+            if (!startDate.HasValue || !endDate.HasValue)
+            {
+                return View(new List<AttendanceModel>());
+            }
+
+            var attendanceList = _attendanceService.GetAttendanceByStartEndDate(
+                selectedEmpId,
+                startDate.Value,
+                endDate.Value
+            );
+
+            
+            ViewBag.SelectedStartDate = startDate.Value.ToString("yyyy-MM-dd");
+            ViewBag.SelectedEndDate = endDate.Value.ToString("yyyy-MM-dd");
+
+            return View(attendanceList);
         }
 
+        [HttpGet]
+        public ActionResult Edit(int empId, DateTime attendanceDate)
+        {
+            var record = _attendanceService.GetAttendance(empId, attendanceDate);
+
+            if (record == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(record); 
+        }
+
+        [HttpPost]
+     
+        public ActionResult Edit(AttendanceModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isUpdated = _attendanceService.UpdateAttendance(model);
+                if (isUpdated)
+                {
+                    return RedirectToAction("Manage");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Failed to update attendance.");
+                }
+            }
+            return View(model);
+        }
 
 
     }
