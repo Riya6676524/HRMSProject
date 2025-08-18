@@ -11,17 +11,10 @@
     .Build(columns =>
     {
         columns.Add(model=> model.ForMonth).Titled("For Month").RenderedAs(model => model.ForMonth.ToString("MMMM-yyyy")).Css("text-left");
-        columns.Add(model => model.OpeningBalance).Titled("Opening Balance").Css("text-center fit-content"); ;
+        columns.Add(model => model.OpeningBalance).Titled("Opening Leaves").Css("text-center fit-content"); ;
         columns.Add(model => model.Credited).Titled("Credited Leaves").Css("text-center fit-content"); ;
-        columns.Add(model => model.ClosingBalance).Titled("Closing Balance").Css("text-center fit-content"); ;
+        columns.Add(model => model.ClosingBalance).Titled("Closing Leaves").Css("text-center fit-content"); ;
         columns.Add(model => model).Titled("Leaves Consumed").RenderedAs(model => (model.OpeningBalance + model.Credited) - model.ClosingBalance).Css("text-center fit-content"); ;
-    }
-    )
-    .Pageable(pager => {
-        pager.PageSizes = new Dictionary<int, string>() { { 10, "10" }, { 20, "20" }, { 0, "ALL" } };
-        pager.ShowPageSizes = true;
-        pager.PagesToDisplay = 3;
-        pager.CurrentPage = 2;
     }
     )
 )

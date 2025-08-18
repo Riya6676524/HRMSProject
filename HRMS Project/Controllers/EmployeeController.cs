@@ -65,7 +65,7 @@ namespace HRMS.Controllers
             var genders = _genderService.GetAll() ?? new List<GenderModel>();
             var departments = _departmentService.GetAll() ?? new List<DepartmentModel>();
             var roles = _roleService.GetAll() ?? new List<RoleModel>();
-            var managers = _employeeService.GetAll().Where(x => x.RoleID == 2) ?? new List<EmployeeModel>();
+            var managers = _employeeService.GetAll().Where(x => x.RoleID == 2 || x.RoleID==1) ?? new List<EmployeeModel>();
             var locations = _locationService.GetAll();
 
             ViewBag.Countries = new SelectList(countries, "CountryID", "CountryName");
