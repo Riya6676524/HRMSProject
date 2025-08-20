@@ -20,6 +20,11 @@
                 btn.innerText = data.modeName;
                 btn.classList.add("selected");
             }
+            else {
+                $.get('/Attendance/WorkStatusModal', function (data) {
+                    $('body').append(data);
+                })
+            }
         });
 });
 

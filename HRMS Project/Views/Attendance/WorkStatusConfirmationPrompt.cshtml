@@ -1,0 +1,75 @@
+﻿<div id="WorkStatusModal">
+    <div class="modal-overlay">
+        <div class="modal-box">
+            <form id="WorkStatusForm" method="post">
+                <h3>Confirm Working Mode: </h3>
+                @Html.AntiForgeryToken()
+                <select class="form-control" style="width:inherit;" id="WorkModeOptions" name="modeName">
+                    <option value="WFH">Work From Home</option>
+                    <option value="WFO">Work From Office</option>
+                </select>
+                <button style=" height: 34px;" class="btn btn-primary" type="submit"> Confirm </button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        #WorkStatusModal .modal-overlay{
+            display: block;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background-color: white;
+            width: 300px;
+            padding: 20px 20px 40px;
+            margin: 100px auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #000;
+            text-align: center;
+        }
+    </style>
+
+    <script>
+    $(document).ready(function () {
+        $('#WorkStatusForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            var url = form.attr('action');
+            var data = form.serialize();
+            var mode = $('#WorkModeOptions').val();
+
+            $.ajax({
+                url: '@Url.Action("SetMode","Attendance")',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    if (response.success) {
+                        document.getElementById("modeName").value = mode;
+                        const btn = document.getElementById("attendanceButton");
+                        btn.innerText = mode;
+                        btn.classList.add("selected");
+                        $('#WorkStatusModal').remove();
+                    } else {
+                        alert(response.message || "Update failed.");
+                    }
+                },
+                error: function () {
+                    alert("Server error occurred.");
+                }
+            });
+        });
+    });
+    </script>
+</div>

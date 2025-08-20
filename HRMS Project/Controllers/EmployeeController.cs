@@ -65,7 +65,7 @@ namespace HRMS.Controllers
             var genders = _genderService.GetAll() ?? new List<GenderModel>();
             var departments = _departmentService.GetAll() ?? new List<DepartmentModel>();
             var roles = _roleService.GetAll() ?? new List<RoleModel>();
-            var managers = _employeeService.GetAll().Where(x => x.RoleID == 2 || x.RoleID==1) ?? new List<EmployeeModel>();
+            var managers = _employeeService.GetAll().Where(x => x.RoleID == 2 || x.RoleID == 1) ?? new List<EmployeeModel>();
             var locations = _locationService.GetAll();
 
             ViewBag.Countries = new SelectList(countries, "CountryID", "CountryName");
@@ -78,7 +78,7 @@ namespace HRMS.Controllers
 
         public ActionResult Employees()
         {
-            
+
             var EmployeeViewList = _employeeService.GetAll();
             return View(EmployeeViewList);
         }
@@ -128,7 +128,7 @@ namespace HRMS.Controllers
         {
             var employee = _employeeService.GetById(id);
             PopulateDropdowns();
-            ViewBag.States = new SelectList(_stateService.GetAll().Where(s => s.CountryID == employee.CountryID).ToList(),"StateID","StateName");
+            ViewBag.States = new SelectList(_stateService.GetAll().Where(s => s.CountryID == employee.CountryID).ToList(), "StateID", "StateName");
             ViewBag.Cities = new SelectList(_cityService.GetAll().Where(s => s.StateID == employee.StateID).ToList(), "CityID", "CityName");
             return View(new EmployeeRegModel(employee));
         }
@@ -276,13 +276,22 @@ namespace HRMS.Controllers
             string encodedNewPassword = Base64Helper.Encode(model.newpassword);
             _employeeProfileService.ChangePassword(empId, encodedNewPassword);
 
-                TempData["Message"] = "Password updated successfully!";
-                return RedirectToAction("ChangePassword");
-            }
+            TempData["Message"] = "Password updated successfully!";
+            return RedirectToAction("ChangePassword");
         }
 
+        [HttpGet]
+        public ActionResult NewProfilePage()
+        {
+            var employee = _employeeService.GetById(Convert.ToInt32(Session["Emp_ID"]));
+            PopulateDropdowns();
+            ViewBag.States = new SelectList(_stateService.GetAll().Where(s => s.CountryID == employee.CountryID).ToList(), "StateID", "StateName");
+            ViewBag.Cities = new SelectList(_cityService.GetAll().Where(s => s.StateID == employee.StateID).ToList(), "CityID", "CityName");
+            return View(new EmployeeRegModel(employee));
+        }
 
     }
+}
 
 
 

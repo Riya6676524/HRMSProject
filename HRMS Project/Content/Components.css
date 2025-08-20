@@ -245,3 +245,8 @@ tr.pd-cell-10 > td{
 tr.normal-card-header > th{
     font-weight:inherit;
 }
+
+select[disabled] {
+    opacity: 1;
+    color: black;
+}

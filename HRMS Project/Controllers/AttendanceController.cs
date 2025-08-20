@@ -38,9 +38,10 @@ namespace HRMSProject.Controllers
             {
                 int modeId = _attendanceService.GetModeIdByName(modeName);
                 _attendanceService.UpdateMode(empId, modeId);
+                return Json(new { success = true, message = "Mode updated successfully." });
             }
 
-            return Json(new { });
+            return Json(new { success = false, message = "Mode name cannot be empty." });
         }
 
 
@@ -332,11 +333,13 @@ namespace HRMSProject.Controllers
             return View(requests); 
         }
 
+        [HttpGet]
+        public ActionResult WorkStatusModal()
+        {
+            return PartialView("WorkStatusConfirmationPrompt");
+        }
     }
-
-
 }
-
 
 
 
