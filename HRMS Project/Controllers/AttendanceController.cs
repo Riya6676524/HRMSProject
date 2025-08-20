@@ -320,7 +320,6 @@ namespace HRMSProject.Controllers
             return View();
 
         }
-        }
 
         [HttpGet]
         public ActionResult WorkStatusModal()
@@ -328,7 +327,7 @@ namespace HRMSProject.Controllers
             return PartialView("WorkStatusConfirmationPrompt");
         }
     }
-
+}
 
 
 
