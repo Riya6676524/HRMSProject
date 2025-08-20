@@ -177,11 +177,33 @@ namespace HRMSProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult Manage()
+        public ActionResult Manage(int? empId, DateTime? startDate, DateTime? endDate, int? page)
         {
-            InitEmpViewBag();
-            return View();
+            int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
+            int selectedEmpId = empId ?? loggedInEmpId;
+
+            InitEmpViewBag(selectedEmpId);
+
+            DateTime defaultStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime defaultEnd = DateTime.Now;
+
+            DateTime finalStart = startDate ?? defaultStart;
+            DateTime finalEnd = endDate ?? defaultEnd;
+
+            ViewBag.SelectedStartDate = finalStart.ToString("yyyy-MM-dd");
+            ViewBag.SelectedEndDate = finalEnd.ToString("yyyy-MM-dd");
+            ViewBag.SelectedEmpId = selectedEmpId;
+            ViewBag.CurrentPage = page ?? 1;
+
+            var attendanceList = _attendanceService.GetAttendanceByStartEndDate(
+                selectedEmpId,
+                finalStart,
+                finalEnd
+            );
+
+            return View(attendanceList);
         }
+
 
         [HttpPost]
         public ActionResult Manage(int? empId, DateTime? startDate, DateTime? endDate)
@@ -191,26 +213,73 @@ namespace HRMSProject.Controllers
 
             InitEmpViewBag(selectedEmpId);
 
-            if (!startDate.HasValue || !endDate.HasValue)
+            // Default dates
+            DateTime defaultStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime defaultEnd = DateTime.Now;
+
+            // Final dates (use defaults if null)
+            DateTime finalStart = startDate ?? defaultStart;
+            DateTime finalEnd = endDate ?? defaultEnd;
+
+            // Validation
+            if (finalStart > finalEnd)
             {
+                ModelState.AddModelError("", "Start Date cannot be greater than End Date.");
+                ViewBag.SelectedStartDate = finalStart.ToString("yyyy-MM-dd");
+                ViewBag.SelectedEndDate = finalEnd.ToString("yyyy-MM-dd");
                 return View(new List<AttendanceModel>());
             }
 
+            // Fetch attendance list
             var attendanceList = _attendanceService.GetAttendanceByStartEndDate(
                 selectedEmpId,
-                startDate.Value,
-                endDate.Value
+                finalStart,
+                finalEnd
             );
 
-            
-            ViewBag.SelectedStartDate = startDate.Value.ToString("yyyy-MM-dd");
-            ViewBag.SelectedEndDate = endDate.Value.ToString("yyyy-MM-dd");
+            // Pass selected dates back to the view
+            ViewBag.SelectedStartDate = finalStart.ToString("yyyy-MM-dd");
+            ViewBag.SelectedEndDate = finalEnd.ToString("yyyy-MM-dd");
 
             return View(attendanceList);
         }
 
+
+        //[HttpGet]
+        //public ActionResult Edit(int empId, DateTime attendanceDate)
+        //{
+        //    var record = _attendanceService.GetAttendance(empId, attendanceDate);
+
+        //    if (record == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+
+        //    return View(record);
+        //}
+
+        //[HttpPost]
+
+        //public ActionResult Edit(AttendanceModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        bool isUpdated = _attendanceService.UpdateAttendance(model);
+        //        if (isUpdated)
+        //        {
+        //            return RedirectToAction("Manage");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", "Failed to update attendance.");
+        //        }
+        //    }
+        //    return View(model);
+        //}
+
+
         [HttpGet]
-        public ActionResult Edit(int empId, DateTime attendanceDate)
+        public ActionResult EditRequest(int empId, DateTime attendanceDate)
         {
             var record = _attendanceService.GetAttendance(empId, attendanceDate);
 
@@ -219,30 +288,42 @@ namespace HRMSProject.Controllers
                 return HttpNotFound();
             }
 
-            return View(record); 
+            return View(record);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditRequest(AttendanceModel request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+
+            // Set initial request data
+            request.Status = "Pending";
+            request.CreatedOn = DateTime.Now;
+
+            // Save request via service
+            _attendanceService.CreateAttendanceRequest(request);
+
+            // Success message
+            TempData["SuccessMessage"] = "Attendance edit request submitted successfully.";
+
+            // Redirect back to Attendance grid (or wherever appropriate)
+            return RedirectToAction("Manage", "Attendance");
         }
 
-        [HttpPost]
-     
-        public ActionResult Edit(AttendanceModel model)
+
+
+        [HttpGet]
+        public ActionResult AttendanceRequest()
         {
-            if (ModelState.IsValid)
-            {
-                bool isUpdated = _attendanceService.UpdateAttendance(model);
-                if (isUpdated)
-                {
-                    return RedirectToAction("Manage");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Failed to update attendance.");
-                }
-            }
-            return View(model);
+            return View();
+
+        }
         }
 
 
     }
-}
 
-   
+
+
+
