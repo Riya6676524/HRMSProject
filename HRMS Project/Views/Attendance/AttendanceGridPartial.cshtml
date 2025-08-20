@@ -141,15 +141,6 @@ Html.Grid(Model ?? Enumerable.Empty<HRMSModels.AttendanceModel>())
 
 
 })
-    .Sortable()
-    .Filterable()
-    .Pageable(pager =>
-    {
-        pager.PageSizes = new Dictionary<int, string>() { { 5, "5" }, { 10, "10" }, { 20, "20" }, { 0, "ALL" } };
-        pager.ShowPageSizes = true;
-        pager.PagesToDisplay = 3;
-        pager.CurrentPage = 1;
-    })
 )
 
 <script>

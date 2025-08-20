@@ -13,12 +13,7 @@
                 @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @readonly = "readonly" })
             </div>
         </div>
-        <div class="form-group triple-column">
-            <div class="column">
-                @Html.LabelFor(m => m.MiddleName)
-                @Html.TextBoxFor(m => m.MiddleName, new { @class = "form-control", @readonly = "readonly" })
-            </div>
-        </div>
+
         <div class="form-group triple-column">
             <div class="column">
                 @Html.LabelFor(m => m.LastName)
@@ -82,10 +77,6 @@
                 @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", rows = 3, @readonly = "readonly" })
             </div>
         </div>
-    </div>
-
-
-    <div class="row">
         <div class="form-group triple-column">
             <div class="column">
                 @Html.Label("Manager Comment")
@@ -95,10 +86,13 @@
     </div>
 
 
+   
+
+
     <div class="row mt-3">
         <div class="form-card-footer d-flex justify-content-between">
-            <button type="submit" name="action" value="Approve" class="btn btn-success">Approve</button>
-            <button type="submit" name="action" value="Reject" class="btn btn-danger">Reject</button>
+            <button type="submit" name="action" value="Approve" class="btn btn-success" style="margin-right:10px;" >Approve</button>
+            <button type="submit" name="action" value="Reject" class="btn btn-danger" style="margin-right:10px;" >Reject</button>
             @Html.ActionLink("Cancel", "AttendanceRequest", "Attendance", null, new { @class = "btn btn-secondary" })
         </div>
     </div>
