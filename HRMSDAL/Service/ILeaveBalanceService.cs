@@ -16,6 +16,7 @@ namespace HRMSDAL.Service
         void Update (LeaveBalanceModel entity);
         void CreditMonthlyLeaves();
         List<LeaveBalanceModel> GetAllMonthByID(int empID);
+        void UpdateFinalBalanceNSync(int EMP_ID, DateTime ForMonth, float NewBalance);
 
         void RefreshBalanceMonths();
     }

@@ -18,6 +18,18 @@ namespace HRMSDAL.Service_Implementation
         protected override string PrimaryKeyColumn => "LeaveBalanceID";
 
 
+        public void UpdateFinalBalanceNSync(int EMP_ID,DateTime ForMonth, float NewBalance)
+        {
+            string query = "usp_updateFinalBalanceNSync";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@EMP_ID", EMP_ID),
+                new SqlParameter("@ForMonth", ForMonth),
+                new SqlParameter("@NewBalance", NewBalance)
+            };
+            DBHelper.ExecuteNonQuery(query, System.Data.CommandType.StoredProcedure, parameters);
+        }
+
         public void RefreshBalanceMonths()
         {
             string query = "usp_InitBalanceMonths";

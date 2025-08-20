@@ -10,6 +10,11 @@ namespace HRMSDAL.Service
     {
         string GetNextAvailableEmployeeId();
         List<int> GetSubOrdinatesByManager(int empId);
-       
+
+        Boolean IsEmailUnique(string Email);
+
+        Boolean IsContactUnique(string Contact);
+
+
     }
 }
