@@ -40,6 +40,7 @@ namespace HRMSModels
         [StringLength(500)]
         public string Reason { get; set; }
         public string Status{ get; set; }// Pending / Approved / Rejected
+
         public string Comment { get; set; }
 
     }

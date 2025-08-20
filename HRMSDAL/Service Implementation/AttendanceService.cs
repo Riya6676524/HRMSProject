@@ -274,33 +274,6 @@ public class AttendanceService : IAttendanceService
         return GetAttendanceByStartEndDate(empId, attendanceDate, attendanceDate).FirstOrDefault();
     }
 
-
-
-    //public bool UpdateAttendance(AttendanceModel model)
-    //{
-    //    try
-    //    {
-    //        SqlParameter[] parameters = new SqlParameter[]
-    //        {
-    //        new SqlParameter("@Emp_ID", model.Emp_ID),
-    //        new SqlParameter("@AttendanceDate", model.AttendanceDate),
-    //        new SqlParameter("@FirstHalfStatus", model.FirstHalfStatus ?? (object)DBNull.Value),
-    //        new SqlParameter("@SecondHalfStatus", model.SecondHalfStatus ?? (object)DBNull.Value),
-    //        new SqlParameter("@ModeID", model.ModeID ?? (object)DBNull.Value),
-    //        new SqlParameter("@LoginTime", (object)model.LoginTime ?? DBNull.Value),
-    //        new SqlParameter("@LogoutTime", (object)model.LogoutTime ?? DBNull.Value)
-    //        };
-
-    //        int rowsAffected = DBHelper.ExecuteNonQuery("sp_UpdateAttendance", CommandType.StoredProcedure, parameters);
-
-    //        return rowsAffected > 0;
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        throw new Exception("Error updating attendance", ex);
-    //    }
-    //}
-
     public void CreateAttendanceRequest(AttendanceModel request)
     {
         try
@@ -363,40 +336,7 @@ public class AttendanceService : IAttendanceService
         return requestList;
     }
 
-    public bool ApproveAttendanceRequest(int empId, DateTime attendanceDate, string firstHalfStatus,
-                                      string secondHalfStatus, int? modeId,
-                                      DateTime? loginTime, DateTime? logoutTime, string comment)
-    {
-        SqlParameter[] parameters = new SqlParameter[]
-        {
-        new SqlParameter("@Emp_ID", empId),
-        new SqlParameter("@AttendanceDate", attendanceDate),
-        new SqlParameter("@FirstHalfStatus", (object)firstHalfStatus ?? DBNull.Value),
-        new SqlParameter("@SecondHalfStatus", (object)secondHalfStatus ?? DBNull.Value),
-        new SqlParameter("@ModeID", (object)modeId ?? DBNull.Value),
-        new SqlParameter("@LoginTime", (object)loginTime ?? DBNull.Value),
-        new SqlParameter("@LogoutTime", (object)logoutTime ?? DBNull.Value),
-        new SqlParameter("@Comment", (object)comment ?? DBNull.Value)
-        };
-
-        int rowsAffected = DBHelper.ExecuteNonQuery("sp_ApproveAttendanceRequest", CommandType.StoredProcedure, parameters);
-
-        return rowsAffected > 0;
-    }
-
-
-    public bool RejectAttendanceRequest(int empId, DateTime attendanceDate, string comment)
-    {
-        var parameters = new[]
-        {
-        new SqlParameter("@Emp_ID", empId),
-        new SqlParameter("@AttendanceDate", attendanceDate),
-        new SqlParameter("@Comment", (object)comment ?? DBNull.Value)
-    };
-
-        int rows = DBHelper.ExecuteNonQuery("sp_RejectAttendanceRequest", CommandType.StoredProcedure, parameters);
-        return rows > 0;
-    }
+   
 
 
     public AttendanceModel GetAttendanceRequestById(int empId, DateTime attendanceDate)
@@ -432,6 +372,38 @@ public class AttendanceService : IAttendanceService
         }
 
         return request.FirstOrDefault();
+    }
+
+    public void ProcessAttendanceRequest(AttendanceModel model, string action)
+    {
+        string status = action == "Approve" ? "Approved" : "Rejected";
+
+ 
+        if (status == "Approved")
+        {
+            SqlParameter[] attendanceParams =
+            {
+            new SqlParameter("@Emp_ID", model.Emp_ID),
+            new SqlParameter("@AttendanceDate", model.AttendanceDate),
+            new SqlParameter("@FirstHalfStatus", model.FirstHalfStatus ?? (object)DBNull.Value),
+            new SqlParameter("@SecondHalfStatus", model.SecondHalfStatus ?? (object)DBNull.Value),
+            new SqlParameter("@ModeID", model.ModeID ?? (object)DBNull.Value),
+            new SqlParameter("@LoginTime", (object)model.LoginTime ?? DBNull.Value),
+            new SqlParameter("@LogoutTime", (object)model.LogoutTime ?? DBNull.Value)
+        };
+
+            DBHelper.ExecuteNonQuery("sp_UpdateAttendanceFromRequest", CommandType.StoredProcedure, attendanceParams);
+        }
+
+        SqlParameter[] requestParams =
+        {
+        new SqlParameter("@Emp_ID", model.Emp_ID),
+        new SqlParameter("@AttendanceDate", model.AttendanceDate),
+        new SqlParameter("@Comment", model.Comment),
+        new SqlParameter("@Status", status)
+    };
+
+        DBHelper.ExecuteNonQuery("sp_UpdateAttendanceRequestStatus", CommandType.StoredProcedure, requestParams);
     }
 
 
