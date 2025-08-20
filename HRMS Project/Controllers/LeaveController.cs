@@ -156,7 +156,7 @@ namespace HRMS.Controllers
             {
                 obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName.ToUpper() == "APPROVED").Select(x => x.LeaveStatusID).FirstOrDefault();
                 leaveBalance.ClosingBalance -= obj.TotalDays;
-                _leaveBalanceService.Update(leaveBalance);
+                _leaveBalanceService.UpdateFinalBalanceNSync(leaveBalance.Emp_ID,leaveBalance.ForMonth,leaveBalance.ClosingBalance);
                 obj.ApproverID = emp.EMP_ID;
                 obj.ApproverDate = DateTime.Now;
             }
@@ -186,7 +186,7 @@ namespace HRMS.Controllers
             {
                 if (Action == "APPROVE" || Action == "DENY")
                 {
-                    var leaveBalance = _leaveBalanceService.GetByIdandMonth(toBeApprovedModel.EMP_ID, DateTime.Now);
+                    var leaveBalance = _leaveBalanceService.GetByIdandMonth(toBeApprovedModel.EMP_ID, toBeApprovedModel.RequestDate);
                     LeaveStatusModel approveStatus = (Action == "APPROVE") ? allStatuses.FirstOrDefault(x => x.LeaveStatusID == 2) : allStatuses.FirstOrDefault(x => x.LeaveStatusID == 3);
                     toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
                     toBeApprovedModel.ApproverID = Convert.ToInt32(Session["Emp_ID"]);
@@ -201,7 +201,7 @@ namespace HRMS.Controllers
                             return View(obj);
                         }
                         leaveBalance.ClosingBalance -= toBeApprovedModel.TotalDays;
-                        _leaveBalanceService.Update(leaveBalance);
+                        _leaveBalanceService.UpdateFinalBalanceNSync(leaveBalance.Emp_ID,leaveBalance.ForMonth,leaveBalance.ClosingBalance);
                     }
                     _leaveRequestService.Update(toBeApprovedModel);
                 }
@@ -210,14 +210,14 @@ namespace HRMS.Controllers
             {
                 if (Action == "DENY")
                 {
-                    var leaveBalance = _leaveBalanceService.GetByIdandMonth(toBeApprovedModel.EMP_ID, DateTime.Now);
+                    var leaveBalance = _leaveBalanceService.GetByIdandMonth(toBeApprovedModel.EMP_ID, toBeApprovedModel.RequestDate);
                     LeaveStatusModel approveStatus = allStatuses.FirstOrDefault(x => x.LeaveStatusID == 3);
                     toBeApprovedModel.LeaveStatusID = approveStatus.LeaveStatusID;
                     toBeApprovedModel.ApproverID = Convert.ToInt32(Session["Emp_ID"]);
                     toBeApprovedModel.Comment = obj.Comment;
                     toBeApprovedModel.ApproverDate = DateTime.Now;
                     leaveBalance.ClosingBalance += toBeApprovedModel.TotalDays;
-                    _leaveBalanceService.Update(leaveBalance);
+                    _leaveBalanceService.UpdateFinalBalanceNSync(leaveBalance.Emp_ID,leaveBalance.ForMonth,leaveBalance.ClosingBalance);
                     _leaveRequestService.Update(toBeApprovedModel);
                 }
             }
@@ -253,9 +253,9 @@ namespace HRMS.Controllers
                 toBeApprovedReq.LeaveStatusID = approveStatus.LeaveStatusID;
                 if (toBeApprovedEmp.ReportingManagerID is null)
                 {
-                    var leaveBalance = _leaveBalanceService.GetByIdandMonth(toBeApprovedReq.EMP_ID, DateTime.Now);
+                    var leaveBalance = _leaveBalanceService.GetByIdandMonth(toBeApprovedReq.EMP_ID, toBeApprovedReq.RequestDate);
                     leaveBalance.ClosingBalance += toBeApprovedReq.TotalDays;
-                    _leaveBalanceService.Update(leaveBalance);
+                    _leaveBalanceService.UpdateFinalBalanceNSync(leaveBalance.Emp_ID,leaveBalance.ForMonth,leaveBalance.ClosingBalance);
                 }
                 _leaveRequestService.Update(toBeApprovedReq);
             }

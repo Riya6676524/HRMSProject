@@ -96,6 +96,36 @@ namespace HRMSDAL.Service_Implementation
             }
             return subordinates;
         }
+
+
+        public Boolean IsEmailUnique(string email)
+        {
+            string query = $"select Email from Employee where Email = @Email";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@Email",email)
+            };
+
+            var res = DBHelper.ExecuteScalar(query, CommandType.Text, parameters);
+
+            return !(res is null);
+
+        }
+
+        public Boolean IsContactUnique(string contact)
+        {
+            string query = $"select ContactNumber from Employee where ContactNumber = @Contact";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@Contact",contact)
+            };
+
+            var res = DBHelper.ExecuteScalar(query, CommandType.Text, parameters);
+
+            return !(res is null);
+        }
     }
 }
 

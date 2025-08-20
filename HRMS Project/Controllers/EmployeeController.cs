@@ -114,7 +114,19 @@ namespace HRMS.Controllers
                 PopulateDropdowns();
                 return View("Add", regModel);
             }
-            regModel.CreatedByID = Convert.ToInt32(Session["Emp_ID"]);
+            else if (_employeeService.IsEmailUnique(regModel.Email.Trim()))
+            {
+                PopulateDropdowns();
+                ModelState.AddModelError("Email", "Email already exists.");
+                return View("Add", regModel);
+            }
+            else if (_employeeService.IsContactUnique(regModel.ContactNumber.Trim()))
+            {
+                PopulateDropdowns();
+                ModelState.AddModelError("ContactNumber", "Contact number already exists.");
+                return View("Add", regModel);
+            }
+             regModel.CreatedByID = Convert.ToInt32(Session["Emp_ID"]);
             regModel.ModifiedByID = Convert.ToInt32(Session["Emp_ID"]);
             regModel.ModifiedOn = DateTime.Now;
             regModel.CreatedOn = DateTime.Now;
