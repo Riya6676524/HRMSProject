@@ -39,8 +39,8 @@ namespace HRMSModels
         public bool IsWeekend { get; set; }
         [StringLength(500)]
         public string Reason { get; set; }
-        [Display(Name = "Status")]
-        public string Status{ get; set; } // Pending / Approved / Rejected
+        public string Status{ get; set; }// Pending / Approved / Rejected
+        public string Comment { get; set; }
 
     }
 }

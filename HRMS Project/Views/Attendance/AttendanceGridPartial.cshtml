@@ -48,99 +48,99 @@
 Html.Grid(Model ?? Enumerable.Empty<HRMSModels.AttendanceModel>())
     .Build(columns =>
     {
-        columns.Add(model => model.AttendanceDate.ToString("dd-MM-yyyy"))
-               .Titled("Date")
-               .Sortable(true);
+    columns.Add(model => model.AttendanceDate.ToString("dd-MM-yyyy"))
+           .Titled("Date")
+           .Sortable(true);
 
-        // Start Time
-        columns.Add(model => model.IsHoliday ? " " : (model.LoginTime.HasValue ? model.LoginTime.Value.ToString("hh:mm tt") : " "))
-               .Titled("Start Time")
-               .Sortable(true);
+    // Start Time
+    columns.Add(model => model.IsHoliday ? " " : (model.LoginTime.HasValue ? model.LoginTime.Value.ToString("hh:mm tt") : " "))
+           .Titled("Start Time")
+           .Sortable(true);
 
-        // End Time
-        columns.Add(model => model.IsHoliday ? " " : (model.LogoutTime.HasValue ? model.LogoutTime.Value.ToString("hh:mm tt") : " "))
-               .Titled("End Time")
-               .Sortable(true);
+    // End Time
+    columns.Add(model => model.IsHoliday ? " " : (model.LogoutTime.HasValue ? model.LogoutTime.Value.ToString("hh:mm tt") : " "))
+           .Titled("End Time")
+           .Sortable(true);
 
-        // Working Hours
-        columns.Add(model => model.IsHoliday ? " " :
-                             (model.LoginTime.HasValue && model.LogoutTime.HasValue ?
-                              Math.Round((model.LogoutTime.Value - model.LoginTime.Value).TotalHours, 1).ToString("0.0") : ""))
-               .Titled("Working Hours")
-               .Sortable(true);
+    // Working Hours
+    columns.Add(model => model.IsHoliday ? " " :
+                         (model.LoginTime.HasValue && model.LogoutTime.HasValue ?
+                          Math.Round((model.LogoutTime.Value - model.LoginTime.Value).TotalHours, 1).ToString("0.0") : ""))
+           .Titled("Working Hours")
+           .Sortable(true);
 
-        columns.Add(model =>
+    columns.Add(model =>
+ model.IsHoliday ? "H" :
+ model.IsWeekend ? "W" :
+ (model.FirstHalfStatus == "Absent" && model.SecondHalfStatus == "Absent") ? "A" :
+ (model.FirstHalfStatus == "Present" && model.SecondHalfStatus == "Present") ? "P" :
+ (model.FirstHalfStatus == "Present" && model.SecondHalfStatus != "Present") ? "P" :
+ (model.FirstHalfStatus != "Present" && model.SecondHalfStatus == "Present") ? "P" :
+ "L"
+)
+.Titled("Attendance")
+.Sortable(true)
+.Encoded(false)
+.Css("attendance-col")
+.RenderedAs(model =>
+{
+ string displayText =
      model.IsHoliday ? "H" :
      model.IsWeekend ? "W" :
      (model.FirstHalfStatus == "Absent" && model.SecondHalfStatus == "Absent") ? "A" :
      (model.FirstHalfStatus == "Present" && model.SecondHalfStatus == "Present") ? "P" :
      (model.FirstHalfStatus == "Present" && model.SecondHalfStatus != "Present") ? "P" :
      (model.FirstHalfStatus != "Present" && model.SecondHalfStatus == "Present") ? "P" :
-     "L"
- )
- .Titled("Attendance")
- .Sortable(true)
- .Encoded(false)
- .Css("attendance-col")
- .RenderedAs(model =>
+     "L";
+
+ string statusText =
+     model.IsHoliday ? "Holiday" :
+     model.IsWeekend ? "Weekend" :
+     (model.FirstHalfStatus == "Absent" && model.SecondHalfStatus == "Absent") ? "Full Day" :
+     (model.FirstHalfStatus == "Present" && model.SecondHalfStatus == "Present") ? "Full Day" :
+     (model.FirstHalfStatus == "Present" && model.SecondHalfStatus != "Present") ? "First Half" :
+     (model.FirstHalfStatus != "Present" && model.SecondHalfStatus == "Present") ? "Second Half" :
+     "Leave";
+
+ if (displayText == "L")
  {
-     string displayText =
-         model.IsHoliday ? "H" :
-         model.IsWeekend ? "W" :
-         (model.FirstHalfStatus == "Absent" && model.SecondHalfStatus == "Absent") ? "A" :
-         (model.FirstHalfStatus == "Present" && model.SecondHalfStatus == "Present") ? "P" :
-         (model.FirstHalfStatus == "Present" && model.SecondHalfStatus != "Present") ? "P" :
-         (model.FirstHalfStatus != "Present" && model.SecondHalfStatus == "Present") ? "P" :
-         "L";
-
-     string statusText =
-         model.IsHoliday ? "Holiday" :
-         model.IsWeekend ? "Weekend" :
-         (model.FirstHalfStatus == "Absent" && model.SecondHalfStatus == "Absent") ? "Full Day" :
-         (model.FirstHalfStatus == "Present" && model.SecondHalfStatus == "Present") ? "Full Day" :
-         (model.FirstHalfStatus == "Present" && model.SecondHalfStatus != "Present") ? "First Half" :
-         (model.FirstHalfStatus != "Present" && model.SecondHalfStatus == "Present") ? "Second Half" :
-         "Leave";
-
-     if (displayText == "L")
-     {
-         return new HtmlString(
-               $"<a href='/leave/leaves?empId={model.Emp_ID}&date={model.AttendanceDate:yyyy-MM-dd}' " +
-         $"class='attendance-cell' style='text-decoration:none;color:black;' " +
-         $"data-status='{statusText}' data-date='{model.AttendanceDate:dd-MM-yyyy}'>{displayText}</a>"
-         );
-     }
-     else
-     {
-         return new HtmlString(
-             $"<div class='attendance-cell' data-status='{statusText}' data-date='{model.AttendanceDate:dd-MM-yyyy}'>{displayText}</div>"
-         );
-     }
- });
+     return new HtmlString(
+           $"<a href='/leave/leaves?empId={model.Emp_ID}&date={model.AttendanceDate:yyyy-MM-dd}' " +
+     $"class='attendance-cell' style='text-decoration:none;color:black;' " +
+     $"data-status='{statusText}' data-date='{model.AttendanceDate:dd-MM-yyyy}'>{displayText}</a>"
+     );
+ }
+ else
+ {
+     return new HtmlString(
+         $"<div class='attendance-cell' data-status='{statusText}' data-date='{model.AttendanceDate:dd-MM-yyyy}'>{displayText}</div>"
+     );
+ }
+});
 
 
 
-        // Work Mode
-        columns.Add(model => model.IsHoliday ? " " :
-                             model.ModeID == 1 ? "WFH" :
-                             model.ModeID == 2 ? "WFO" : "")
-               .Titled("Work Mode")
-               .Sortable(true);
+    // Work Mode
+    columns.Add(model => model.IsHoliday ? " " :
+                         model.ModeID == 1 ? "WFH" :
+                         model.ModeID == 2 ? "WFO" : "")
+           .Titled("Work Mode")
+           .Sortable(true);
 
-        columns.Add(model =>
-     (!model.IsHoliday && !model.IsWeekend &&
-      !((string.IsNullOrEmpty(model.FirstHalfStatus) && string.IsNullOrEmpty(model.SecondHalfStatus))))
-         ? new HtmlString("<a href='/Attendance/EditRequest?empId=" + model.Emp_ID +
-                          "&attendanceDate=" + model.AttendanceDate.ToString("yyyy-MM-dd") +
-                          "'><i class='fa fa-edit'></i></a>")
-         : new HtmlString("&nbsp;")
+    columns.Add(model =>
+ (!model.IsHoliday && !model.IsWeekend &&
+  !((string.IsNullOrEmpty(model.FirstHalfStatus) && string.IsNullOrEmpty(model.SecondHalfStatus)))&& model.Emp_ID == Convert.ToInt32(Session["Emp_ID"]))
+     ? new HtmlString("<a href='/Attendance/EditRequest?empId=" + model.Emp_ID +
+                      "&attendanceDate=" + model.AttendanceDate.ToString("yyyy-MM-dd") +
+                      "'><i class='fa fa-edit'></i></a>")
+     : new HtmlString("&nbsp;")
           )
           .Titled("Action")
           .Encoded(false)
           .Css("action-col");
 
 
-    })
+})
     .Sortable()
     .Filterable()
     .Pageable(pager =>

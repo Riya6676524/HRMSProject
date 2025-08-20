@@ -84,7 +84,7 @@ public class AttendanceService : IAttendanceService
         var parameters = new SqlParameter[]
         {
         new SqlParameter("@Emp_ID", empId),
-        new SqlParameter("@Date", date.Date) 
+        new SqlParameter("@Date", date.Date)
         };
 
         var result = DBHelper.ExecuteReader("sp_GetAttendanceByDate", CommandType.StoredProcedure, parameters);
@@ -204,11 +204,11 @@ public class AttendanceService : IAttendanceService
                 AttendanceDate = date,
                 FirstHalfStatus = row["FirstHalfStatus"] != DBNull.Value ? row["FirstHalfStatus"].ToString() : null,
                 SecondHalfStatus = row["SecondHalfStatus"] != DBNull.Value ? row["SecondHalfStatus"].ToString() : null,
-                ModeID = row["ModeID"] != DBNull.Value ? Convert.ToInt32(row["ModeID"]) : (int?)null,
+                ModeID = row["ModeID"] != null ? Convert.ToInt32(row["ModeID"]) : (int?)null,
                 LoginTime = row["LoginTime"] != DBNull.Value ? Convert.ToDateTime(row["LoginTime"]) : (DateTime?)null,
                 LogoutTime = row["LogoutTime"] != DBNull.Value ? Convert.ToDateTime(row["LogoutTime"]) : (DateTime?)null,
                 FirstName = row["FirstName"] != DBNull.Value ? row["FirstName"].ToString() : string.Empty,
-                MiddleName = row["MiddleName"] != DBNull.Value ? row["MiddleName"].ToString() : string.Empty,
+                MiddleName = row["MiddleName"] != null ? row["MiddleName"].ToString() : string.Empty,
                 LastName = row["LastName"] != DBNull.Value ? row["LastName"].ToString() : string.Empty
             };
         }
@@ -276,30 +276,30 @@ public class AttendanceService : IAttendanceService
 
 
 
-    public bool UpdateAttendance(AttendanceModel model)
-    {
-        try
-        {
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-            new SqlParameter("@Emp_ID", model.Emp_ID),
-            new SqlParameter("@AttendanceDate", model.AttendanceDate),
-            new SqlParameter("@FirstHalfStatus", model.FirstHalfStatus ?? (object)DBNull.Value),
-            new SqlParameter("@SecondHalfStatus", model.SecondHalfStatus ?? (object)DBNull.Value),
-            new SqlParameter("@ModeID", model.ModeID ?? (object)DBNull.Value),
-            new SqlParameter("@LoginTime", (object)model.LoginTime ?? DBNull.Value),
-            new SqlParameter("@LogoutTime", (object)model.LogoutTime ?? DBNull.Value)
-            };
+    //public bool UpdateAttendance(AttendanceModel model)
+    //{
+    //    try
+    //    {
+    //        SqlParameter[] parameters = new SqlParameter[]
+    //        {
+    //        new SqlParameter("@Emp_ID", model.Emp_ID),
+    //        new SqlParameter("@AttendanceDate", model.AttendanceDate),
+    //        new SqlParameter("@FirstHalfStatus", model.FirstHalfStatus ?? (object)DBNull.Value),
+    //        new SqlParameter("@SecondHalfStatus", model.SecondHalfStatus ?? (object)DBNull.Value),
+    //        new SqlParameter("@ModeID", model.ModeID ?? (object)DBNull.Value),
+    //        new SqlParameter("@LoginTime", (object)model.LoginTime ?? DBNull.Value),
+    //        new SqlParameter("@LogoutTime", (object)model.LogoutTime ?? DBNull.Value)
+    //        };
 
-            int rowsAffected = DBHelper.ExecuteNonQuery("sp_UpdateAttendance", CommandType.StoredProcedure, parameters);
+    //        int rowsAffected = DBHelper.ExecuteNonQuery("sp_UpdateAttendance", CommandType.StoredProcedure, parameters);
 
-            return rowsAffected > 0;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Error updating attendance", ex);
-        }
-    }
+    //        return rowsAffected > 0;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        throw new Exception("Error updating attendance", ex);
+    //    }
+    //}
 
     public void CreateAttendanceRequest(AttendanceModel request)
     {
@@ -311,7 +311,9 @@ public class AttendanceService : IAttendanceService
             new SqlParameter("@AttendanceDate", request.AttendanceDate),
             new SqlParameter("@FirstHalfStatus", (object)request.FirstHalfStatus ?? DBNull.Value),
             new SqlParameter("@SecondHalfStatus", (object)request.SecondHalfStatus ?? DBNull.Value),
-             new SqlParameter("@ModeID", (object)request.ModeID ?? (object)DBNull.Value),
+            new SqlParameter("@ModeID", (object)request.ModeID ?? (object)DBNull.Value),
+            new SqlParameter("@LoginTime", (object)request.LoginTime ?? DBNull.Value),
+            new SqlParameter("@LogoutTime", (object)request.LogoutTime ?? DBNull.Value),
             new SqlParameter("@Reason", (object)request.Reason ?? DBNull.Value)
         };
 
@@ -325,8 +327,112 @@ public class AttendanceService : IAttendanceService
         }
     }
 
+    public List<AttendanceModel> GetAttendanceRequests(int loggedInEmpId)
+    {
+        var parameters = new SqlParameter[]
+        {
+        new SqlParameter("@LoggedInEmpId", loggedInEmpId)
+        };
+
+        var result = DBHelper.ExecuteReader("sp_GetAttendanceRequests", CommandType.StoredProcedure, parameters);
+
+        var requestList = new List<AttendanceModel>();
+
+        foreach (var row in result)
+        {
+            var model = new AttendanceModel
+            {
+                Emp_ID = Convert.ToInt32(row["Emp_ID"]),
+                FirstName = row["FirstName"] != DBNull.Value ? row["FirstName"].ToString() : string.Empty,
+                MiddleName = row["MiddleName"] != null ? row["MiddleName"].ToString() : string.Empty,
+                LastName = row["LastName"] != DBNull.Value ? row["LastName"].ToString() : string.Empty,
+                AttendanceDate = row["AttendanceDate"] != DBNull.Value
+                     ? Convert.ToDateTime(row["AttendanceDate"]).Date
+                     : DateTime.MinValue,
+
+                CreatedOn = row["CreatedOn"] != DBNull.Value
+                ? Convert.ToDateTime(row["CreatedOn"]).Date
+                : DateTime.MinValue,
+
+                Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : ""
+            };
+
+            requestList.Add(model);
+        }
+
+        return requestList;
+    }
+
+    public bool ApproveAttendanceRequest(int empId, DateTime attendanceDate, string firstHalfStatus,
+                                      string secondHalfStatus, int? modeId,
+                                      DateTime? loginTime, DateTime? logoutTime, string comment)
+    {
+        SqlParameter[] parameters = new SqlParameter[]
+        {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@AttendanceDate", attendanceDate),
+        new SqlParameter("@FirstHalfStatus", (object)firstHalfStatus ?? DBNull.Value),
+        new SqlParameter("@SecondHalfStatus", (object)secondHalfStatus ?? DBNull.Value),
+        new SqlParameter("@ModeID", (object)modeId ?? DBNull.Value),
+        new SqlParameter("@LoginTime", (object)loginTime ?? DBNull.Value),
+        new SqlParameter("@LogoutTime", (object)logoutTime ?? DBNull.Value),
+        new SqlParameter("@Comment", (object)comment ?? DBNull.Value)
+        };
+
+        int rowsAffected = DBHelper.ExecuteNonQuery("sp_ApproveAttendanceRequest", CommandType.StoredProcedure, parameters);
+
+        return rowsAffected > 0;
+    }
 
 
+    public bool RejectAttendanceRequest(int empId, DateTime attendanceDate, string comment)
+    {
+        var parameters = new[]
+        {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@AttendanceDate", attendanceDate),
+        new SqlParameter("@Comment", (object)comment ?? DBNull.Value)
+    };
+
+        int rows = DBHelper.ExecuteNonQuery("sp_RejectAttendanceRequest", CommandType.StoredProcedure, parameters);
+        return rows > 0;
+    }
+
+
+    public AttendanceModel GetAttendanceRequestById(int empId, DateTime attendanceDate)
+    {
+        SqlParameter[] parameters =
+        {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@AttendanceDate", attendanceDate.Date)
+    };
+
+        var result = DBHelper.ExecuteReader("sp_GetAttendanceRequestById", CommandType.StoredProcedure, parameters);
+
+        var request = new List<AttendanceModel>();
+        foreach (var row in result)
+        {
+            var model = new AttendanceModel
+            {
+                FirstName = row["FirstName"] != DBNull.Value ? row["FirstName"].ToString() : string.Empty,
+                MiddleName = row["MiddleName"] != null ? row["MiddleName"].ToString() : string.Empty,
+                LastName = row["LastName"] != DBNull.Value ? row["LastName"].ToString() : string.Empty,
+                AttendanceDate = row["AttendanceDate"] != DBNull.Value
+                    ? Convert.ToDateTime(row["AttendanceDate"]).Date
+                    : DateTime.MinValue,
+                FirstHalfStatus = row["FirstHalfStatus"] != DBNull.Value ? row["FirstHalfStatus"].ToString() : null,
+                SecondHalfStatus = row["SecondHalfStatus"] != DBNull.Value ? row["SecondHalfStatus"].ToString() : null,
+                ModeID = row["ModeID"] != DBNull.Value ? Convert.ToInt32(row["ModeID"]) : (int?)null,
+                LoginTime = row["LoginTime"] != DBNull.Value ? Convert.ToDateTime(row["LoginTime"]) : (DateTime?)null,
+                LogoutTime = row["LogoutTime"] != DBNull.Value ? Convert.ToDateTime(row["LogoutTime"]) : (DateTime?)null,
+                Reason = row["Reason"] != DBNull.Value ? row["Reason"].ToString() : string.Empty,
+            };
+
+            request.Add(model);
+        }
+
+        return request.FirstOrDefault();
+    }
 
 
 }

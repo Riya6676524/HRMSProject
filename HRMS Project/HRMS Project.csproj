@@ -313,6 +313,7 @@
     <Content Include="Views\Attendance\EditRequest.cshtml" />
     <Content Include="Views\Attendance\EditPartialView.cshtml" />
     <Content Include="Views\Attendance\AttendanceRequest.cshtml" />
+    <Content Include="Views\Attendance\AttendanceRequestGridPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -376,7 +377,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54012</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:44316/</IISUrl>
+          <IISUrl>https://localhost:44316/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

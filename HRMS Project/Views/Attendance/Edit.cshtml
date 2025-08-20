@@ -1,1 +1,13 @@
-﻿
+﻿@model HRMSModels.AttendanceModel
+
+@{
+    ViewBag.Title = "Edit Attendance";
+}
+
+@Html.HiddenFor(m => m.Emp_ID)
+<div class="form-card">
+    <header class="form-card-header">
+        Edit Attendance
+    </header>
+    @Html.Partial("EditPartialView", Model)
+</div>

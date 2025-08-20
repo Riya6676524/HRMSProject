@@ -1,7 +1,14 @@
-﻿
+﻿@model IEnumerable<HRMSModels.AttendanceModel>
+@using HRMSProject.Models;
 @{
     ViewBag.Title = "AttendanceRequest";
 }
 
-<h2>AttendanceRequest</h2>
+@{
+    Pager pager = ViewBag.pager;
+}
+
+<div class="main-grid-body">
+    @Html.Partial("AttendanceRequestGridPartial", Model)
+</div>
 

@@ -245,37 +245,51 @@ namespace HRMSProject.Controllers
         }
 
 
-        //[HttpGet]
-        //public ActionResult Edit(int empId, DateTime attendanceDate)
-        //{
-        //    var record = _attendanceService.GetAttendance(empId, attendanceDate);
+        [HttpGet]
+        public ActionResult Edit(int empId, DateTime attendanceDate)
+        {
+            var model = _attendanceService.GetAttendanceRequestById(empId, attendanceDate);
+            return View(model);
+        }
 
-        //    if (record == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
+        [HttpPost]
+        public ActionResult Edit(AttendanceModel model, string action)
+        {
+            if (ModelState.IsValid)
+            {
+             
+                if (action == "Approve")
+                {
+                    bool isApproved = _attendanceService.ApproveAttendanceRequest(
+                        model.Emp_ID,
+                        model.AttendanceDate,
+                        model.FirstHalfStatus,
+                        model.SecondHalfStatus,
+                        model.ModeID,
+                        model.LoginTime,
+                        model.LogoutTime,
+                        model.Comment
+                    );
 
-        //    return View(record);
-        //}
+                    if (isApproved)
+                        return RedirectToAction("AttendanceRequest");
+                }
+                else if (action == "Reject")
+                {
+                    bool isRejected = _attendanceService.RejectAttendanceRequest(
+                        model.Emp_ID,
+                        model.AttendanceDate,
+                        model.Comment
+                    );
 
-        //[HttpPost]
+                    if (isRejected)
+                        return RedirectToAction("AttendanceRequest");
+                }
+            }
+            return View(model);
+        }
 
-        //public ActionResult Edit(AttendanceModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        bool isUpdated = _attendanceService.UpdateAttendance(model);
-        //        if (isUpdated)
-        //        {
-        //            return RedirectToAction("Manage");
-        //        }
-        //        else
-        //        {
-        //            ModelState.AddModelError("", "Failed to update attendance.");
-        //        }
-        //    }
-        //    return View(model);
-        //}
+
 
 
         [HttpGet]
@@ -297,17 +311,13 @@ namespace HRMSProject.Controllers
             if (!ModelState.IsValid)
                 return View(request);
 
-            // Set initial request data
             request.Status = "Pending";
             request.CreatedOn = DateTime.Now;
 
-            // Save request via service
             _attendanceService.CreateAttendanceRequest(request);
 
-            // Success message
             TempData["SuccessMessage"] = "Attendance edit request submitted successfully.";
 
-            // Redirect back to Attendance grid (or wherever appropriate)
             return RedirectToAction("Manage", "Attendance");
         }
 
@@ -316,13 +326,16 @@ namespace HRMSProject.Controllers
         [HttpGet]
         public ActionResult AttendanceRequest()
         {
-            return View();
+            int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
+            var requests = _attendanceService.GetAttendanceRequests(loggedInEmpId);
 
+            return View(requests); 
         }
-        }
-
 
     }
+
+
+}
 
 
 

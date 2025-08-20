@@ -19,9 +19,14 @@ namespace HRMSDAL.Service
         AttendanceModel GetAttendanceByDate(int empId, DateTime date);
         List<AttendanceModel> GetAttendanceByStartEndDate(int empId, DateTime startDate, DateTime endDate);
         AttendanceModel GetAttendance(int empId, DateTime attendanceDate);
-        bool UpdateAttendance(AttendanceModel model);
         void CreateAttendanceRequest(AttendanceModel request);
         List<HolidayModel> GetHolidaysByStartEndDate(int empId, DateTime startDate, DateTime endDate);
+        List<AttendanceModel> GetAttendanceRequests(int loggedInEmpId);
+        bool ApproveAttendanceRequest(int empId, DateTime attendanceDate, string firstHalfStatus,
+                                       string secondHalfStatus, int? modeId,
+                                       DateTime? loginTime, DateTime? logoutTime, string comment);
+        bool RejectAttendanceRequest(int empId, DateTime attendanceDate, string comment);
+        AttendanceModel GetAttendanceRequestById(int empId, DateTime attendanceDate);
 
     }
 }

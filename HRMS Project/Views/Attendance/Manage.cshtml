@@ -49,59 +49,66 @@
             </div>
 
             <div class="col-md-3 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100" style="margin-top: 15px; margin-bottom: 15px; margin-left: 15px;">Submit</button>
-            </div>
+              
+                <button type="submit"
+                        class="btn btn-primary w-100 text-center"
+                        style="margin-top: 15px; margin-bottom: 15px; margin-left: 15px; padding-bottom: 10px">
+                    Submit
+                </button>
 
-            <div class="col-md-3 d-flex align-items-end">
+              
                 @{
                     var roleId = Session["RoleID"] != null ? Convert.ToInt32(Session["RoleID"]) : 0;
-                    var allowedRoles = new List<int> { 1, 2 }; // 1 = Manager, 2 = HR
+                    var allowedRoles = new List<int> { 1, 2 };
                 }
 
                 @if (allowedRoles.Contains(roleId))
                 {
                     <a href="@Url.Action("AttendanceRequest", "Attendance")"
-                       class="btn btn-warning w-100 mt-2"
-                       style="margin-left: 15px;">
+                       class="btn btn-success w-100 text-center"
+                       style="margin-top: 15px; margin-bottom: 15px; margin-left: 255px;">
                         Request
                     </a>
-                }            
+                }
             </div>
 
-            </div>
+
+        </div>
+   
+  
+    }
+
+    <div id="dateError" class="text-danger mb-3" style="display:none;"></div>
+
+    <div class="main-grid-body">
+        @Html.Partial("AttendanceGridPartial", Model)
+    </div>
+
+    <script>
+        // Default submit only on first page load
+        window.addEventListener('DOMContentLoaded', function () {
+            var startDate = document.getElementById("startDate").value;
+            var endDate = document.getElementById("endDate").value;
+            // If dates are default, auto-submit
+            var today = new Date();
+            var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            if (new Date(startDate).getTime() === firstDay.getTime() && new Date(endDate).toDateString() === today.toDateString()) {
+                document.getElementById("attendanceForm").submit();
             }
+        });
 
-            <div id="dateError" class="text-danger mb-3" style="display:none;"></div>
+        // Prevent submit if end date is before start date
+        document.getElementById("attendanceForm").addEventListener("submit", function (e) {
+            var startDate = document.getElementById("startDate").value;
+            var endDate = document.getElementById("endDate").value;
+            var errorDiv = document.getElementById("dateError");
 
-            <div class="main-grid-body">
-                @Html.Partial("AttendanceGridPartial", Model)
-            </div>
-
-            <script>
-                // Default submit only on first page load
-                window.addEventListener('DOMContentLoaded', function () {
-                    var startDate = document.getElementById("startDate").value;
-                    var endDate = document.getElementById("endDate").value;
-                    // If dates are default, auto-submit
-                    var today = new Date();
-                    var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-                    if (new Date(startDate).getTime() === firstDay.getTime() && new Date(endDate).toDateString() === today.toDateString()) {
-                        document.getElementById("attendanceForm").submit();
-                    }
-                });
-
-                // Prevent submit if end date is before start date
-                document.getElementById("attendanceForm").addEventListener("submit", function (e) {
-                    var startDate = document.getElementById("startDate").value;
-                    var endDate = document.getElementById("endDate").value;
-                    var errorDiv = document.getElementById("dateError");
-
-                    if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
-                        e.preventDefault(); // Stop form submission
-                        errorDiv.style.display = "block";
-                        errorDiv.innerText = "End date must be greater than or equal to Start date.";
-                    } else {
-                        errorDiv.style.display = "none"; // Clear error
-                    }
-                });
-            </script>
+            if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+                e.preventDefault(); // Stop form submission
+                errorDiv.style.display = "block";
+                errorDiv.innerText = "End date must be greater than or equal to Start date.";
+            } else {
+                errorDiv.style.display = "none"; // Clear error
+            }
+        });
+    </script>
