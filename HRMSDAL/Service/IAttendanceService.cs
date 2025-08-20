@@ -20,6 +20,8 @@ namespace HRMSDAL.Service
         List<AttendanceModel> GetAttendanceByStartEndDate(int empId, DateTime startDate, DateTime endDate);
         AttendanceModel GetAttendance(int empId, DateTime attendanceDate);
         bool UpdateAttendance(AttendanceModel model);
+        void CreateAttendanceRequest(AttendanceModel request);
+        List<HolidayModel> GetHolidaysByStartEndDate(int empId, DateTime startDate, DateTime endDate);
 
     }
 }

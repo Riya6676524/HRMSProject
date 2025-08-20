@@ -309,7 +309,10 @@
     <Content Include="Views\Attendance\Index.cshtml" />
     <Content Include="Views\Attendance\AttendanceGridPartial.cshtml" />
     <Content Include="Views\Attendance\Edit.cshtml" />
+    <Content Include="Views\Attendance\EditRequestPartialView.cshtml" />
+    <Content Include="Views\Attendance\EditRequest.cshtml" />
     <Content Include="Views\Attendance\EditPartialView.cshtml" />
+    <Content Include="Views\Attendance\AttendanceRequest.cshtml" />
     <Content Include="Views\Attendance\WorkStatusConfirmationPrompt.cshtml" />
     <Content Include="Views\Employee\NewProfilePage.cshtml" />
   </ItemGroup>

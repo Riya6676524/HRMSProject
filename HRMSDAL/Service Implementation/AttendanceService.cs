@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 
 public class AttendanceService : IAttendanceService
 {
@@ -178,6 +179,10 @@ public class AttendanceService : IAttendanceService
 
     public List<AttendanceModel> GetAttendanceByStartEndDate(int empId, DateTime startDate, DateTime endDate)
     {
+        var holidayDates = GetHolidaysByStartEndDate(empId, startDate, endDate)
+                           .Select(h => h.HolidayDate.Date)
+                           .ToList();
+
         var parameters = new SqlParameter[]
         {
         new SqlParameter("@Emp_ID", empId),
@@ -187,33 +192,88 @@ public class AttendanceService : IAttendanceService
 
         var result = DBHelper.ExecuteReader("sp_GetAttendanceByStartEndDate", CommandType.StoredProcedure, parameters);
 
-        var attendanceList = new List<AttendanceModel>();
+        var attendanceRecords = new Dictionary<DateTime, AttendanceModel>();
 
         foreach (var row in result)
         {
-            attendanceList.Add(new AttendanceModel
+            var date = Convert.ToDateTime(row["AttendanceDate"]).Date;
+
+            attendanceRecords[date] = new AttendanceModel
             {
                 Emp_ID = Convert.ToInt32(row["Emp_ID"]),
-                AttendanceDate = Convert.ToDateTime(row["AttendanceDate"]),
-                FirstHalfStatus = row["FirstHalfStatus"]?.ToString(),
-                SecondHalfStatus = row["SecondHalfStatus"]?.ToString(),
+                AttendanceDate = date,
+                FirstHalfStatus = row["FirstHalfStatus"] != DBNull.Value ? row["FirstHalfStatus"].ToString() : null,
+                SecondHalfStatus = row["SecondHalfStatus"] != DBNull.Value ? row["SecondHalfStatus"].ToString() : null,
                 ModeID = row["ModeID"] != DBNull.Value ? Convert.ToInt32(row["ModeID"]) : (int?)null,
-                LoginTime = Convert.ToDateTime(row["LoginTime"]),
-                LogoutTime = Convert.ToDateTime(row["LogoutTime"]),
-                FirstName = row["FirstName"].ToString(),
-                MiddleName = row["MiddleName"].ToString(),
-                LastName = row["LastName"].ToString()
+                LoginTime = row["LoginTime"] != DBNull.Value ? Convert.ToDateTime(row["LoginTime"]) : (DateTime?)null,
+                LogoutTime = row["LogoutTime"] != DBNull.Value ? Convert.ToDateTime(row["LogoutTime"]) : (DateTime?)null,
+                FirstName = row["FirstName"] != DBNull.Value ? row["FirstName"].ToString() : string.Empty,
+                MiddleName = row["MiddleName"] != DBNull.Value ? row["MiddleName"].ToString() : string.Empty,
+                LastName = row["LastName"] != DBNull.Value ? row["LastName"].ToString() : string.Empty
+            };
+        }
 
-            });
+        var attendanceList = new List<AttendanceModel>();
+
+        for (DateTime date = startDate.Date; date <= endDate.Date; date = date.AddDays(1))
+        {
+            AttendanceModel model;
+
+            if (attendanceRecords.ContainsKey(date))
+            {
+                model = attendanceRecords[date];
+            }
+            else
+            {
+                model = new AttendanceModel
+                {
+                    Emp_ID = empId,
+                    AttendanceDate = date,
+                    FirstHalfStatus = null,
+                    SecondHalfStatus = null
+                };
+            }
+
+            model.IsHoliday = holidayDates.Contains(date);
+
+            model.IsWeekend = (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
+
+            attendanceList.Add(model);
         }
 
         return attendanceList;
     }
 
+
+    public List<HolidayModel> GetHolidaysByStartEndDate(int empId, DateTime startDate, DateTime endDate)
+    {
+        var holidays = new List<HolidayModel>();
+
+        var parameters = new SqlParameter[]
+        {
+        new SqlParameter("@Emp_ID", empId),
+        new SqlParameter("@StartDate", startDate),
+        new SqlParameter("@EndDate", endDate)
+        };
+
+        var rows = DBHelper.ExecuteReader("sp_GetLocationHolidaysByDateRange", CommandType.StoredProcedure, parameters);
+
+        foreach (var row in rows)
+        {
+            holidays.Add(new HolidayModel
+            {
+                HolidayDate = row["HolidayDate"] != null ? Convert.ToDateTime(row["HolidayDate"]) : DateTime.MinValue,
+                HolidayName = row["HolidayName"]?.ToString()
+            });
+        }
+
+        return holidays;
+    }
     public AttendanceModel GetAttendance(int empId, DateTime attendanceDate)
     {
         return GetAttendanceByStartEndDate(empId, attendanceDate, attendanceDate).FirstOrDefault();
     }
+
 
 
     public bool UpdateAttendance(AttendanceModel model)
@@ -238,6 +298,30 @@ public class AttendanceService : IAttendanceService
         catch (Exception ex)
         {
             throw new Exception("Error updating attendance", ex);
+        }
+    }
+
+    public void CreateAttendanceRequest(AttendanceModel request)
+    {
+        try
+        {
+            var parameters = new List<SqlParameter>
+        {
+            new SqlParameter("@Emp_ID", request.Emp_ID),
+            new SqlParameter("@AttendanceDate", request.AttendanceDate),
+            new SqlParameter("@FirstHalfStatus", (object)request.FirstHalfStatus ?? DBNull.Value),
+            new SqlParameter("@SecondHalfStatus", (object)request.SecondHalfStatus ?? DBNull.Value),
+             new SqlParameter("@ModeID", (object)request.ModeID ?? (object)DBNull.Value),
+            new SqlParameter("@Reason", (object)request.Reason ?? DBNull.Value)
+        };
+
+            // Execute stored procedure using DBHelper
+            DBHelper.ExecuteNonQuery("sp_CreateAttendanceRequest", CommandType.StoredProcedure, parameters.ToArray());
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the exception as needed
+            throw new ApplicationException("Error while creating attendance request", ex);
         }
     }
 

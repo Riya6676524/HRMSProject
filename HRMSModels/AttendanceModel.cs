@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Policy;
 
 namespace HRMSModels
 {
@@ -24,7 +25,6 @@ namespace HRMSModels
         public int? ModeID { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime Date { get; set; }
-        public string Status { get; set; }
         public string FullStatus { get; set; }
         public string SelectedHalf { get; set; }
 
@@ -34,6 +34,13 @@ namespace HRMSModels
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
+        public double WorkingHours { get; set; }
+        public bool IsHoliday { get; set; }
+        public bool IsWeekend { get; set; }
+        [StringLength(500)]
+        public string Reason { get; set; }
+        [Display(Name = "Status")]
+        public string Status{ get; set; } // Pending / Approved / Rejected
 
     }
 }

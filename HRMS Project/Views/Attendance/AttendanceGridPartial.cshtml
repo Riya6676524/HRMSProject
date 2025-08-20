@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<HRMSModels.AttendanceModel>
-
 <style>
     .action-col {
         text-align: center !important;
@@ -13,60 +12,172 @@
             cursor: pointer;
             color: #007bff !important;
         }
+
+    .attendance-col .attendance-cell {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .attendance-col .attendance-cell:hover {
+        background-color: #f0f8ff;
+    }
+
+    #reportBox {
+        display: none;
+        position: fixed; 
+        background: rgb(191, 191, 191);
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        z-index: 9999;
+        font-family: Segoe UI, sans-serif;
+        pointer-events: none;
+    }
 </style>
 
-@(Html
-       .Grid(Model ?? Enumerable.Empty<HRMSModels.AttendanceModel>
-    ())
+<div id="reportBox">
+    <h4>Attendance Report</h4>
+    <p><strong>Date:</strong> <span id="reportDate"></span></p>
+    <p><strong>Status:</strong> <span id="reportStatus"></span></p>
+</div>
+@(
+Html.Grid(Model ?? Enumerable.Empty<HRMSModels.AttendanceModel>())
     .Build(columns =>
     {
         columns.Add(model => model.AttendanceDate.ToString("dd-MM-yyyy"))
-        .Titled("Date")
-        .Sortable(true);
+               .Titled("Date")
+               .Sortable(true);
 
-        columns.Add(model => model.FirstHalfStatus)
-        .Titled("First Half")
-        .Sortable(true);
+        // Start Time
+        columns.Add(model => model.IsHoliday ? " " : (model.LoginTime.HasValue ? model.LoginTime.Value.ToString("hh:mm tt") : " "))
+               .Titled("Start Time")
+               .Sortable(true);
 
-        columns.Add(model => model.SecondHalfStatus)
-        .Titled("Second Half")
-        .Sortable(true);
+        // End Time
+        columns.Add(model => model.IsHoliday ? " " : (model.LogoutTime.HasValue ? model.LogoutTime.Value.ToString("hh:mm tt") : " "))
+               .Titled("End Time")
+               .Sortable(true);
 
-        columns.Add(model => model.ModeID == 1 ? "WFH" :
-        model.ModeID == 2 ? "WFO" : "")
-        .Titled("Mode")
-        .Sortable(true);
+        // Working Hours
+        columns.Add(model => model.IsHoliday ? " " :
+                             (model.LoginTime.HasValue && model.LogoutTime.HasValue ?
+                              Math.Round((model.LogoutTime.Value - model.LoginTime.Value).TotalHours, 1).ToString("0.0") : ""))
+               .Titled("Working Hours")
+               .Sortable(true);
 
-        columns.Add(model => model.LoginTime.HasValue
-        ? model.LoginTime.Value.ToString("hh:mm tt")
-        : "-")
-        .Titled("Login Time")
-        .Sortable(true);
+        columns.Add(model =>
+     model.IsHoliday ? "H" :
+     model.IsWeekend ? "W" :
+     (model.FirstHalfStatus == "Absent" && model.SecondHalfStatus == "Absent") ? "A" :
+     (model.FirstHalfStatus == "Present" && model.SecondHalfStatus == "Present") ? "P" :
+     (model.FirstHalfStatus == "Present" && model.SecondHalfStatus != "Present") ? "P" :
+     (model.FirstHalfStatus != "Present" && model.SecondHalfStatus == "Present") ? "P" :
+     "L"
+ )
+ .Titled("Attendance")
+ .Sortable(true)
+ .Encoded(false)
+ .Css("attendance-col")
+ .RenderedAs(model =>
+ {
+     string displayText =
+         model.IsHoliday ? "H" :
+         model.IsWeekend ? "W" :
+         (model.FirstHalfStatus == "Absent" && model.SecondHalfStatus == "Absent") ? "A" :
+         (model.FirstHalfStatus == "Present" && model.SecondHalfStatus == "Present") ? "P" :
+         (model.FirstHalfStatus == "Present" && model.SecondHalfStatus != "Present") ? "P" :
+         (model.FirstHalfStatus != "Present" && model.SecondHalfStatus == "Present") ? "P" :
+         "L";
 
-        columns.Add(model => model.LogoutTime.HasValue
-        ? model.LogoutTime.Value.ToString("hh:mm tt")
-        : "-")
-        .Titled("Logout Time")
-        .Sortable(true);
+     string statusText =
+         model.IsHoliday ? "Holiday" :
+         model.IsWeekend ? "Weekend" :
+         (model.FirstHalfStatus == "Absent" && model.SecondHalfStatus == "Absent") ? "Full Day" :
+         (model.FirstHalfStatus == "Present" && model.SecondHalfStatus == "Present") ? "Full Day" :
+         (model.FirstHalfStatus == "Present" && model.SecondHalfStatus != "Present") ? "First Half" :
+         (model.FirstHalfStatus != "Present" && model.SecondHalfStatus == "Present") ? "Second Half" :
+         "Leave";
 
-        columns.Add(model => new HtmlString(
-       Convert.ToInt32(Session["RoleID"]) != 3
-       ? $"<a href='/Attendance/Edit?empId={model.Emp_ID}&attendanceDate={model.AttendanceDate:yyyy-MM-dd}'><i class='fa fa-edit'></i></a>"
-       : "<a href='#'><i class='fa fa-edit'></i></a>"
-       ))
-       .Titled(Convert.ToInt32(HttpContext.Current.Session["RoleID"]) == 3 ? "Correction Request" : "Action")
-       .Encoded(false)
-       .Css("action-col");
+     if (displayText == "L")
+     {
+         return new HtmlString(
+               $"<a href='/leave/leaves?empId={model.Emp_ID}&date={model.AttendanceDate:yyyy-MM-dd}' " +
+         $"class='attendance-cell' style='text-decoration:none;color:black;' " +
+         $"data-status='{statusText}' data-date='{model.AttendanceDate:dd-MM-yyyy}'>{displayText}</a>"
+         );
+     }
+     else
+     {
+         return new HtmlString(
+             $"<div class='attendance-cell' data-status='{statusText}' data-date='{model.AttendanceDate:dd-MM-yyyy}'>{displayText}</div>"
+         );
+     }
+ });
+
+
+
+        // Work Mode
+        columns.Add(model => model.IsHoliday ? " " :
+                             model.ModeID == 1 ? "WFH" :
+                             model.ModeID == 2 ? "WFO" : "")
+               .Titled("Work Mode")
+               .Sortable(true);
+
+        columns.Add(model =>
+     (!model.IsHoliday && !model.IsWeekend &&
+      !((string.IsNullOrEmpty(model.FirstHalfStatus) && string.IsNullOrEmpty(model.SecondHalfStatus))))
+         ? new HtmlString("<a href='/Attendance/EditRequest?empId=" + model.Emp_ID +
+                          "&attendanceDate=" + model.AttendanceDate.ToString("yyyy-MM-dd") +
+                          "'><i class='fa fa-edit'></i></a>")
+         : new HtmlString("&nbsp;")
+          )
+          .Titled("Action")
+          .Encoded(false)
+          .Css("action-col");
 
 
     })
     .Sortable()
     .Filterable()
-    .Pageable(pager => {
-        pager.PageSizes = new Dictionary<int, string>
-            () { { 5, "5" }, { 10, "10" }, { 20, "20" }, { 0, "ALL" } };
+    .Pageable(pager =>
+    {
+        pager.PageSizes = new Dictionary<int, string>() { { 5, "5" }, { 10, "10" }, { 20, "20" }, { 0, "ALL" } };
         pager.ShowPageSizes = true;
         pager.PagesToDisplay = 3;
         pager.CurrentPage = 1;
     })
-        )
+)
+
+<script>
+    const reportBox = document.getElementById('reportBox');
+
+    document.addEventListener('mouseover', function (e) {
+        const cell = e.target.closest('.attendance-cell');
+        if (cell) {
+            const date = cell.dataset.date;
+            const status = cell.dataset.status;
+
+            document.getElementById('reportDate').textContent = date;
+            document.getElementById('reportStatus').textContent = status;
+
+            const rect = cell.getBoundingClientRect();
+            reportBox.style.top = (rect.bottom + 5) + "px";
+            reportBox.style.left = (rect.left) + "px";
+            reportBox.style.display = 'block';
+        }
+    });
+
+    document.addEventListener('mouseout', function (e) {
+        const cell = e.target.closest('.attendance-cell');
+        if (cell) {
+            reportBox.style.display = 'none';
+        }
+    });
+</script>
+
+
+

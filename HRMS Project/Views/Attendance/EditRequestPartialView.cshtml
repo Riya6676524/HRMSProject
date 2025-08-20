@@ -1,0 +1,108 @@
+﻿@model HRMSModels.AttendanceModel
+
+@using (Html.BeginForm("EditRequest", "Attendance", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Emp_ID)
+    @Html.HiddenFor(m => m.AttendanceDate) <!-- Keep date hidden -->
+
+    <div class="row">
+        <div class="form-group triple-column">
+            <div class="column">
+                @Html.LabelFor(m => m.FirstName)
+                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group triple-column">
+            <div class="column">
+                @Html.LabelFor(m => m.MiddleName)
+                @Html.TextBoxFor(m => m.MiddleName, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group triple-column">
+            <div class="column">
+                @Html.LabelFor(m => m.LastName)
+                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group triple-column">
+            <div class="column">
+                @Html.Label("Mode")
+                @Html.DropDownListFor(
+                    m => m.ModeID,
+                    new SelectList(
+                        new[] {
+                            new { ModeID = 1, ModeName = "WFH" },
+                            new { ModeID = 2, ModeName = "WFO" }
+                        },
+                        "ModeID",
+                        "ModeName",
+                        Model.ModeID
+                    ),
+                    "Select Mode",
+                    new { @class = "form-control" }
+                )
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group triple-column">
+            <div class="column">
+                @Html.Label("First Half")
+                @Html.DropDownListFor(
+                    m => m.FirstHalfStatus,
+                    new SelectList(new[] { "Present", "Absent" }, Model.FirstHalfStatus),
+                    "Select",
+                    new { @class = "form-control" }
+                )
+            </div>
+        </div>
+        <div class="form-group triple-column">
+            <div class="column">
+                @Html.Label("Second Half")
+                @Html.DropDownListFor(
+                    m => m.SecondHalfStatus,
+                    new SelectList(new[] { "Present", "Absent" }, Model.SecondHalfStatus),
+                    "Select",
+                    new { @class = "form-control" }
+                )
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group triple-column">
+            <div class="column">
+                @Html.LabelFor(m => m.LoginTime)
+                @Html.TextBoxFor(m => m.LoginTime, "{0:HH\\:mm}", new { @class = "form-control", @type = "time" })
+            </div>
+        </div>
+        <div class="form-group triple-column">
+            <div class="column">
+                @Html.LabelFor(m => m.LogoutTime)
+                @Html.TextBoxFor(m => m.LogoutTime, "{0:HH\\:mm}", new { @class = "form-control", @type = "time" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group triple-column">
+            <div class="column">
+                @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
+                @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", rows = 3 })
+                @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="form-card-footer d-flex justify-content-between">
+            <input type="submit" value="Save" class="btn btn-success" style="margin-right:10px;" />
+            @Html.ActionLink("Cancel", "Manage", "Attendance", null, new { @class = "btn btn-danger" })
+        </div>
+    </div>
+}
