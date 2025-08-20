@@ -310,6 +310,8 @@
     <Content Include="Views\Attendance\AttendanceGridPartial.cshtml" />
     <Content Include="Views\Attendance\Edit.cshtml" />
     <Content Include="Views\Attendance\EditPartialView.cshtml" />
+    <Content Include="Views\Attendance\WorkStatusConfirmationPrompt.cshtml" />
+    <Content Include="Views\Employee\NewProfilePage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

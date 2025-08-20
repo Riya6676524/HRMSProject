@@ -45,8 +45,10 @@
         <div id="leaveBalanceContainer">
 
         </div>
-        @Html.Action("UpcomingHolidays", "Leave", new { count = 3})
-        @Html.Action("PastLeavesPartial", "Leave", new { count = 3,id = Model.EMP_ID })
+        @Html.Action("UpcomingHolidays", "Leave", new { count = 3 })
+        <div id="PastLeavePartial" class="normal-card">
+            @Html.Action("PastLeavesPartial", "Leave", new { count = 3, id = Model.EMP_ID })
+        </div>
     </div>
 </div>
 <script>

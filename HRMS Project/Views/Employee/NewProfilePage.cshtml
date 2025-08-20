@@ -1,0 +1,146 @@
+﻿@model HRMSProject.Models.EmployeeRegModel
+
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: start">
+
+
+    <img src="@Url.Action("GetProfileImage", "Dashboard", new { empId = Model.EMP_ID })" class="profile-img" style=" box-sizing: border-box; border-radius: unset; border: 3px solid gray; margin: 0;" alt="Profile Image" />
+    @Html.ActionLink("Change Password", "ChangePassword", "Employee", null, new { @class = "btn btn-primary" ,@style= "margin-top: 5px;" })
+</div>
+
+
+<div class="row">
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.EmployeeID, htmlAttributes: new { @class = "control-label " })
+            @Html.EditorFor(m => m.EmployeeID, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.EmployeeID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.FirstName, htmlAttributes: new { @class = "control-label " })
+            @Html.EditorFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.Middlename, htmlAttributes: new { @class = "control-label " })
+            @Html.EditorFor(m => m.Middlename, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.Middlename, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.LastName, htmlAttributes: new { @class = "control-label " })
+            @Html.EditorFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.GenderID, htmlAttributes: new { @class = "control-label " })
+            @Html.DropDownListFor(m => m.GenderID, ViewBag.Genders as SelectList, "Select", new { @class = "form-control" })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.GenderID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.DOB, htmlAttributes: new { @class = "control-label " })
+            @Html.EditorFor(m => m.DOB, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.DOB, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label " })
+            @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.ContactNumber, htmlAttributes: new { @class = "control-label " })
+            @Html.EditorFor(m => m.ContactNumber, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.ContactNumber, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.LocationID, htmlAttributes: new { @class = "control-label " })
+            @Html.DropDownListFor(m => m.LocationID, ViewBag.Locations as SelectList, "Select", new { @class = "form-control" })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.LocationID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.DepartmentID, htmlAttributes: new { @class = "control-label " })
+            @Html.DropDownListFor(m => m.DepartmentID, ViewBag.Departments as SelectList, "Select", new { @class = "form-control" })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.DepartmentID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.RoleID, htmlAttributes: new { @class = "control-label " })
+            @Html.DropDownListFor(m => m.RoleID, ViewBag.Roles as SelectList, "Select", new { @class = "form-control" })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.RoleID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.ReportingManagerID, htmlAttributes: new { @class = "control-label " })
+            @Html.DropDownListFor(m => m.ReportingManagerID, ViewBag.ReportingManagers as SelectList, "None", new { @class = "form-control" })
+        </div>
+        <div class="column">
+            @Html.ValidationMessageFor(m => m.ReportingManagerID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<script>
+ $('input').prop('readonly', true);
+ $('input[type="checkbox"]').on('click', function (e) {
+     e.preventDefault();
+ });
+    $('select').prop('disabled', true).css('appearance','none');
+</script>

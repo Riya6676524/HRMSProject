@@ -39,7 +39,6 @@ namespace HRMSModels
 
         [Required]
         [DisplayName("Contact Number")]
-        [Range(100000, 999999, ErrorMessage = "Zip Code Must be 6 digits long")]
         public string ContactNumber { get; set; }
 
         [Required]
