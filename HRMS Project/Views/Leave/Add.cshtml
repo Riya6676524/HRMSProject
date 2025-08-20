@@ -32,7 +32,10 @@
 
         </div>
         @Html.Action("UpcomingHolidays", "Leave", new { count = 3 })
-        @Html.Action("PastLeavesPartial", "Leave", new { count = 3 })
+
+        <div id="PastLeavePartial" class="normal-card">
+            @Html.Action("PastLeavesPartial", "Leave", new { count = 3 })
+        </div>
     </div>
 </div>
 <script>
@@ -52,11 +55,18 @@
         });
     }
 
+    function loadPastLeaves() {
+        $.get('/Leave/PastLeavesPartial', { id: $("#EMP_ID").val() }, function (data) {
+            $("#PastLeavePartial").html(data);
+        });
+    }
+
     $(document).ready(function () {
         loadLeaveBalance();
 
         $("#EMP_ID").change(function () {
             loadLeaveBalance();
+            loadPastLeaves();
         });
     });
 </script>

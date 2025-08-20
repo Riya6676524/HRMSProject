@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web;
@@ -15,6 +16,7 @@ namespace HRMS.Controllers
 {
     public class LeaveController : Controller
     {
+        private static int leaveThreshold = Convert.ToInt32(ConfigurationManager.AppSettings["LeaveThreshold"]);
         private readonly ILeaveRequestService _leaveRequestService;
         private readonly ILeaveTypeService _leaveTypeService;
         private readonly ILeaveStatusService _leaveStatusService;
@@ -139,7 +141,7 @@ namespace HRMS.Controllers
             obj.TotalDays = CalculateTotalLeaveDays(obj.StartDate, obj.EndDate, obj.SecondHalf, obj.FirstHalf);
             var leaveBalance = _leaveBalanceService.GetByIdandMonth(obj.EMP_ID, DateTime.Now);
             // Check if the employee has enough leave balance
-            if (leaveBalance.ClosingBalance < obj.TotalDays-1)
+            if (leaveBalance.ClosingBalance - obj.TotalDays < leaveThreshold)
             {
                 initFormViewBag();
                 ModelState.AddModelError("TotalDays", "You do not have enough leave balance for this request.");
@@ -153,6 +155,8 @@ namespace HRMS.Controllers
             if (emp.ReportingManagerID is null)
             {
                 obj.LeaveStatusID = _leaveStatusService.GetAll().Where(x => x.StatusName.ToUpper() == "APPROVED").Select(x => x.LeaveStatusID).FirstOrDefault();
+                leaveBalance.ClosingBalance -= obj.TotalDays;
+                _leaveBalanceService.Update(leaveBalance);
                 obj.ApproverID = emp.EMP_ID;
                 obj.ApproverDate = DateTime.Now;
             }
@@ -190,7 +194,7 @@ namespace HRMS.Controllers
                     toBeApprovedModel.ApproverDate = DateTime.Now;
                     if (approveStatus.LeaveStatusID == 2)
                     {
-                        if (leaveBalance.ClosingBalance < obj.TotalDays-1)
+                        if (leaveBalance.ClosingBalance - obj.TotalDays < leaveThreshold)
                         {
                             initFormViewBag();
                             ModelState.AddModelError("TotalDays", "Does not have enough leave balance for this request.");

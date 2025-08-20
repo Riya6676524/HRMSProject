@@ -18,7 +18,7 @@ namespace HRMSDAL.Service_Implementation
         protected override string PrimaryKeyColumn => "LeaveBalanceID";
 
 
-        private void RefreshBalanceMonths()
+        public void RefreshBalanceMonths()
         {
             string query = "usp_InitBalanceMonths";
 

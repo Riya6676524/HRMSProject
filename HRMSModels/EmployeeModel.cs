@@ -39,6 +39,7 @@ namespace HRMSModels
 
         [Required]
         [DisplayName("Contact Number")]
+        [Range(100000, 999999, ErrorMessage = "Zip Code Must be 6 digits long")]
         public string ContactNumber { get; set; }
 
         [Required]
@@ -63,7 +64,7 @@ namespace HRMSModels
 
         [Required]
         [DataType(DataType.Date)]
-        [MinimumAge(18, ErrorMessage = "You must be at least 18 years old to register.")]
+        [MinimumAge(18, ErrorMessage = "Must be at least 18 years or more")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DisplayName("Date Of Birth")]
         public DateTime DOB { get; set; }
