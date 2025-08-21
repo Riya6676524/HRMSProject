@@ -18,32 +18,34 @@ Html.Grid(Model ?? Enumerable.Empty<HRMSModels.AttendanceModel>
     .Build(columns =>
     {
 
-        columns.Add(model => model.FirstName).Titled("Name").Sortable(true).RenderedAs(model => $"{model.FirstName} {model.MiddleName} {model.LastName}")
-        .Titled("Name")
-        .Sortable(true);
+    columns.Add(model => model.FirstName).Titled("Name").Sortable(true).RenderedAs(model => $"{model.FirstName} {model.MiddleName} {model.LastName}")
+    .Titled("Name")
+    .Sortable(true);
 
-        columns.Add(model => model.AttendanceDate.ToString("dd-MM-yyyy"))
-        .Titled("Date")
-        .Sortable(true);
+    columns.Add(model => model.AttendanceDate.ToString("dd-MM-yyyy"))
+    .Titled("Date")
+    .Sortable(true);
 
 
-        columns.Add(model => model.CreatedOn.ToString("dd-MM-yyyy"))
-        .Titled("Request Date")
-        .Sortable(true);
+    columns.Add(model => model.CreatedOn.ToString("dd-MM-yyyy"))
+    .Titled("Request Date")
+    .Sortable(true);
 
-        columns.Add(model => model.Status.ToString())
-        .Titled("Status")
-        .Sortable(true);
+    columns.Add(model => model.Status.ToString())
+    .Titled("Status")
+    .Sortable(true);
 
-        columns.Add(model =>
-        new HtmlString(
-            $"<a href='/Attendance/Edit?empId={model.Emp_ID}&attendanceDate={model.AttendanceDate:yyyy-MM-dd}'><i class='fa fa-edit'></i></a>"
-        )
+    columns.Add(model => new HtmlString(
+ model.Status == "Pending"
+     ? $"<a href='/Attendance/Edit?empId={model.Emp_ID}&attendanceDate={model.AttendanceDate:yyyy-MM-dd}'><i class='fa fa-edit'></i></a>"
+     : "" 
+)
+
     )
     .Titled("Action")
     .Encoded(false)
     .Css("action-col");
 
-    })
+})
    
 )

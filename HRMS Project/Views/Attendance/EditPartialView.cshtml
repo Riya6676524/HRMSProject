@@ -4,73 +4,81 @@
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.Emp_ID)
-  
+    @Html.HiddenFor(m => m.AttendanceDate)
 
-    <div class="row">
-        <div class="form-group triple-column">
-            <div class="column">
-                @Html.LabelFor(m => m.FirstName)
-                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @readonly = "readonly" })
-            </div>
-        </div>
 
-        <div class="form-group triple-column">
-            <div class="column">
-                @Html.LabelFor(m => m.LastName)
-                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @readonly = "readonly" })
-            </div>
+<div class="row" style="padding-left:15px;">
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.FirstName)
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @readonly = "readonly" })
         </div>
     </div>
-
-
-    <div class="row">
+    @if (!string.IsNullOrWhiteSpace(Model.MiddleName))
+    {
         <div class="form-group triple-column">
             <div class="column">
-                @Html.Label("Mode")
-                @Html.TextBox("Mode", Model.ModeID == 1 ? "WFH" : "WFO", new { @class = "form-control", @readonly = "readonly" })
+                @Html.LabelFor(m => m.MiddleName)
+                @Html.TextBoxFor(m => m.MiddleName, new { @class = "form-control", @readonly = "readonly" })
             </div>
         </div>
-        <div class="form-group triple-column">
-            <div class="column">
-                @Html.LabelFor(m => m.AttendanceDate)
-                @Html.TextBoxFor(m => m.AttendanceDate, "{0:yyyy-MM-dd}",
-                    new { @class = "form-control", @readonly = "readonly", @type = "date" })
-            </div>
+    }
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.LastName)
+            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @readonly = "readonly" })
         </div>
     </div>
+</div>
 
-    <div class="row">
-        <div class="form-group triple-column">
-            <div class="column">
-                @Html.Label("First Half")
-                @Html.TextBox("FirstHalf", Model.FirstHalfStatus, new { @class = "form-control", @readonly = "readonly" })
-            </div>
-        </div>
-        <div class="form-group triple-column">
-            <div class="column">
-                @Html.Label("Second Half")
-                @Html.TextBox("SecondHalf", Model.SecondHalfStatus, new { @class = "form-control", @readonly = "readonly" })
-            </div>
+
+<div class="row" style="padding-left:15px;">
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.AttendanceDate)
+            @Html.TextBoxFor(m => m.AttendanceDate, "{0:yyyy-MM-dd}",
+                new { @class = "form-control", @readonly = "readonly", @type = "date" })
         </div>
     </div>
-
-    <div class="row">
-        <div class="form-group triple-column">
-            <div class="column">
-                @Html.LabelFor(m => m.LoginTime)
-                @Html.TextBoxFor(m => m.LoginTime, "{0:HH\\:mm}", new { @class = "form-control", @readonly = "readonly" })
-            </div>
-        </div>
-        <div class="form-group triple-column">
-            <div class="column">
-                @Html.LabelFor(m => m.LogoutTime)
-                @Html.TextBoxFor(m => m.LogoutTime, "{0:HH\\:mm}", new { @class = "form-control", @readonly = "readonly" })
-            </div>
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.LoginTime)
+            @Html.TextBox("LoginTimeText", Model.LoginTime?.ToString("HH:mm"), new { @class = "form-control", @readonly = "readonly" })
+            @Html.HiddenFor(m => m.LoginTime)
         </div>
     </div>
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.LabelFor(m => m.LogoutTime)
+            @Html.TextBox("LogoutTimeText", Model.LogoutTime?.ToString("HH:mm"), new { @class = "form-control", @readonly = "readonly" })
+            @Html.HiddenFor(m => m.LogoutTime)
+        </div>
+    </div>
+</div>
 
+<div class="row" style="padding-left:15px;">
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.Label("Mode")
+            @Html.TextBox("ModeText", Model.ModeID == 1 ? "WFH" : "WFO", new { @class = "form-control", @readonly = "readonly" })
+            @Html.HiddenFor(m => m.ModeID)
+        </div>
+    </div>
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.Label("First Half")
+            @Html.TextBox("FirstHalfStatus", Model.FirstHalfStatus, new { @class = "form-control", @readonly = "readonly" })
+        </div>
+    </div>
+    <div class="form-group triple-column">
+        <div class="column">
+            @Html.Label("Second Half")
+            @Html.TextBox("SecondHalfStatus", Model.SecondHalfStatus, new { @class = "form-control", @readonly = "readonly" })
+        </div>
+    </div>
+</div>
 
-    <div class="row">
+    <div class="row" style="padding-left:15px;">
         <div class="form-group triple-column">
             <div class="column">
                 @Html.LabelFor(model => model.Reason)
@@ -79,20 +87,22 @@
         </div>
         <div class="form-group triple-column">
             <div class="column">
-                @Html.Label("Manager Comment")
+                @Html.Label("Comment")
                 @Html.TextAreaFor(model => model.Comment, new { @class = "form-control", rows = 3 })
             </div>
+            @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+
         </div>
     </div>
 
 
-   
 
 
-    <div class="row mt-3">
+
+    <div class="row mt-3" style="padding-left:15px;">
         <div class="form-card-footer d-flex justify-content-between">
-            <button type="submit" name="action" value="Approve" class="btn btn-success" style="margin-right:10px;" >Approve</button>
-            <button type="submit" name="action" value="Reject" class="btn btn-danger" style="margin-right:10px;" >Reject</button>
+            <button type="submit" name="action" value="Approve" class="btn btn-success" style="margin-right:10px;">Approve</button>
+            <button type="submit" name="action" value="Reject" class="btn btn-danger" style="margin-right:10px;">Reject</button>
             @Html.ActionLink("Cancel", "AttendanceRequest", "Attendance", null, new { @class = "btn btn-secondary" })
         </div>
     </div>

@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Web.Mvc;
+using HRMSDAL.Helper;
 using HRMSDAL.Service;
 using HRMSDAL.Service_Implementation;
 using HRMSModels;
+using System.Reflection;
 
 
 namespace HRMSProject.Controllers
@@ -90,9 +94,7 @@ namespace HRMSProject.Controllers
                     });
                 }
             }
-            else // Manager/Employee -> Show self + subordinates
-            {
-                // Add self
+            else { 
                 var empIter = _employeeService.GetById(loggedInEmpId);
                 if (empIter != null)
                 {
@@ -214,15 +216,14 @@ namespace HRMSProject.Controllers
 
             InitEmpViewBag(selectedEmpId);
 
-            // Default dates
+          
             DateTime defaultStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             DateTime defaultEnd = DateTime.Now;
 
-            // Final dates (use defaults if null)
             DateTime finalStart = startDate ?? defaultStart;
             DateTime finalEnd = endDate ?? defaultEnd;
 
-            // Validation
+         
             if (finalStart > finalEnd)
             {
                 ModelState.AddModelError("", "Start Date cannot be greater than End Date.");
@@ -231,66 +232,59 @@ namespace HRMSProject.Controllers
                 return View(new List<AttendanceModel>());
             }
 
-            // Fetch attendance list
+       
             var attendanceList = _attendanceService.GetAttendanceByStartEndDate(
                 selectedEmpId,
                 finalStart,
                 finalEnd
             );
 
-            // Pass selected dates back to the view
+       
             ViewBag.SelectedStartDate = finalStart.ToString("yyyy-MM-dd");
             ViewBag.SelectedEndDate = finalEnd.ToString("yyyy-MM-dd");
 
             return View(attendanceList);
         }
 
-
         [HttpGet]
         public ActionResult Edit(int empId, DateTime attendanceDate)
         {
-            var model = _attendanceService.GetAttendanceRequestById(empId, attendanceDate);
+            var model = _attendanceService.GetAttendanceRequestById(empId, attendanceDate)
+                        ?? new AttendanceModel();
+
+            model.Emp_ID = empId;
+            model.AttendanceDate = attendanceDate;
+
             return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(AttendanceModel model, string action)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(model.Comment))
             {
-             
-                if (action == "Approve")
-                {
-                    bool isApproved = _attendanceService.ApproveAttendanceRequest(
-                        model.Emp_ID,
-                        model.AttendanceDate,
-                        model.FirstHalfStatus,
-                        model.SecondHalfStatus,
-                        model.ModeID,
-                        model.LoginTime,
-                        model.LogoutTime,
-                        model.Comment
-                    );
-
-                    if (isApproved)
-                        return RedirectToAction("AttendanceRequest");
-                }
-                else if (action == "Reject")
-                {
-                    bool isRejected = _attendanceService.RejectAttendanceRequest(
-                        model.Emp_ID,
-                        model.AttendanceDate,
-                        model.Comment
-                    );
-
-                    if (isRejected)
-                        return RedirectToAction("AttendanceRequest");
-                }
+                ModelState.AddModelError("Comment", "Please enter a comment before submitting.");
             }
-            return View(model);
+
+            if (!ModelState.IsValid)
+            {
+                return View("Edit", model);
+            }
+
+            try
+            {
+                _attendanceService.ProcessAttendanceRequest(model, action);
+
+                TempData["Success"] = action == "Approve" ? "Attendance approved!" : "Attendance request rejected!";
+            }
+            catch
+            {
+                TempData["Error"] = "Something went wrong!";
+            }
+
+            return RedirectToAction("AttendanceRequest");
         }
-
-
 
 
         [HttpGet]
@@ -309,8 +303,15 @@ namespace HRMSProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditRequest(AttendanceModel request)
         {
+            if (string.IsNullOrWhiteSpace(request.Reason))
+            {
+                ModelState.AddModelError("Reason", "Please enter a Reason before submitting");
+            }
+
             if (!ModelState.IsValid)
-                return View(request);
+            {
+                return View("EditRequest", request);
+            }
 
             request.Status = "Pending";
             request.CreatedOn = DateTime.Now;
