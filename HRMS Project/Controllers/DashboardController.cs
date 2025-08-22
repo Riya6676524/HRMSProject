@@ -59,7 +59,8 @@ namespace HRMSProject.Controllers
         {
             empId = (int)Session["Emp_ID"];
             var result = _dashboardService.GetNavbarData(empId);
-
+            var obj = new byte[0];
+            if (result.ProfileImagePath is null) return File(obj,"image/png");
             return File(result.ProfileImagePath, "image/png"); 
            
         }
