@@ -19,10 +19,11 @@ namespace HRMSDAL.Service
         AttendanceModel GetAttendanceByDate(int empId, DateTime date);
         List<AttendanceModel> GetAttendanceByStartEndDate(int empId, DateTime startDate, DateTime endDate);
         AttendanceModel GetAttendance(int empId, DateTime attendanceDate);
-        void CreateAttendanceRequest(AttendanceModel request);
+        void CreateAttendanceRequest(AttendanceModel request, int loggedInRoleId);
         List<HolidayModel> GetHolidaysByStartEndDate(int empId, DateTime startDate, DateTime endDate);
-        List<AttendanceModel> GetAttendanceRequests(int loggedInEmpId);
-       
+        List<AttendanceModel> GetAttendanceRequests(int loggedInEmpId, int loggedInRoleId);
+
+
         AttendanceModel GetAttendanceRequestById(int empId, DateTime attendanceDate);
         void ProcessAttendanceRequest(AttendanceModel model, string action);
 

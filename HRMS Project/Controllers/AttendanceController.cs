@@ -303,6 +303,7 @@ namespace HRMSProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditRequest(AttendanceModel request)
         {
+            int loggedInRoleId = Convert.ToInt32(Session["RoleID"]);
             if (string.IsNullOrWhiteSpace(request.Reason))
             {
                 ModelState.AddModelError("Reason", "Please enter a Reason before submitting");
@@ -316,7 +317,7 @@ namespace HRMSProject.Controllers
             request.Status = "Pending";
             request.CreatedOn = DateTime.Now;
 
-            _attendanceService.CreateAttendanceRequest(request);
+            _attendanceService.CreateAttendanceRequest(request, loggedInRoleId);
 
             TempData["SuccessMessage"] = "Attendance edit request submitted successfully.";
 
@@ -329,7 +330,8 @@ namespace HRMSProject.Controllers
         public ActionResult AttendanceRequest()
         {
             int loggedInEmpId = Convert.ToInt32(Session["Emp_ID"]);
-            var requests = _attendanceService.GetAttendanceRequests(loggedInEmpId);
+            int loggedInRoleId = Convert.ToInt32(Session["RoleID"]);
+            var requests = _attendanceService.GetAttendanceRequests(loggedInEmpId, loggedInRoleId);
 
             return View(requests); 
         }

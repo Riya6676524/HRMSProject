@@ -274,7 +274,7 @@ public class AttendanceService : IAttendanceService
         return GetAttendanceByStartEndDate(empId, attendanceDate, attendanceDate).FirstOrDefault();
     }
 
-    public void CreateAttendanceRequest(AttendanceModel request)
+    public void CreateAttendanceRequest(AttendanceModel request, int loggedInRoleId)
     {
         try
         {
@@ -287,7 +287,8 @@ public class AttendanceService : IAttendanceService
             new SqlParameter("@ModeID", (object)request.ModeID ?? (object)DBNull.Value),
             new SqlParameter("@LoginTime", (object)request.LoginTime ?? DBNull.Value),
             new SqlParameter("@LogoutTime", (object)request.LogoutTime ?? DBNull.Value),
-            new SqlParameter("@Reason", (object)request.Reason ?? DBNull.Value)
+            new SqlParameter("@Reason", (object)request.Reason ?? DBNull.Value),
+             new SqlParameter("@LoggedInRoleId", loggedInRoleId)
         };
 
             // Execute stored procedure using DBHelper
@@ -300,11 +301,12 @@ public class AttendanceService : IAttendanceService
         }
     }
 
-    public List<AttendanceModel> GetAttendanceRequests(int loggedInEmpId)
+    public List<AttendanceModel> GetAttendanceRequests(int loggedInEmpId, int loggedInRoleId)
     {
         var parameters = new SqlParameter[]
         {
-        new SqlParameter("@LoggedInEmpId", loggedInEmpId)
+        new SqlParameter("@LoggedInEmpId", loggedInEmpId),
+         new SqlParameter("@LoggedInRoleId", loggedInRoleId)
         };
 
         var result = DBHelper.ExecuteReader("sp_GetAttendanceRequests", CommandType.StoredProcedure, parameters);
